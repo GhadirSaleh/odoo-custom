@@ -1,0 +1,584 @@
+/* === © BIGBANG - ODOO STYLE FILE === # */
+/* == © BIGBANG ERP - POS AZURE THEME == */
+
+:root {
+    --bg-color: #0b151b;
+    --bg-dark-color: #000;
+    --forground-color: #fff;
+    --primary-color: #00a6fb;
+    --secondary-color: #1a3849
+}
+
+.product-list-container {
+    background-color: var(--bg-dark-color)!important
+}
+
+.product-list {
+    gap: 10px!important;
+    padding: 10px!important
+}
+
+.product-list .btn {
+    border: 1px solid #fff1!important
+}
+
+.leftpane button:hover,.pos,.pos-topheader>div,.products-widget-control>div {
+    background-color: var(--bg-color)!important
+}
+
+.pos-topheader {
+    border-bottom: 1px solid var(--bg-dark-color)!important
+}
+
+.form-control {
+    border: 2px solid var(--secondary-color)!important;
+    border-radius: 15px!important;
+    background-color: var(--bg-dark-color)!important
+}
+
+.form-container input,.leftpane>div {
+    background-color: var(--bg-color)!important
+}
+
+.form-container input,.form-control,.leftpane .submit-order .text-truncate,.leftpane>div,.leftpane>div>h3,.orderline.selected span {
+    color: var(--forground-color)!important
+}
+
+.leftpane .control-button,.leftpane .numpad .btn,.leftpane .submit-order {
+    border: 1px solid var(--bg-color)!important;
+    color: var(--forground-color)!important
+}
+
+.book-table,.leftpane .submit-order {
+    background-color: var(--primary-color)!important
+}
+
+.leftpane .submit-order {
+    border-radius: 10px!important
+}
+
+.book-table {
+    color: var(--forground-color)!important
+}
+
+.leftpane .control-button,.leftpane .numpad .btn {
+    outline: 0!important;
+    background-color: var(--secondary-color)!important
+}
+
+.btn:active,.btn:focus {
+    z-index: 1!important
+}
+
+.leftpane button {
+    background-color: var(--secondary-color)!important;
+    color: var(--forground-color)!important;
+    border-radius: 10px!important
+}
+
+.leftpane .text-truncate {
+    color: var(--primary-color)!important
+}
+
+.leftpane .actionpad,.leftpane button {
+    border: 1px solid var(--bg-color)!important
+}
+
+.leftpane .pads {
+    border-top: 1px solid var(--bg-color)!important
+}
+
+.leftpane .control-buttons {
+    background-color: var(--bg-color)!important;
+    border: 1px solid var(--bg-color)!important
+}
+
+.leftpane .control-button-number,.leftpane .pay,.leftpane .pay:hover,.orderline.selected,.orderline.selected:hover {
+    background-color: var(--primary-color)!important
+}
+
+.product-screen {
+    display: flex;
+    flex-direction: row-reverse!important
+}
+
+.orderline {
+    border-left-width: 5px!important
+}
+
+.orderline.selected {
+    color: var(--forground-color)!important
+}
+
+.orderline:hover {
+    background-color: var(--secondary-color)!important
+}
+
+.dropdown-menu,.dropdown-menu .dropdown-item,.dropdown-menu .dropdown-item:hover,.leftpane .order-summary .fs-6,.orderline:hover,.product {
+    color: var(--forground-color)!important
+}
+
+.dropdown-menu,.product {
+    background-color: var(--bg-color)!important;
+    border: 1px solid var(--secondary-color)!important
+}
+
+.product {
+    border: 4px solid var(--secondary-color)!important;
+    border-radius: 10px!important;
+    padding-bottom: 30px!important
+}
+
+.product .product-img {
+    background-color: #fff!important;
+    width: 100%!important;
+    aspect-ratio: 1/1!important
+}
+
+.product .product-img img {
+    width: 100%!important;
+    height: 100%!important;
+    object-fit: contain!important
+}
+
+.no-image::before {
+    content: ""!important;
+    font-family: "Font Awesome 5 Free"!important;
+    font-weight: 900!important;
+    font-size: 1.5rem!important;
+    color: var(--secondary-color)!important;
+    width: 100%!important
+}
+
+.product .product-content,.product .product-name.no-image {
+    display: flex!important;
+    justify-content: space-around!important;
+    align-items: center!important;
+    flex-direction: column!important
+}
+
+.no-image::before,.product .product-content {
+    height: 100%!important
+}
+
+.product .price-tag {
+    color: var(--primary-color)!important;
+    text-align: center!important;
+    font-size: 1.2rem!important;
+    font-weight: 600!important;
+    position: absolute!important;
+    bottom: 8px!important;
+    left: 50%!important;
+    transform: translateX(-50%)!important;
+    height: 30px!important;
+    width: 100%!important;
+    overflow: hidden!important
+}
+
+.product .product-name.no-image {
+    gap: 2px!important;
+    text-align: center!important;
+    padding: 4px!important;
+    width: 100%!important;
+    border-radius: 10px!important;
+    background-color: #0009!important
+}
+
+.product .product-name:not(.no-image) {
+    text-align: center!important;
+    margin-top: -40px!important;
+    background-color: #0009!important;
+    color: #fff!important;
+    font-weight: 600!important;
+    width: 95%!important;
+    border-radius: 10px!important;
+    min-height: 35px!important;
+    overflow: hidden!important;
+    display: flex!important;
+    justify-content: center!important;
+    align-items: center!important;
+    position: absolute!important;
+    bottom: 40px!important;
+    left: 50%!important;
+    transform: translateX(-50%)!important;
+    padding: 3px!important;
+    flex-direction: column!important;
+    gap: 4px
+}
+
+.bg-view {
+    background-color: var(--bg-color)!important
+}
+
+.form-container {
+    border: 1px solid var(--secondary-color)!important
+}
+
+.btn {
+    background-color: var(--bg-color)!important;
+    border-radius: 10px!important;
+    border: 0!important
+}
+
+*,.btn,.table,.top-content h2 {
+    color: var(--forground-color)!important
+}
+
+.payment-screen * {
+    border-color: var(--bg-dark-color)!important
+}
+
+.main-content .bg-300,.main-content .bg-400,.main-content button,.top-content {
+    background-color: var(--bg-color)!important;
+    color: var(--forground-color)!important
+}
+
+.main-content button {
+    background-color: var(--secondary-color)!important;
+    border-radius: 10px!important;
+    border: 3px solid var(--bg-color)!important
+}
+
+.button.next.validation,.paymentline.selected {
+    background-color: var(--primary-color)!important
+}
+
+.paymentline.selected {
+    color: var(--forground.payment-screen -color)!important
+}
+
+.payment-screen .title-category {
+    color: var(--forground-color)!important;
+    border-bottom: none!important
+}
+
+.payment-screen .total {
+    color: var(--primary-color)!important;
+    text-shadow: none!important;
+    font-size: 3.5rem!important
+}
+
+.payment-screen .paymentmethod {
+    color: var(--forground-color)!important;
+    background-color: var(--bg-secondary)!important;
+    margin-bottom: 3px!important;
+    border: 2px solid var(--bg-dark-color)!important
+}
+
+.payment-screen .amount {
+    color: var(--primary-color)!important
+}
+
+.button.next.validation {
+    color: var(--forground-color)!important;
+    border-radius: 10px!important;
+    border: 3px solid var(--bg-color)!important
+}
+
+.partnerlist-screen .pos-search-bar,.partnerlist-screen button,.partnerlist-screen input,.partnerlist-screen select,.payment-buttons,.paymentmethods-container,.switchpane {
+    background-color: var(--bg-dark-color)!important;
+    color: var(--forground-color)!important
+}
+
+.paymentlines-container {
+    border-bottom-color: var(--bg-dark-color)!important
+}
+
+.partner-list {
+    background-color: var(--bg-color)!important;
+    color: var(--forground-color)!important
+}
+
+.partner-list .partner-line:hover {
+    background-color: var(--secondary-color)!important
+}
+
+.table {
+    border-color: var(--bg-dark-color)!important
+}
+
+.partnerlist-screen {
+    color: var(--forground-color)!important
+}
+
+.order-row,.partnerlist-screen,.popup {
+    background-color: var(--bg-color)!important
+}
+
+.order-row {
+    border-bottom: 1px solid var(--bg-dark-color)!important
+}
+
+.order-row:hover {
+    background-color: var(--primary-color)!important
+}
+
+.popup {
+    color: var(--forground-color)!important;
+    border: 1px solid var(--secondary-color)!important
+}
+
+.popup * {
+    border-color: var(--bg-dark-color)!important
+}
+
+.popup .section-product-info-title {
+    background: var(--bg-primary)!important
+}
+
+.actions,.modal-title,.popup .section-product-info-title,.pos-receipt-container,.title {
+    color: var(--forground-color)!important
+}
+
+.actions,.pos-receipt-container {
+    background-color: var(--bg-color)!important
+}
+
+.pos-receipt-container {
+    background-color: var(--bg-dark-color)!important;
+    border: 0!important
+}
+
+.orders,.pos-receipt,.pos-receipt>div {
+    color: var(--forground-color)!important
+}
+
+.floor-map,.orders {
+    background-color: var(--bg-color)!important
+}
+
+.table {
+    border: 3px solid #fff2!important;
+    transition: transform .5s;
+}
+
+.floor-selector {
+    background-color: var(--bg-color)!important;
+    padding: 5px!important;
+    gap: 5px!important
+}
+
+.floor-selector button {
+    background-color: #0004!important
+}
+
+.floor-selector .btn-primary {
+    background-color: var(--primary-color)!important;
+    font-weight: 600!important
+}
+
+.btn-primary,.controls,.floor-selector .btn-primary,.rightpane {
+    color: var(--forground-color)!important
+}
+
+.controls,.rightpane {
+    background-color: var(--bg-color)!important
+}
+
+.btn-primary {
+    border-radius: 10px!important;
+    border: 1px solid var(--bg-color)!important
+}
+
+.btn-primary,.btn-primary:hover {
+    background-color: var(--primary-color)!important
+}
+
+.text-primary {
+    color: var(--primary-color)!important
+}
+
+.text-muted {
+    color: var(--secondary-color)!important
+}
+
+.login-button {
+    background-color: var(--primary-color)!important;
+    color: var(--forground-color)!important;
+    border-radius: 10px!important;
+    border: 1px solid var(--bg-color)!important
+}
+
+.login-element {
+    background-color: #fff!important;
+    border-radius: 10px!important
+}
+
+.bg-200,.selection-item:hover {
+    background-color: var(--bg-color)!important;
+    color: var(--forground-color)!important
+}
+
+.select-cashier {
+    position: relative!important;
+    font-family: Arial,sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px
+}
+
+.pos-branding::before,.select-cashier::before {
+    content: "";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 2.4rem
+}
+
+.pos-logo {
+    display: none
+}
+
+.pos-branding,.pos-logo {
+    position: relative
+}
+
+.pos-branding::before {
+    content: "";
+    width: 30px;
+    height: 30px;
+    background-image: url(https://bigbang.ma/wp-content/uploads/2024/01/bigbang_maroc_logo.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: 2rem;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%)
+}
+
+.selection-item:hover {
+    background-color: var(--secondary-color)!important
+}
+
+.customer-note {
+    background-color: #0004!important;
+    color: #fff!important
+}
+
+.product-list .no-image::before {
+    display: none
+}
+
+.product-list:has(img) .no-image::before {
+    display: block
+}
+
+.orderline {
+    background: #bbf1;
+    margin-top: 4px;
+    border-radius: 10px;
+    margin-right: 4px;
+    margin-left: 4px;
+    padding: 6px!important
+}
+
+.popup .numpad .btn {
+    background: #fff1!important;
+    border: 3px sold red!important;
+    width: 24%
+}
+
+.popup .numpad {
+    gap: 3px;
+    max-width: none!important
+}
+
+.back.btn,.cancel.btn {
+    background-color: #e46558!important
+}
+
+.new-customer {
+    background-color: var(--primary-color)!important;
+    color: var(--forground-color)!important;
+    border-radius: 10px!important;
+    border: 1px solid var(--bg-color)!important
+}
+
+.main {
+    background: var(--bg-dark-color)!important
+}
+
+.form-check-input {
+    opacity: none!important;
+    background-color: #fff4!important
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color)!important
+}
+
+.input-container input {
+    background: var(--bg-color)!important
+}
+
+.screen-content {
+    background: var(--bg-dark-color)!important
+}
+
+.order-management-screen .rightpane .search-box .icon {
+    display: none!important
+}
+
+.load-order-button.btn {
+    background: var(--primary-color)!important
+}
+
+.combo-configurator-popup input.selected+label {
+    border-radius: 10px!important;
+    box-shadow: 0 0 0 4px var(--primary-color)!important
+}
+
+.payment-method-display,.paymentmethod {
+    margin-top: 0!important;
+    margin-bottom: 0!important
+}
+
+.payment-method-display {
+    background: var(--bg-color);
+    border-radius: 10px
+}
+
+.paymentmethod {
+    gap: 0!important;
+    padding: 0!important
+}
+
+.paymentmethods:nth-child(1) {
+    margin-bottom: 5px
+}
+
+.partner-line.active {
+    background: var(--primary-color)!important
+}
+
+.control-button.customer-button:hover {
+    color: #fff!important
+}
+
+.js_invoice.highlight {
+    position: relative!important
+}
+
+.js_invoice.highlight:after {
+    position: absolute;
+    content: ""!important;
+    font-family: "Font Awesome 5 Free"!important;
+    font-size: 1rem!important;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    right: 10px
+}
+
+.btn-success,.control-button.customer-button:hover,.highlight.btn-success,.js_invoice.highlight,.pay-button .btn {
+    background: var(--primary-color)!important
+}
+
+.btn-danger,.red-highlight.btn-danger {
+    background: #e46558!important
+}
