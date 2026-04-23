@@ -1,39 +1,88 @@
-# odoo-custom Project Initialization and Management
+# odoo-custom
 
-## Initialize (Build and Start for the First Time)
-```
+A customizable Odoo Docker deployment with key add-ons for accounting, custom POS layout, and a modern MUK theme.
+
+---
+
+## Features
+
+- **Accounting Add-on**  
+  Odoo’s powerful, modular accounting suite.
+- **POS (Point of Sale) — Custom Layout**  
+  Enhanced Point of Sale with customizations in `pos_ghadir`.
+- **MUK Theme**  
+  Modern, responsive interface from the Muk theme add-on.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+### 1. Initialize (First Time Setup)
+
+```sh
 docker compose up --build
 ```
-This will build the images and start the containers.
+Builds images and starts the containers from scratch.
 
-## Database example (test-db-backup-web-restore)
-test.....zip
-Restore this DB from web UI after the initialization into a DB named odoo for the cleanest experience.
+---
 
-## Xlsx file is extra for reference.
+### 2. Start (Normal Use)
 
-## Start (Subsequent Runs)
-```
+```sh
 docker compose up
 ```
-Starts the containers using the existing images.
+Starts the containers using existing images.
 
-## Soft Stop (Container Stop, Data Persisted)
-```
+---
+
+### 3. Soft Stop (Preserve Data)
+
+```sh
 docker compose down
 ```
-Stops and removes containers, but persists volumes (data is saved).
+Stops and removes containers, but **persists data volumes** so your data is safe.
 
-## Stop and Delete Volumes (Full Cleanup)
-```
+---
+
+### 4. Stop and Delete Volumes (Full Cleanup)
+
+```sh
 docker compose down -v
 ```
-Stops containers and deletes all associated volumes (data is removed).
+Stops containers and **deletes all associated data volumes** (irreversible data removal).
 
 ---
 
-- Use `-v` when you want to remove all data and start fresh.
-- Only use `--build` if you've made changes to the Dockerfile or dependencies.
-- For more options, consult the [Docker Compose documentation](https://docs.docker.com/compose/reference/).
+## Database example (test-db-backup-web-restore)
+
+test.....zip
+
+Restore this DB from the web UI after the initialization into a DB named `odoo` for the cleanest experience.
 
 ---
+
+## Add-ons
+
+- **account:** Odoo core accounting add-on.
+- **pos_ghadir:** Custom POS layout with domain-specific POS customizations.  
+- **theme_muk:** MUK community theme for a better user interface.
+
+---
+
+## Tips
+
+- Use `-v` with `docker compose down` only if you wish to remove all data and start fresh.
+- Use `--build` only after changes to the Dockerfile or dependencies.
+
+---
+
+## License
+
+Distributed under the Odoo Community License.
