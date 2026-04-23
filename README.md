@@ -44,6 +44,18 @@ Starts the containers using existing images.
 
 ---
 
+### Recommended restore on first run
+
+Run scripts/restore.sh to get fully functional version up and running
+it restores odoo filestore with a said database.
+
+```sh
+chmod -x restore.sh
+./restore.sh
+```
+
+---
+
 ### 3. Soft Stop (Preserve Data)
 
 ```sh
@@ -61,22 +73,6 @@ docker compose down -v
 ```
 
 Stops containers and **deletes all associated data volumes** (irreversible data removal).
-
----
-
-## Database example (test-db-backup-web-restore)
-
-test.....zip
-
-Restore this DB from the web UI after the initialization into a DB named `odoo` for the cleanest experience.
-
----
-
-## Add-ons
-
-- **account:** Odoo core accounting add-on.
-- **pos_ghadir:** Custom POS layout with domain-specific POS customizations.  
-- **theme_muk:** MUK community theme for a better user interface.
 
 ---
 

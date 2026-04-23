@@ -9,7 +9,7 @@ sessions/
 # -----------------------
 # Databases / backups
 # -----------------------
-*.sql
+# *.sql
 *.dump
 *.backup
 
