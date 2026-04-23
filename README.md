@@ -7,7 +7,10 @@ docker compose up --build
 This will build the images and start the containers.
 
 ## Database example (test-db-backup-web-restore)
+test.....zip
 Restore this DB from web UI after the initialization into a DB named odoo for the cleanest experience.
+
+##xlsx file is extra for reference.
 
 ## Start (Subsequent Runs)
 ```
