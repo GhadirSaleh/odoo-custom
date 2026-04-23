@@ -29,6 +29,7 @@ A customizable Odoo Docker deployment with key add-ons for accounting, custom PO
 ```sh
 docker compose up --build
 ```
+
 Builds images and starts the containers from scratch.
 
 ---
@@ -38,6 +39,7 @@ Builds images and starts the containers from scratch.
 ```sh
 docker compose up
 ```
+
 Starts the containers using existing images.
 
 ---
@@ -47,6 +49,7 @@ Starts the containers using existing images.
 ```sh
 docker compose down
 ```
+
 Stops and removes containers, but **persists data volumes** so your data is safe.
 
 ---
@@ -56,6 +59,7 @@ Stops and removes containers, but **persists data volumes** so your data is safe
 ```sh
 docker compose down -v
 ```
+
 Stops containers and **deletes all associated data volumes** (irreversible data removal).
 
 ---
