@@ -33,7 +33,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Run Odoo
 CMD ["python3", "odoo-bin", "-c", "/etc/odoo/odoo.conf"]
