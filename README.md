@@ -6,6 +6,9 @@ docker compose up --build
 ```
 This will build the images and start the containers.
 
+## Database example (test-db-backup-web-restore)
+Restore this DB from web UI after the initialization into a DB named odoo for the cleanest experience.
+
 ## Start (Subsequent Runs)
 ```
 docker compose up
@@ -30,4 +33,4 @@ Stops containers and deletes all associated volumes (data is removed).
 - Only use `--build` if you've made changes to the Dockerfile or dependencies.
 - For more options, consult the [Docker Compose documentation](https://docs.docker.com/compose/reference/).
 
-README created via GitHub Copilot Chat Assistant.
+---
