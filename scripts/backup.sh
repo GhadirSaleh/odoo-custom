@@ -13,24 +13,24 @@ until docker compose exec -T db pg_isready -U "$DB_USER" >/dev/null 2>&1; do
   sleep 1
 done
 
-echo "📦 Backing up database: $DB_NAME"
+TMP_DIR="$BACKUP_DIR/tmp_$DATE"
+mkdir -p "$TMP_DIR"
+
+echo "📦 Dumping database..."
 docker compose exec -T db pg_dump -U "$DB_USER" -d "$DB_NAME" \
-  --no-owner --no-privileges > "$BACKUP_DIR/backup_$DATE.sql"
+  --no-owner --no-privileges > "$TMP_DIR/db.sql"
 
-echo "📦 Backing up filestore..."
-# adjust path if needed
-FILESTORE_PATH="/root/.local/share/Odoo/filestore/$DB_NAME"
+echo "📦 Copying filestore..."
+docker cp "$(docker compose ps -q odoo):/var/lib/odoo/filestore/$DB_NAME" \
+  "$TMP_DIR/filestore"
 
-docker cp "$(docker compose ps -q odoo):$FILESTORE_PATH" \
-  "$BACKUP_DIR/filestore_$DATE"
+echo "📦 Creating archive..."
+tar -czf "$BACKUP_DIR/odoo_backup_$DATE.tar.gz" -C "$TMP_DIR" .
 
-tar -czf "$BACKUP_DIR/filestore_$DATE.tar.gz" -C "$BACKUP_DIR" "filestore_$DATE"
-rm -rf "$BACKUP_DIR/filestore_$DATE"
+rm -rf "$TMP_DIR"
 
-# latest copies
-cp "$BACKUP_DIR/backup_$DATE.sql" ./backup.sql
-cp "$BACKUP_DIR/filestore_$DATE.tar.gz" ./filestore.tar.gz
+# latest pointer
+cp "$BACKUP_DIR/odoo_backup_$DATE.tar.gz" "$BACKUP_DIR/latest.tar.gz"
 
-echo "✅ Backup complete!"
-echo "→ $BACKUP_DIR/backup_$DATE.sql"
-echo "→ $BACKUP_DIR/filestore_$DATE.tar.gz"
+echo "✅ Backup complete:"
+echo "$BACKUP_DIR/odoo_backup_$DATE.tar.gz"

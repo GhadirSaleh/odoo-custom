@@ -1,9 +1,11 @@
 FROM python:3.11-slim
 
+# Create odoo user early (fixed UID for volume consistency)
+RUN useradd -m -u 1000 -s /bin/bash odoo
+
 # Install system dependencies
-# Install system dependencies + wkhtmltopdf deps
 RUN apt-get update && apt-get install -y \
-    postgresql-client\
+    postgresql-client \
     git \
     build-essential \
     libpq-dev \
@@ -29,11 +31,16 @@ RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/w
 
 WORKDIR /app
 
-# Copy your existing Odoo source
+# Copy code
 COPY . /app
 
-# Install Python dependencies
-RUN pip install -r requirements.txt
+# Install Python deps
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Run Odoo
+# Prepare data directory
+RUN mkdir -p /var/lib/odoo \
+    && chown -R odoo:odoo /var/lib/odoo /app
+
+USER odoo
+
 CMD ["python3", "odoo-bin", "-c", "/etc/odoo/odoo.conf"]

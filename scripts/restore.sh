@@ -1,49 +1,41 @@
 #!/bin/bash
-
-set -e
-
-# Usage help
-usage() {
-    echo "Usage: $0 [DB_NAME] [BACKUP_FILE] [FILESTORE_ARCHIVE]"
-    echo "  DB_NAME:           Name of the Odoo database (default: odoo)"
-    echo "  BACKUP_FILE:       SQL file to restore (default: backup.sql)"
-    echo "  FILESTORE_ARCHIVE: tar.gz filestore archive (default: filestore.tar.gz)"
-}
+set -euo pipefail
 
 DB_NAME=${1:-odoo}
-BACKUP_FILE=${2:-backup.sql}
-FILESTORE_ARCHIVE=${3:-filestore.tar.gz}
+ARCHIVE=${2:-./backups/latest.tar.gz}
+DB_USER=odoo
 
-# Validate input files
-if [ ! -f "$BACKUP_FILE" ]; then
-    echo "❌ Error: Database backup file '$BACKUP_FILE' not found!"
-    usage
-    exit 1
+if [ ! -f "$ARCHIVE" ]; then
+  echo "❌ Backup archive not found: $ARCHIVE"
+  exit 1
 fi
 
-if [ ! -f "$FILESTORE_ARCHIVE" ]; then
-    echo "❌ Error: Filestore archive '$FILESTORE_ARCHIVE' not found!"
-    usage
-    exit 1
-fi
+TMP_DIR="./restore_tmp"
+rm -rf "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+
+echo "📦 Extracting backup..."
+tar -xzf "$ARCHIVE" -C "$TMP_DIR"
 
 echo "⏳ Waiting for PostgreSQL..."
-docker compose exec db bash -c "until pg_isready -U odoo; do sleep 1; done"
+until docker compose exec -T db pg_isready -U "$DB_USER" >/dev/null 2>&1; do
+  sleep 1
+done
 
-echo "🧹 Dropping existing DB (if exists)..."
-docker compose exec db psql -U odoo -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;"
-
-echo "🆕 Creating DB..."
-docker compose exec db psql -U odoo -d postgres -c "CREATE DATABASE $DB_NAME;"
+echo "🧹 Resetting database..."
+docker compose exec -T db psql -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;"
+docker compose exec -T db psql -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;"
 
 echo "📥 Restoring database..."
-cat "$BACKUP_FILE" | docker compose exec -T db psql -U odoo -d "$DB_NAME"
+cat "$TMP_DIR/db.sql" | docker compose exec -T db psql -U "$DB_USER" -d "$DB_NAME"
 
 echo "📦 Restoring filestore..."
-docker compose exec odoo mkdir -p /root/.local/share/Odoo/filestore/"$DB_NAME"
-docker compose exec -T odoo tar -xzf - -C /root/.local/share/Odoo/filestore/ < "$FILESTORE_ARCHIVE"
+docker compose exec odoo rm -rf /var/lib/odoo/filestore/"$DB_NAME"
+docker cp "$TMP_DIR/filestore/" "$(docker compose ps -q odoo):/var/lib/odoo/filestore/"
+
+rm -rf "$TMP_DIR"
 
 echo "🔁 Restarting Odoo..."
 docker compose restart odoo
 
-echo "✅ Restore complete: http://localhost:8069"
+echo "✅ Restore complete"
