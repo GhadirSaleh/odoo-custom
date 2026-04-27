@@ -10,6 +10,7 @@ sessions/
 # Databases / backups
 # -----------------------
 # *.sql
+scripts/backups/
 *.dump
 *.backup
 
