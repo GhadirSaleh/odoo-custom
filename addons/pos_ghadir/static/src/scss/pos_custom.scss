@@ -2,11 +2,16 @@
   display: none !important;
 }
 
-.btn {
+.product-screen .btn,
+.pos-topheader .btn,
+.leftpane .btn {
   font-weight: bold !important;
-  --btn-font-size: 1.2rem !important;
+  font-size: 1.2rem !important;
 }
-.order-container {
+
+.product-screen .order-container,
+.leftpane .order-container {
+  font-weight: bold !important;
   font-size: 1.2rem;
 }
 
@@ -18,3 +23,7 @@
   top: -100%;
   height: 200%;
 }
+//option to remove the logo from the POS receipt
+// .pos-receipt-logo {
+//   display: none !important;
+// }
