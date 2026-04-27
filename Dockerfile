@@ -35,7 +35,5 @@ COPY . /app
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-USER odoo
-
 # Run Odoo
 CMD ["python3", "odoo-bin", "-c", "/etc/odoo/odoo.conf"]
