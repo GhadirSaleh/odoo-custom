@@ -35,6 +35,9 @@ docker cp "$TMP_DIR/filestore/" "$(docker compose ps -q odoo):/var/lib/odoo/file
 
 rm -rf "$TMP_DIR"
 
+echo "🔐 Fixing filestore permissions..."
+docker compose exec -T -u root odoo chown -R odoo:odoo /var/lib/odoo/filestore
+
 echo "🔁 Restarting Odoo..."
 docker compose restart odoo
 
