@@ -4,7 +4,8 @@
         <!-- All buttons always displayed -->
         <SelectPartnerButton partner="partner" t-if="!props.showRemainingButtons"/>
         <t t-if="!props.showRemainingButtons || (ui.isSmall and props.showRemainingButtons)">
-            <InternalNoteButton label.translate="Note" class="buttonClass"/>
+            <!-- Changed from InternalNoteButton to NoteButton with Customer Note functionality -->
+            <NoteButton label.translate="Note" class="buttonClass" icon="'fa fa-sticky-note'"/>
         </t>
         <button t-if="pos.config.use_presets and !props.showRemainingButtons"
             class="btn btn-secondary btn-lg border-0 text-truncate"

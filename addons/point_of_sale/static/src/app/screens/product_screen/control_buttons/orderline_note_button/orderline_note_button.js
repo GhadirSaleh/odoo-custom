@@ -19,14 +19,10 @@ export class NoteButton extends Component {
     }
 
     async onClick() {
-        const selectedOrderline = this.pos.getOrder().getSelectedOrderline();
         const selectedNote = this.currentNote || "";
         const payload = await this.openTextInput(selectedNote);
-        if (selectedOrderline) {
-            this.setChanges(selectedOrderline, payload);
-        } else {
-            this.pos.getOrder().setGeneralCustomerNote(payload);
-        }
+        // Always set as general customer note, not attached to any product
+        this.pos.getOrder().setGeneralCustomerNote(payload);
         return { confirmed: typeof payload === "string", inputNote: payload };
     }
 
