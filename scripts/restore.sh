@@ -30,7 +30,7 @@ echo "📥 Restoring database..."
 cat "$TMP_DIR/db.sql" | docker compose exec -T db psql -U "$DB_USER" -d "$DB_NAME"
 
 echo "📦 Restoring filestore..."
-docker compose exec odoo rm -rf /var/lib/odoo/filestore/"$DB_NAME"
+docker compose exec odoo rm -rf /var/lib/odoo/filestore/
 docker cp "$TMP_DIR/filestore/" "$(docker compose ps -q odoo):/var/lib/odoo/filestore/"
 
 rm -rf "$TMP_DIR"

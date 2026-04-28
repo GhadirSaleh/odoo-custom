@@ -14,7 +14,7 @@ until docker compose exec -T db pg_isready -U "$DB_USER" >/dev/null 2>&1; do
 done
 
 TMP_DIR="$BACKUP_DIR/tmp_$DATE"
-mkdir -p "$TMP_DIR"
+mkdir -p "$TMP_DIR/filestore/"
 
 echo "📦 Dumping database..."
 docker compose exec -T db pg_dump -U "$DB_USER" -d "$DB_NAME" \
@@ -22,7 +22,7 @@ docker compose exec -T db pg_dump -U "$DB_USER" -d "$DB_NAME" \
 
 echo "📦 Copying filestore..."
 docker cp "$(docker compose ps -q odoo):/var/lib/odoo/filestore/$DB_NAME" \
-  "$TMP_DIR/filestore"
+  "$TMP_DIR/filestore/$DB_NAME"
 
 echo "📦 Creating archive..."
 tar -czf "$BACKUP_DIR/odoo_backup_$DATE.tar.gz" -C "$TMP_DIR" .
