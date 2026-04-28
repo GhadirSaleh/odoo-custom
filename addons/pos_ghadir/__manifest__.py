@@ -9,6 +9,7 @@
             'pos_ghadir/static/src/scss/pos_custom.scss',
             'pos_ghadir/static/src/js/hide_price_button.js',
             'pos_ghadir/static/src/js/pricelist_toggle_button.js',
+            'pos_ghadir/static/src/js/clear_cart_button.js',
         ],
     },
     'license': 'AGPL-3',
