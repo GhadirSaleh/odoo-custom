@@ -1,6 +1,17 @@
 /** @odoo-module **/
 
 let buttonInjected = false;
+let clearCartBtn = null;
+
+function isOnProductScreen() {
+    return document.querySelector(".product-screen") !== null;
+}
+
+function updateClearCartVisibility() {
+    if (clearCartBtn) {
+        clearCartBtn.style.display = isOnProductScreen() ? "flex" : "none";
+    }
+}
 
 function injectClearCartButton() {
     if (buttonInjected) return;
@@ -14,16 +25,18 @@ function injectClearCartButton() {
     const existingButton = navbar.querySelector(".o_clear_cart_btn");
     if (existingButton) {
         buttonInjected = true;
+        clearCartBtn = existingButton;
+        updateClearCartVisibility();
         return;
     }
 
-    const btn = document.createElement("button");
-    btn.className = "btn btn-danger btn-lg lh-lg o_clear_cart_btn";
-    btn.innerHTML = '<i class="fa fa-trash-o me-1"></i><span>Clear</span>';
-    btn.style.cssText = "display: flex !important; align-items: center; gap: 0.3rem;";
-    btn.title = "Cancel entire order without confirmation";
+    clearCartBtn = document.createElement("button");
+    clearCartBtn.className = "btn btn-danger btn-lg lh-lg o_clear_cart_btn";
+    clearCartBtn.innerHTML = '<i class="fa fa-trash-o me-1"></i><span>Clear</span>';
+    clearCartBtn.style.cssText = "display: flex !important; align-items: center; gap: 0.3rem;";
+    clearCartBtn.title = "Cancel entire order without confirmation";
 
-    btn.addEventListener("click", async () => {
+    clearCartBtn.addEventListener("click", async () => {
         const order = pos.getOrder();
         if (!order) return;
 
@@ -35,14 +48,20 @@ function injectClearCartButton() {
     const rightheader = navbar.querySelector(".pos-rightheader");
 
     if (centerheader) {
-        navbar.insertBefore(btn, centerheader);
+        navbar.insertBefore(clearCartBtn, centerheader);
     } else if (rightheader) {
-        navbar.insertBefore(btn, rightheader);
+        navbar.insertBefore(clearCartBtn, rightheader);
     } else {
-        navbar.appendChild(btn);
+        navbar.appendChild(clearCartBtn);
     }
 
     buttonInjected = true;
+    updateClearCartVisibility();
+
+    const observer = new MutationObserver(() => {
+        updateClearCartVisibility();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function tryInject() {

@@ -14,6 +14,31 @@
   font-size: 1.1rem !important;
 }
 
+/* Make customer note display bigger */
+.product-screen .customer-note {
+  font-size: 1.6rem !important;
+  color: black !important;
+  text-align: center !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  background: none !important;
+  border-bottom: 0.1rem dotted #000 !important;
+}
+
+/* Receipt screen note styling */
+.receipt-screen .order-container .mt-1 {
+  font-size: 1.6rem !important;
+  font: bold !important;
+  text-align: center !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  border-bottom: 0.1rem dotted #000 !important;
+}
+
 .product-screen .order-container,
 .leftpane .order-container {
   font-weight: bold !important;
@@ -28,7 +53,6 @@
   top: -100%;
   height: 200%;
 }
-
 
 .pos-receipt-taxes,
 .paymentlines,
@@ -65,12 +89,18 @@
 }
 
 .pos-receipt .product-name {
-  font-family: system-ui, -apple-system, sans-serif !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
   font-size: 1rem !important;
 }
 
 .pos-receipt .font-monospace {
-  font-family: system-ui, -apple-system, sans-serif !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
 }
 
 .pos-receipt-order-data.text-center.pt-3 {
