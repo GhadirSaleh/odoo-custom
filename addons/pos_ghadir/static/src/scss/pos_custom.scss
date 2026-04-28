@@ -24,7 +24,7 @@
     -apple-system,
     sans-serif !important;
   background: none !important;
-  border-bottom: 0.1rem dotted #000 !important;
+  border-top: 0.1rem dotted #000 !important;
 }
 
 /* Receipt screen note styling */
@@ -36,7 +36,7 @@
     system-ui,
     -apple-system,
     sans-serif !important;
-  border-bottom: 0.1rem dotted #000 !important;
+  border-top: 0.1rem dotted #000 !important;
 }
 
 .product-screen .order-container,
@@ -85,7 +85,7 @@
 }
 
 .pos-receipt .orderline {
-  border-bottom: 0.1rem dotted #000 !important;
+  border-top: 0.1rem dotted #000 !important;
 }
 
 .pos-receipt .product-name {
