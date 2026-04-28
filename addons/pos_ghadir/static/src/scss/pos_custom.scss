@@ -24,6 +24,75 @@
   height: 200%;
 }
 //option to remove the logo from the POS receipt
-// .pos-receipt-logo {
-//   display: none !important;
-// }
+.pos-receipt-logo {
+  display: none !important;
+}
+
+// Hide subtotal and tax from receipt
+.pos-receipt-taxes {
+  display: none !important;
+}
+
+// Hide payment method lines from receipt (cash, card, etc.)
+.paymentlines {
+  display: none !important;
+}
+
+// Hide change amount from receipt
+.receipt-change {
+  display: none !important;
+}
+
+// Thick border on total line in receipt
+.receipt-total {
+  font-size: 1.2rem;
+  border-top: 3px solid #000 !important;
+  padding-top: 10px !important;
+  margin-top: 10px !important;
+}
+
+// Hide contact info (right side - email, phone, website)
+.w-50.text-end {
+  display: none !important;
+}
+
+// Company name styling - center, bigger, bold
+.w-50.text-start {
+  width: 100% !important;
+  text-align: center !important;
+  display: block !important;
+}
+
+.w-50.text-start .pos-config-name {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+// Thin line under each product line in receipt
+.pos-receipt .orderline {
+  border-bottom: 0.1rem dotted #000 !important;
+}
+
+// Product name in receipt - Arabic friendly font and bigger
+.pos-receipt .product-name {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  font-size: 1rem !important;
+}
+
+// Cleaner font for numbers in receipt
+.pos-receipt .font-monospace {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+}
+
+// Hide Powered by Odoo
+.pos-receipt-order-data.text-center.pt-3 {
+  display: none !important;
+}
