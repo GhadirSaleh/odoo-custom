@@ -41,7 +41,7 @@
 
 .product-screen .order-container,
 .leftpane .order-container {
-  // font-weight: bold !important;
+  font-weight: normal !important;
   font-size: 1.2rem;
 }
 
@@ -110,4 +110,12 @@
 
 .qty {
   text-align: center;
+}
+.pos-receipt .pt-3 {
+  padding: 0 !important;
+}
+
+div#order-date {
+  font-size: 1rem !important;
+  font: bold !important;
 }
