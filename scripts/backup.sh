@@ -32,5 +32,7 @@ rm -rf "$TMP_DIR"
 # latest pointer
 cp "$BACKUP_DIR/odoo_backup_$DATE.tar.gz" "$BACKUP_DIR/latest.tar.gz"
 
+rm -rf "$BACKUP_DIR/odoo_backup_$DATE.tar.gz"
+
 echo "✅ Backup complete:"
 echo "$BACKUP_DIR/odoo_backup_$DATE.tar.gz"
