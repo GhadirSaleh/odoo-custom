@@ -50,6 +50,7 @@ Run scripts/restore.sh to get fully functional version up and running
 it restores odoo filestore with a said database.
 
 ```sh
+cd scripts
 chmod -x restore.sh
 ./restore.sh
 ```
