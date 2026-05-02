@@ -27,12 +27,12 @@
 .pos-receipt .mt-1 {
   font-size: 1.2rem !important;
   font: bold !important;
-  text-align: right !important;
+  text-align: left !important;
   font-family:
     system-ui,
     -apple-system,
     sans-serif !important;
-  border-top: 3px solid #000 !important;
+  border-top: 1px solid #000 !important;
 }
 
 .product-screen .order-container,
@@ -85,6 +85,12 @@
   display: none !important;
 }
 
+.pos-receipt-customer {
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  padding-bottom: 10px !important;
+}
+
 .receipt-total {
   font-size: 1.2rem;
   border-top: 3px solid #000 !important;
@@ -95,18 +101,14 @@
   display: none !important;
 }
 
-.w-50.text-start {
-  margin: 10px;
+.pos-receipt .pos-config-name {
+  margin-top: 20px;
+  margin-bottom: 20px;
   text-align: center !important;
-  display: block !important;
-  width: 100% !important;
-}
-
-.w-50.text-start .pos-config-name {
   font-size: 1.5rem !important;
   font-weight: bold !important;
   display: block !important;
-  width: 100% !important;
+  width: 200% !important;
 }
 
 .product-screen .product-name {
@@ -141,9 +143,15 @@ div#order-date {
 .order-summary .d-flex {
   font-size: 1.6rem !important;
 }
+
+.pos-receipt .pos-receipt-contact {
+  display: none !important;
+}
+
 .pos-receipt .d-flex.flex-column.align-items-center {
   border-bottom: 3px solid #000 !important;
 }
+
 .pos-receipt .product-price {
   padding-top: 5px;
 }
