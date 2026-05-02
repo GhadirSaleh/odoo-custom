@@ -5,13 +5,8 @@
 .product-screen .btn,
 .pos-topheader .btn,
 .leftpane .btn {
-  font-weight: bold !important;
+  font-weight: 500 !important;
   font-size: 1.2rem !important;
-}
-
-/* Make Note button font bigger */
-.product-screen .control-buttons button {
-  font-size: 1.1rem !important;
 }
 
 /* Make customer note display bigger */
@@ -25,24 +20,25 @@
     sans-serif !important;
   background: none !important;
   border-top: 0.1rem dotted #000 !important;
+  border-bottom: 0.1rem dotted #000 !important;
 }
 
 /* Receipt screen note styling */
 .pos-receipt .mt-1 {
   font-size: 1.2rem !important;
   font: bold !important;
-  text-align: center !important;
+  text-align: right !important;
   font-family:
     system-ui,
     -apple-system,
     sans-serif !important;
-  border-top: 0.1rem dotted #000 !important;
+  border-top: 3px solid #000 !important;
 }
 
 .product-screen .order-container,
 .leftpane .order-container {
-  font-weight: normal !important;
-  font-size: 1.2rem;
+  font-weight: 500 !important;
+  font-size: 1.1rem;
 }
 
 .numpad-price {
@@ -55,6 +51,34 @@
   height: 200%;
 }
 
+/* Numpad bottom center positioning - Desktop only */
+@media (min-width: 992px) {
+  .leftpane .subpads .numpad {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 500px !important;
+    z-index: 1000;
+    background: var(--bg-view, #ffffff);
+    padding: 15px;
+    border: 2px solid var(--border-color, #dee2e6);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px;
+  }
+
+  /* Make numpad buttons bigger */
+  .leftpane .subpads .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
+  }
+}
+
 .pos-receipt-taxes,
 .paymentlines,
 .receipt-change {
@@ -64,8 +88,7 @@
 .receipt-total {
   font-size: 1.2rem;
   border-top: 3px solid #000 !important;
-  padding-top: 10px !important;
-  margin-top: 10px !important;
+  border-bottom: 3px solid #000 !important;
 }
 
 .w-50.text-end {
@@ -73,9 +96,10 @@
 }
 
 .w-50.text-start {
-  width: 100% !important;
+  margin: 10px;
   text-align: center !important;
   display: block !important;
+  width: 100% !important;
 }
 
 .w-50.text-start .pos-config-name {
@@ -85,30 +109,20 @@
   width: 100% !important;
 }
 
-.pos-receipt .orderline {
-  border-top: 0.1rem dotted #000 !important;
-}
-
 .pos-receipt .product-name {
   font-family:
     system-ui,
     -apple-system,
     sans-serif !important;
-  font-size: 1rem !important;
-}
-
-.pos-receipt .font-monospace {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif !important;
+  font-size: 0.9rem !important;
 }
 
 .pos-receipt-order-data.text-center.pt-3 {
   display: none !important;
 }
 
-.qty {
+.pos-receipt .qty {
+  padding-top: 5px;
   text-align: center;
 }
 .pos-receipt .pt-3 {
@@ -118,4 +132,18 @@
 div#order-date {
   font-size: 1rem !important;
   font: bold !important;
+}
+
+.order-summary .d-flex {
+  font-size: 1.6rem !important;
+}
+.d-flex.flex-column.align-items-center {
+  border-bottom: 3px solid #000 !important;
+}
+
+.pos-receipt .font-monospace {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
 }

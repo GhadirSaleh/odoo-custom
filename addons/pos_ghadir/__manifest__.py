@@ -11,6 +11,7 @@
             'pos_ghadir/static/src/js/pricelist_toggle_button.js',
             'pos_ghadir/static/src/js/clear_cart_button.js',
             'pos_ghadir/static/src/js/default_qty_two.js',
+            'pos_ghadir/static/src/js/remove_decimal_zeros.js',
         ],
     },
     'license': 'AGPL-3',
