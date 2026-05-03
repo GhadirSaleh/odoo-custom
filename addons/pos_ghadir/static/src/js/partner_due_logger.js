@@ -72,10 +72,6 @@ patch(PaymentScreen.prototype, {
     // Override to update button after partner is selected
     async selectPartner() {
         const result = await super.selectPartner(...arguments);
-        // Small delay to ensure partner is set and balance is fetched
-        setTimeout(() => {
-            this._updatePaymentScreenPartnerButton();
-        }, 500);
         return result;
     },
 });
