@@ -37,15 +37,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Data dir must exist before USER switch
 RUN mkdir -p /var/lib/odoo && chown odoo:odoo /var/lib/odoo
 
-# ──────────────────────────────────────────────
-#  Stage: app  (production — source baked in)
-# ──────────────────────────────────────────────
-FROM base AS app
-
-# Copy source after deps so a code-only change doesn't invalidate the pip layer
-COPY --chown=odoo:odoo . /app
-
-COPY --chown=odoo:odoo scripts/entrypoint.sh /entrypoint.sh
+# Entrypoint lives in base so BOTH stages (dev and prod) go through it.
+# Without this, the override (target: base) bypasses the init check entirely.
+COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 USER odoo
@@ -53,3 +47,11 @@ EXPOSE 8069 8072
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["python3", "odoo-bin", "--config=/etc/odoo/odoo.conf"]
+
+# ──────────────────────────────────────────────
+#  Stage: app  (production — source baked in)
+# ──────────────────────────────────────────────
+FROM base AS app
+
+# Copy source after deps so a code-only change doesn't invalidate the pip layer
+COPY --chown=odoo:odoo . /app
