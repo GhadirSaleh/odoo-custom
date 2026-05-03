@@ -1,5 +1,4 @@
 /** @odoo-module **/
-console.log("Hi I am pricelist_toggle_button.js");
 let buttonInjected = false;
 let pricelistBtn = null;
 
