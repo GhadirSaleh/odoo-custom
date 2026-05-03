@@ -1,186 +1,196 @@
 # odoo-custom
 
-A source-based Odoo deployment with custom add-ons for accounting, a custom POS layout (`pos_ghadir`), and the MUK theme — containerised with a production-ready Docker setup.
+Odoo 19 running from source inside Docker, with custom add-ons: a full accounting suite, a bespoke Point of Sale layout (`pos_ghadir`), and the MUK theme. The entire stack — database, schema init, and application — comes up with a single command on any machine that has Docker installed.
 
 ---
 
-## Add-ons
+## Add-ons included
 
-| Add-on | Description |
+| Add-on | What it does |
 |---|---|
-| **Accounting** | Odoo's modular accounting suite |
-| **pos_ghadir** | Custom Point of Sale layout |
-| **MUK Theme** | Modern, responsive UI theme |
-
----
-
-## Project layout
-
-```
-odoo-custom/
-├── addons/                     # Custom add-ons mounted at runtime
-├── config/
-│   └── odoo.conf               # Odoo configuration file
-├── odoo/                       # Odoo source (from upstream)
-├── scripts/
-│   ├── entrypoint.sh           # Container startup script
-│   └── restore.sh              # DB + filestore restore helper
-├── .env.example                # Environment variable template → copy to .env
-├── .gitignore
-├── docker-compose.yml          # Production baseline
-├── docker-compose.override.yml # Dev overrides (auto-applied locally)
-├── Dockerfile
-├── odoo-bin                    # Odoo entry point binary
-└── requirements.txt
-```
+| `account` | Odoo's modular accounting suite |
+| `pos_ghadir` | Custom Point of Sale layout |
+| `muk_web_theme` | Modern, responsive UI theme |
 
 ---
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) 24+
-- [Docker Compose](https://docs.docker.com/compose/) v2 (the `docker compose` plugin, not `docker-compose`)
+- Docker Compose v2 — verify with `docker compose version` (note: `docker compose`, not the legacy `docker-compose`)
 
 ---
 
-## Setup
+## Getting started
 
-### 1. Configure environment variables
+### 1. Copy the environment file
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and set a strong `POSTGRES_PASSWORD`. The stack will refuse to start if this variable is missing.
+Edit `.env` and set a real password:
 
 ```dotenv
 POSTGRES_DB=odoo
 POSTGRES_USER=odoo
-POSTGRES_PASSWORD=your_strong_password_here
+POSTGRES_PASSWORD=a_strong_password_here
 
 ODOO_PORT=8069
 ODOO_LONGPOLL_PORT=8072
 ```
 
-> **Never commit `.env` to version control.** It is already listed in `.gitignore`.
+`.env` is listed in `.gitignore` and must never be committed. The stack will refuse to start if `POSTGRES_PASSWORD` is missing.
 
----
-
-## Development
-
-In development, `docker-compose.override.yml` is merged automatically. It mounts the project root into the container so code changes are reflected immediately without rebuilding, and passes `--dev=all` to Odoo for hot-reloading.
-
-### First run
+### 2. Build and start
 
 ```bash
 docker compose up --build
 ```
 
-Builds the image (system deps + pip packages) and starts both services. Subsequent runs skip the build unless `Dockerfile` or `requirements.txt` change.
+On the very first run the entrypoint detects an empty database and initialises the Odoo schema automatically before serving:
 
-### Normal start
-
-```bash
-docker compose up
+```
+⏳  Waiting for PostgreSQL at db:5432 ...
+✅  PostgreSQL is ready.
+🔧  Database not fully initialised — running first-time setup (this runs once)...
+✅  Schema initialised.
 ```
 
-### Restore a database snapshot (optional)
+Odoo is then available at **http://localhost:8069**.
 
-To start from a known-good state:
+Every subsequent `docker compose up` finds the schema already in place and skips the init entirely.
+
+---
+
+## Common commands
+
+| Task | Command |
+|---|---|
+| Start (after first build) | `docker compose up` |
+| Start in background | `docker compose up -d` |
+| View live logs | `docker compose logs -f odoo` |
+| Stop, keep data | `docker compose down` |
+| **Wipe everything and start fresh** | `docker compose down -v` |
+| Rebuild after dep changes | `docker compose up --build` |
+| Shell inside Odoo container | `docker compose exec odoo bash` |
+| Connect to the database | `docker compose exec db psql -U odoo odoo` |
+
+> `docker compose down -v` permanently deletes the `odoo-db-data` and `odoo-data` named volumes. Only use it when you want a completely clean slate.
+
+---
+
+## Backup and restore
+
+Backups are managed through Odoo's built-in database manager — no shell scripts required.
+
+### Taking a backup
+
+1. Open **http://localhost:8069/web/database/manager**
+2. Click **Backup** next to the `odoo` database
+3. Choose **ZIP** (includes the filestore — attachments, images, reports) or **pg_dump** (database only)
+4. Download and store the file safely
+
+### Restoring a backup
+
+1. Open **http://localhost:8069/web/database/manager**
+2. Click **Restore Database**
+3. Upload your `.zip` or `.dump` file, give the restored database a name, and confirm
+
+> **Restoring onto a fresh deployment:** if you just ran `docker compose up --build` for the first time, auto-init will have created an empty `odoo` database. You can restore directly over it by using the same database name, or restore under a different name and update `db_name` in `config/odoo.conf` then restart the stack.
+
+---
+
+## Development
+
+`docker-compose.override.yml` is automatically merged by Compose on any machine that has the file present. It changes two things relative to the production baseline:
+
+- Targets the `base` build stage — the project root is bind-mounted over `/app` so code changes are reflected immediately without rebuilding.
+- Passes `--dev=all` to Odoo so Python modules, QWeb templates, and assets hot-reload on save.
+
+Useful dev commands:
 
 ```bash
-cd scripts && chmod +x restore.sh && ./restore.sh
+# Scaffold a new add-on (appears in addons/ immediately)
+docker compose exec odoo python3 odoo-bin scaffold my_module /mnt/extra-addons
+
+# Install or update a specific module without a full restart
+docker compose exec odoo python3 odoo-bin \
+  --config=/etc/odoo/odoo.conf \
+  -d odoo \
+  -u my_module \
+  --stop-after-init
 ```
-
-This restores the Odoo filestore together with the database dump.
-
-### Stop (keep data)
-
-```bash
-docker compose down
-```
-
-Containers are removed; named volumes (`odoo-db-data`, `odoo-data`) are preserved.
-
-### Full reset (destroy all data)
-
-```bash
-docker compose down -v
-```
-
-> ⚠️ This permanently deletes the database and filestore volumes.
 
 ---
 
 ## Production
 
-In production you want the Odoo source **baked into the image** rather than mounted from the host. The base `docker-compose.yml` already does this — just make sure you do **not** include `docker-compose.override.yml`:
+On a server where `docker-compose.override.yml` is absent, the baseline file is used on its own — the Odoo source is baked into the image instead of mounted from disk. Deploy with:
 
 ```bash
 docker compose -f docker-compose.yml up -d
 ```
 
-Or build and push the image to a registry first:
+To use a pre-built image from a registry instead of building on the server, replace the `build:` block in `docker-compose.yml` with:
 
-```bash
-docker build --target app -t your-registry/odoo-custom:latest .
-docker push your-registry/odoo-custom:latest
+```yaml
+image: your-registry/odoo-custom:latest
 ```
-
-Then deploy `docker-compose.yml` on the server, pointing `image:` at your registry tag instead of `build:`.
 
 ---
 
-## How the Docker setup works
+## How it works
+
+### Repository layout
+
+```
+odoo-custom/
+├── addons/                      # Custom add-ons, mounted at /mnt/extra-addons
+├── config/
+│   └── odoo.conf                # Odoo config: DB connection, workers, addons paths
+├── odoo/                        # Odoo 19 source tree
+├── scripts/
+│   └── entrypoint.sh            # Container startup: wait for DB + auto-init
+├── .env.example                 # Copy to .env and fill in credentials
+├── .gitignore
+├── docker-compose.yml           # Production baseline
+├── docker-compose.override.yml  # Dev overrides (auto-merged locally)
+├── Dockerfile
+├── Odoo_Master_Data.xlsx        # Reference master data
+├── odoo-bin                     # Odoo entry-point binary
+└── requirements.txt             # Pinned Python dependencies
+```
 
 ### Two-stage Dockerfile
 
-| Stage | Purpose |
-|---|---|
-| `base` | Installs OS packages, wkhtmltopdf, and all Python deps. Used directly in dev. |
-| `app` | Builds on `base` and bakes the source code into the image. Used in production. |
-
-Copying `requirements.txt` before the rest of the source means the pip layer is cached unless deps actually change — a code-only edit does not re-run `pip install`.
-
-### Compose file split
-
-| File | When used | What it does |
+| Stage | Used in | What it contains |
 |---|---|---|
-| `docker-compose.yml` | Always (baseline) | Postgres + Odoo with named volumes, named network, and secrets from `.env` |
-| `docker-compose.override.yml` | Automatically in dev | Targets the `base` stage, bind-mounts source, enables `--dev=all` |
+| `base` | Dev (override targets this) | OS packages, wkhtmltopdf, Python deps, entrypoint, `USER odoo` |
+| `app` | Production | Everything from `base` + the full source tree baked in |
 
-This means `docker compose up` in a checkout is development mode by default. On a server where the override file doesn't exist, you get the production baseline.
+`requirements.txt` is copied and installed before the source tree, so the pip layer is only invalidated when dependencies actually change — editing application code does not trigger a reinstall.
 
-### Entrypoint
+The `ENTRYPOINT`, `USER odoo`, and the entrypoint script copy all live in `base`, not just in `app`. This ensures the dev build (which targets `base` and skips the source `COPY`) still runs as the correct user and goes through the same startup logic as production.
 
-`scripts/entrypoint.sh` polls `pg_isready` before handing off to the Odoo process. This is a belt-and-suspenders safety net on top of the Compose `healthcheck` — Odoo will never crash on startup because it tried to connect before Postgres was ready.
+### Entrypoint (`scripts/entrypoint.sh`)
 
----
+Two things happen before Odoo starts:
 
-## Useful commands
+**1. Wait for Postgres.** The script polls `pg_isready` until the database is accepting connections. This is a belt-and-suspenders layer on top of the Compose `healthcheck` — Odoo will never crash on startup because it raced ahead of the database.
+
+**2. Auto-init on first run.** The script checks whether the `base` module is present and in state `installed` inside `ir_module_module`. On a fresh database this check fails and the entrypoint runs a one-shot initialisation:
 
 ```bash
-# Tail Odoo logs
-docker compose logs -f odoo
-
-# Open a shell inside the running container
-docker compose exec odoo bash
-
-# Run an Odoo scaffold for a new module
-docker compose exec odoo python3 odoo-bin scaffold my_module /mnt/extra-addons
-
-# Update a specific module
-docker compose exec odoo python3 odoo-bin \
-  --config=/etc/odoo/odoo.conf \
-  -u my_module \
-  --stop-after-init
-
-# Connect to the database directly
-docker compose exec db psql -U odoo odoo
+python3 odoo-bin -d odoo -i base --without-demo --workers=0 --stop-after-init
 ```
+
+`--workers=0` is essential here. Without it, Odoo starts in multi-process mode and `--stop-after-init` can fire on the master process before any worker has finished writing the module data — leaving the database in a broken half-initialised state. Single-process mode makes the init fully synchronous. Once it completes successfully, the entrypoint hands off to the normal `CMD` and Odoo starts serving.
 
 ---
 
 ## License
 
 Distributed under the [Odoo Community License (LGPL-3)](https://www.gnu.org/licenses/lgpl-3.0.html).
+
+
