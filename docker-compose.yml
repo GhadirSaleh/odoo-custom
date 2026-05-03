@@ -1,39 +1,60 @@
+# ─────────────────────────────────────────────────────────────────
+#  docker-compose.yml  →  PRODUCTION baseline
+#
+#  Secrets live in .env (see .env.example).  Never commit .env.
+#  For local dev, add a docker-compose.override.yml (see repo).
+# ─────────────────────────────────────────────────────────────────
+
 services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────
   db:
-    image: postgres:15
-    container_name: odoo_db
-    restart: always
+    image: postgres:15-alpine        # alpine = smaller footprint
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: odoo
-      POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo
+      POSTGRES_DB:       ${POSTGRES_DB:-odoo}
+      POSTGRES_USER:     ${POSTGRES_USER:-odoo}
+      # :? causes compose to abort with a clear message if the var is unset
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
+    networks:
+      - odoo-net
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U odoo" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odoo} -d ${POSTGRES_DB:-odoo}"]
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 10s   # give postgres time to initialise before probing
 
+  # ── Odoo ────────────────────────────────────────────────────────
   odoo:
-    build: .
-    container_name: odoo_app
+    build:
+      context: .
+      target: app           # build the production stage (source baked in)
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "8069:8069"
-      - "8072:8072"
-    volumes:
-      - .:/app
-      - odoo-data:/var/lib/odoo
-      - ./config:/etc/odoo
-      - ./addons:/mnt/extra-addons
+      - "${ODOO_PORT:-8069}:8069"
+      - "${ODOO_LONGPOLL_PORT:-8072}:8072"
+    env_file: .env          # keeps the service definition clean
     environment:
-      - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
-    restart: always
+      HOST:     db
+      USER:     ${POSTGRES_USER:-odoo}
+      PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - odoo-data:/var/lib/odoo          # filestore / sessions
+      - ./config:/etc/odoo:ro            # odoo.conf (read-only in prod)
+      - ./addons:/mnt/extra-addons:ro    # custom addons (read-only in prod)
+    networks:
+      - odoo-net
+
+# ── Shared infrastructure ─────────────────────────────────────────
+networks:
+  odoo-net:
+    driver: bridge
 
 volumes:
   odoo-db-data:

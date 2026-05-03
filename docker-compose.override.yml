@@ -1,0 +1,28 @@
+# ─────────────────────────────────────────────────────────────────
+#  docker-compose.override.yml  →  DEV overrides
+#
+#  Docker Compose automatically merges this file on top of
+#  docker-compose.yml when you run `docker compose up`.
+#
+#  Key differences from production:
+#    • Builds the `base` stage (no source baked in → faster rebuilds)
+#    • Bind-mounts the project root so code changes are live
+#    • Passes --dev=all so Odoo hot-reloads Python/JS/CSS changes
+#    • Config and addons are writable (useful when scaffolding modules)
+# ─────────────────────────────────────────────────────────────────
+
+services:
+
+  odoo:
+    build:
+      context: .
+      target: base          # skip the COPY source stage → pip cache is all we need
+    volumes:
+      - .:/app                                    # live source (overrides the baked-in copy)
+      - odoo-data:/var/lib/odoo
+      - ./config:/etc/odoo                        # writable so you can tweak odoo.conf live
+      - ./addons:/mnt/extra-addons                # writable so scaffolded modules appear instantly
+    command: >
+      python3 odoo-bin
+        --config=/etc/odoo/odoo.conf
+        --dev=all
