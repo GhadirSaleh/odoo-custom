@@ -4,8 +4,9 @@ import { patch } from "@web/core/utils/patch";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { SelectPartnerButton } from "@point_of_sale/app/screens/product_screen/control_buttons/select_partner_button/select_partner_button";
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
+import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 import { xml } from "@odoo/owl";
-import { onMounted, onWillUnmount } from "@odoo/owl";
+import { onMounted } from "@odoo/owl";
 
 // Patch PosStore to store partner balance and fetch it
 patch(PosStore.prototype, {
@@ -76,5 +77,13 @@ patch(PaymentScreen.prototype, {
             this._updatePaymentScreenPartnerButton();
         }, 500);
         return result;
+    },
+});
+
+// Patch OrderPaymentValidation to prevent automatic invoice PDF download
+patch(OrderPaymentValidation.prototype, {
+    shouldDownloadInvoice() {
+        // Prevent automatic invoice PDF download
+        return false;
     },
 });
