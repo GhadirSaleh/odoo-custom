@@ -11,19 +11,17 @@ import { xml } from "@odoo/owl";
 //    not a component, so hooks are not allowed here)
 // ---------------------------------------------------------------------------
 patch(PosStore.prototype, {
-  setup() {
-    super.setup(...arguments);
-    // reactive() works outside components; any OWL component
-    // that reads .balance will automatically re-render on change
-    this._partnerBalance = reactive({ balance: 0 });
-  },
-
   get currentPartnerBalance() {
-    return this._partnerBalance.balance;
+    return this._partnerBalance?.balance ?? 0;
   },
 
   async setPartnerToCurrentOrder(partner) {
     await super.setPartnerToCurrentOrder(partner);
+
+    // Lazy init — no setup() required
+    if (!this._partnerBalance) {
+      this._partnerBalance = reactive({ balance: 0 });
+    }
     this._partnerBalance.balance = 0;
 
     if (!partner) return;
@@ -48,7 +46,7 @@ patch(PosStore.prototype, {
   },
 
   get partnerBalanceClass() {
-    const bal = this._partnerBalance.balance;
+    const bal = this._partnerBalance?.balance ?? 0;
     if (bal > 0) return "text-success";
     if (bal < 0) return "text-danger";
     return "text-muted";
