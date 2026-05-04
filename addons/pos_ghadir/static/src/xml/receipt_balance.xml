@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_ghadir.ReceiptHeader" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
+        <xpath expr="//div[@class='pos-receipt-customer mt-2']" position="after">
+            <div class="pos-receipt-customer-balance mt-2">
+                <span>Prev. Balance: </span>
+                <span>
+                    $                    <t t-esc="order.partnerBalance"/>
+                </span>
+            </div>
+        </xpath>
+    </t>
+
+    <t t-name="pos_ghadir.OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[@class='before-footer']" position="after">
+            <div class="pos-receipt-customer-balance mt-2 text-center">
+                <span>Customer Balance: </span>
+                <span>
+                    $                    <t t-esc="order.partnerBalance"/>
+                </span>
+            </div>
+        </xpath>
+    </t>
+</templates>

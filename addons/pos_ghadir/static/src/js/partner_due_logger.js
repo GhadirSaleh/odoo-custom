@@ -24,6 +24,12 @@ patch(PosStore.prototype, {
     }
     this._partnerBalance.balance = 0;
 
+    // Store balance on the current order
+    const order = this.getOrder();
+    if (order) {
+      order.partnerBalance = 0;
+    }
+
     if (!partner) return;
 
     try {
@@ -38,7 +44,13 @@ patch(PosStore.prototype, {
 
       if (result?.length) {
         const { credit = 0, debit = 0 } = result[0];
-        this._partnerBalance.balance = credit - debit;
+        const balance = credit - debit;
+        this._partnerBalance.balance = balance;
+
+        // Store on order for receipt access
+        if (order) {
+          order.partnerBalance = balance;
+        }
       }
     } catch (error) {
       console.error("Error fetching partner balance:", error);
