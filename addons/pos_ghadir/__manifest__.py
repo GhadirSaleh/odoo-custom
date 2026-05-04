@@ -15,6 +15,7 @@
             'pos_ghadir/static/src/js/partner_due_logger.js',
             'pos_ghadir/static/src/js/invoice_active.js',
             'pos_ghadir/static/src/js/pdf_no_auto_download.js',
+            'pos_ghadir/static/src/xml/receipt_balance.xml',
         ],
     },
     'license': 'AGPL-3',
