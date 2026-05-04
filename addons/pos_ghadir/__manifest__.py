@@ -13,6 +13,8 @@
             'pos_ghadir/static/src/js/default_qty_two.js',
             'pos_ghadir/static/src/js/remove_decimal_zeros.js',
             'pos_ghadir/static/src/js/partner_due_logger.js',
+            'pos_ghadir/static/src/js/invoice_active.js',
+            'pos_ghadir/static/src/js/pdf_no_auto_download.js',
         ],
     },
     'license': 'AGPL-3',

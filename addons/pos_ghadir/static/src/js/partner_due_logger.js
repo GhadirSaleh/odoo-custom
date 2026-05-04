@@ -4,8 +4,6 @@ import { patch } from "@web/core/utils/patch";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { SelectPartnerButton } from "@point_of_sale/app/screens/product_screen/control_buttons/select_partner_button/select_partner_button";
 import { PaymentScreen } from "@point_of_sale/app/screens/payment_screen/payment_screen";
-import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
-import { PosOrder } from "@point_of_sale/app/models/pos_order";
 import { xml } from "@odoo/owl";
 import { onMounted } from "@odoo/owl";
 
@@ -77,21 +75,3 @@ patch(PaymentScreen.prototype, {
     },
 });
 
-// Patch OrderPaymentValidation to prevent automatic invoice PDF download
-patch(OrderPaymentValidation.prototype, {
-    shouldDownloadInvoice() {
-        // Prevent automatic invoice PDF download
-        return false;
-    },
-});
-
-// Patch PosOrder to make invoice button active by default
-patch(PosOrder.prototype, {
-    setup(vals) {
-        super.setup(vals);
-        // Make invoice button active by default if config allows invoicing
-        if (this.config && this.config.canInvoice) {
-            this.to_invoice = true;
-        }
-    },
-});
