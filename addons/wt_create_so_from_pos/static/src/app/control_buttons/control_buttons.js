@@ -11,12 +11,11 @@ patch(ControlButtons.prototype, {
         super.setup();
         this.dialogService = useService("dialog");
         this.orm = this.env.services.orm;
-        this.pos = this.env.services.pos;
     },
 
 
     async clickCreateSaleOrder() {
-        const order = this.pos.selectedOrder;
+        const order = this.pos.getOrder();
         if (!order) {
             this.dialogService.add(AlertDialog, {
                 title: _t("Missing Order"),
@@ -82,7 +81,7 @@ patch(ControlButtons.prototype, {
             const orderId = result.id || (typeof result === "number" ? result : null);
             const orderName = result.name || `SO${orderId}`;
 
-            this.dialog.add(ConfirmationDialog, {
+            this.dialogService.add(ConfirmationDialog, {
                 title: _t("Success"),
                 body: _t(`Sale Order ${orderName} created successfully!`),
                 confirmLabel: _t("Confirm Order"),
