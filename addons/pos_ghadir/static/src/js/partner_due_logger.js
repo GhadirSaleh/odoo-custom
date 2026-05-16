@@ -11,6 +11,14 @@ import { xml } from "@odoo/owl";
 //    not a component, so hooks are not allowed here)
 // ---------------------------------------------------------------------------
 patch(PosStore.prototype, {
+  async setup() {
+    await super.setup(...arguments);
+    const order = this.getOrder();
+    if (order?.partner_id) {
+      await this._fetchPartnerBalance(order.partner_id, order);
+    }
+  },
+
   get currentPartnerBalance() {
     return this._partnerBalance?.balance ?? 0;
   },
@@ -18,19 +26,25 @@ patch(PosStore.prototype, {
   async setPartnerToCurrentOrder(partner) {
     await super.setPartnerToCurrentOrder(partner);
 
-    // Lazy init — no setup() required
     if (!this._partnerBalance) {
       this._partnerBalance = reactive({ balance: 0 });
     }
     this._partnerBalance.balance = 0;
 
-    // Store balance on the current order
     const order = this.getOrder();
     if (order) {
       order.partnerBalance = 0;
     }
 
     if (!partner) return;
+
+    await this._fetchPartnerBalance(partner, order);
+  },
+
+  async _fetchPartnerBalance(partner, order) {
+    if (!this._partnerBalance) {
+      this._partnerBalance = reactive({ balance: 0 });
+    }
 
     try {
       const orm = this.env?.services?.orm;
@@ -47,7 +61,6 @@ patch(PosStore.prototype, {
         const balance = credit - debit;
         this._partnerBalance.balance = balance;
 
-        // Store on order for receipt access
         if (order) {
           order.partnerBalance = balance;
         }
