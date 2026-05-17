@@ -102,14 +102,14 @@ class ResPartner(models.Model):
         return self.env['product.product'].sudo().create(vals)
 
     @api.model
-    def create_customer_payment(self, partner_id, amount, notes, config_id):
-        return self._create_customer_order(partner_id, amount, notes, config_id, 'payment')
+    def create_customer_payment(self, partner_id, amount, notes, config_id, currency_id=False):
+        return self._create_customer_order(partner_id, amount, notes, config_id, 'payment', currency_id)
 
     @api.model
-    def create_customer_adjustment(self, partner_id, type, amount, notes, config_id):
-        return self._create_customer_order(partner_id, amount, notes, config_id, type)
+    def create_customer_adjustment(self, partner_id, type, amount, notes, config_id, currency_id=False):
+        return self._create_customer_order(partner_id, amount, notes, config_id, type, currency_id)
 
-    def _create_customer_order(self, partner_id, amount, notes, config_id, order_type):
+    def _create_customer_order(self, partner_id, amount, notes, config_id, order_type, currency_id=False):
         import logging
         _logger = logging.getLogger(__name__)
 
@@ -137,34 +137,60 @@ class ResPartner(models.Model):
             if not receivable_account:
                 return {'error': 'Customer has no receivable account configured'}
 
-            is_in_company_currency = session.is_in_company_currency
-            pos_currency = session.currency_id
             company_currency = session.company_id.currency_id
+            pos_currency = session.currency_id
             today = fields.Date.today()
+            is_multi_currency = pos_currency != company_currency
 
-            if is_in_company_currency:
-                amount_company = amount
-                amount_pos = amount
-                currency_id = False
+            if currency_id:
+                transaction_currency = self.env['res.currency'].sudo().browse(currency_id)
+                if not transaction_currency.exists():
+                    transaction_currency = pos_currency if is_multi_currency else company_currency
             else:
-                amount_company = pos_currency._convert(amount, company_currency, session.company_id, today)
-                amount_pos = amount
-                currency_id = pos_currency.id
+                transaction_currency = pos_currency if is_multi_currency else company_currency
 
-            def _make_line(account_id, partner_id, debit_pos, credit_pos, name):
-                debit_company = debit_pos if is_in_company_currency else pos_currency._convert(debit_pos, company_currency, session.company_id, today)
-                credit_company = credit_pos if is_in_company_currency else pos_currency._convert(credit_pos, company_currency, session.company_id, today)
-                line = {
-                    'account_id': account_id,
-                    'partner_id': partner_id,
-                    'debit': debit_company if debit_company > 0 else 0.0,
-                    'credit': credit_company if credit_company > 0 else 0.0,
-                    'name': name,
-                }
-                if not is_in_company_currency:
-                    amount_cur = debit_pos - credit_pos
-                    line['amount_currency'] = amount_cur
-                    line['currency_id'] = pos_currency.id
+            needs_currency_conversion = transaction_currency != company_currency
+
+            if needs_currency_conversion:
+                amount_company = transaction_currency._convert(amount, company_currency, session.company_id, today)
+            else:
+                amount_company = amount
+
+            def _make_line(account_id, partner_id, debit_selected, credit_selected, name):
+                if needs_currency_conversion:
+                    debit_company = transaction_currency._convert(debit_selected, company_currency, session.company_id, today) if debit_selected > 0 else 0.0
+                    credit_company = transaction_currency._convert(credit_selected, company_currency, session.company_id, today) if credit_selected > 0 else 0.0
+                    amount_cur = transaction_currency._convert(debit_selected - credit_selected, pos_currency, session.company_id, today)
+                    line = {
+                        'account_id': account_id,
+                        'partner_id': partner_id,
+                        'debit': debit_company,
+                        'credit': credit_company,
+                        'name': name,
+                        'amount_currency': amount_cur,
+                        'currency_id': pos_currency.id,
+                    }
+                elif is_multi_currency:
+                    debit_company = debit_selected if debit_selected > 0 else 0.0
+                    credit_company = credit_selected if credit_selected > 0 else 0.0
+                    amount_cur = company_currency._convert(debit_selected - credit_selected, pos_currency, session.company_id, today)
+                    line = {
+                        'account_id': account_id,
+                        'partner_id': partner_id,
+                        'debit': debit_company,
+                        'credit': credit_company,
+                        'name': name,
+                        'amount_currency': amount_cur,
+                        'currency_id': pos_currency.id,
+                    }
+                else:
+                    line = {
+                        'account_id': account_id,
+                        'partner_id': partner_id,
+                        'debit': debit_selected if debit_selected > 0 else 0.0,
+                        'credit': credit_selected if credit_selected > 0 else 0.0,
+                        'name': name,
+                    }
                 return Command.create(line)
 
             if order_type == 'payment':
@@ -210,9 +236,9 @@ class ResPartner(models.Model):
                 'move_id': move.id,
                 'move_name': move.name,
                 'new_balance': new_balance,
-                'amount_pos': amount_pos,
+                'amount_paid': amount,
                 'amount_company': amount_company,
-                'currency_id': pos_currency.id,
+                'currency_id': transaction_currency.id,
                 'company_currency_id': company_currency.id,
             }
         except Exception as e:

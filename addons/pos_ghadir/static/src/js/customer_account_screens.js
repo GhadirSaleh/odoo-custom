@@ -8,6 +8,7 @@ import { _t } from "@web/core/l10n/translation";
 import { formatCurrency } from "@web/core/currency";
 import { Dialog } from "@web/core/dialog/dialog";
 import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/number_popup";
+import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_popup/selection_popup";
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
 
 export class NotesPopup extends Component {
@@ -197,9 +198,23 @@ export class CustomerAccountStatementScreen extends Component {
     async makePayment() {
         if (!this.state.customer) return;
 
+        let selectedCurrencyId = false;
+        if (this.isMultiCurrency()) {
+            const currencyList = this.getAvailableCurrencies("payment");
+            const selected = await makeAwaitable(this.dialog, SelectionPopup, {
+                title: _t("Select Payment Currency"),
+                list: currencyList,
+            });
+            if (selected === undefined) return;
+            selectedCurrencyId = selected.id;
+        }
+
+        const currencyName = selectedCurrencyId
+            ? this.getCurrencyById(selectedCurrencyId).name
+            : this.pos.company.currency_id.name;
         const amountStr = await makeAwaitable(this.dialog, NumberPopup, {
             title: _t("Make Payment"),
-            subtitle: _t("Enter payment amount"),
+            subtitle: _t("Enter amount in %s", [currencyName]),
             startingValue: "",
         });
 
@@ -215,6 +230,7 @@ export class CustomerAccountStatementScreen extends Component {
                 amount,
                 notes || _t("Payment via POS"),
                 this.pos.config.id,
+                selectedCurrencyId,
             ]);
 
             if (result.error) {
@@ -222,13 +238,12 @@ export class CustomerAccountStatementScreen extends Component {
                 return;
             }
 
-            if (this.isMultiCurrency()) {
-                const posFormatted = formatCurrency(result.amount_pos, result.currency_id, { trailingZeros: false });
-                const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
-                this.notification.add(_t("Payment recorded: %s (%s)", [posFormatted, companyFormatted]), { type: "success" });
-            } else {
-                this.notification.add(_t("Payment recorded: %s", [result.move_name]), { type: "success" });
-            }
+            const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
+            const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            this.notification.add(
+                _t("Payment recorded: %s (%s)", [paidFormatted, companyFormatted]),
+                { type: "success" }
+            );
             await this.loadStatement();
         } catch (e) {
             console.error("Error making payment:", e);
@@ -239,10 +254,24 @@ export class CustomerAccountStatementScreen extends Component {
     async addAdjustment(type) {
         if (!this.state.customer) return;
 
+        let selectedCurrencyId = false;
+        if (this.isMultiCurrency()) {
+            const currencyList = this.getAvailableCurrencies("adjustment");
+            const selected = await makeAwaitable(this.dialog, SelectionPopup, {
+                title: _t("Select Adjustment Currency"),
+                list: currencyList,
+            });
+            if (selected === undefined) return;
+            selectedCurrencyId = selected.id;
+        }
+
         const title = type === "adjustment_add" ? _t("Add to Account") : _t("Remove from Account");
+        const currencyName = selectedCurrencyId
+            ? this.getCurrencyById(selectedCurrencyId).name
+            : this.pos.company.currency_id.name;
         const amountStr = await makeAwaitable(this.dialog, NumberPopup, {
             title: title,
-            subtitle: _t("Enter amount"),
+            subtitle: _t("Enter amount in %s", [currencyName]),
             startingValue: "",
         });
 
@@ -264,6 +293,7 @@ export class CustomerAccountStatementScreen extends Component {
                 amount,
                 notes,
                 this.pos.config.id,
+                selectedCurrencyId,
             ]);
 
             if (result.error) {
@@ -272,19 +302,12 @@ export class CustomerAccountStatementScreen extends Component {
             }
 
             const actionText = type === "adjustment_add" ? _t("added to") : _t("removed from");
-            if (this.isMultiCurrency()) {
-                const posFormatted = formatCurrency(result.amount_pos, result.currency_id, { trailingZeros: false });
-                const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
-                this.notification.add(
-                    _t("%s (%s) %s account", [posFormatted, companyFormatted, actionText]),
-                    { type: "success" }
-                );
-            } else {
-                this.notification.add(
-                    _t("%s %s account", [formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false }), actionText]),
-                    { type: "success" }
-                );
-            }
+            const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
+            const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            this.notification.add(
+                _t("%s (%s) %s account", [paidFormatted, companyFormatted, actionText]),
+                { type: "success" }
+            );
             await this.loadStatement();
         } catch (e) {
             console.error("Error creating adjustment:", e);
@@ -338,6 +361,43 @@ export class CustomerAccountStatementScreen extends Component {
 
     getPosBalance() {
         return this.convertToPosCurrency(this.state.balance);
+    }
+
+    getAvailableCurrencies(actionType) {
+        const posCurrency = this.pos.currency;
+        const companyCurrency = this.pos.company.currency_id;
+        const actionLabel = actionType === "payment" ? "Pay in" : "Adjust in";
+        const currencies = [];
+
+        currencies.push({
+            id: posCurrency.id,
+            label: `${actionLabel} ${posCurrency.name}`,
+            description: posCurrency.symbol,
+            item: posCurrency,
+            isSelected: true,
+        });
+
+        if (companyCurrency.id !== posCurrency.id) {
+            currencies.push({
+                id: companyCurrency.id,
+                label: `${actionLabel} ${companyCurrency.name}`,
+                description: companyCurrency.symbol,
+                item: companyCurrency,
+                isSelected: false,
+            });
+        }
+
+        return currencies;
+    }
+
+    getCurrencyById(currencyId) {
+        if (this.pos.currency.id === currencyId) {
+            return this.pos.currency;
+        }
+        if (this.pos.company.currency_id.id === currencyId) {
+            return this.pos.company.currency_id;
+        }
+        return this.pos.currency;
     }
 }
 
