@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_ghadir.OrderDisplayCurrency" t-inherit="point_of_sale.OrderDisplay" t-inherit-mode="extension">
+        <xpath expr="//span[@class='total']" position="after">
+            <span t-if="order.formattedConvertedTotal" class="converted-total text-muted ms-1">
+                (<t t-out="order.formattedConvertedTotal"/>)
+            </span>
+        </xpath>
+        <xpath expr="//span[@class='subtotal']" position="after">
+            <span t-if="order.formattedConvertedTotal" class="converted-subtotal text-muted ms-1">
+                (<t t-out="order.formattedConvertedTotal"/>)
+            </span>
+        </xpath>
+    </t>
+
+    <t t-name="pos_ghadir.OrderReceiptCurrency" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//span[@class='pos-receipt-right-align font-monospace']" position="after">
+            <span t-if="order.formattedConvertedTotal" class="converted-currency text-muted ms-1">
+                (<t t-out="order.formattedConvertedTotal"/>)
+            </span>
+        </xpath>
+    </t>
+</templates>
