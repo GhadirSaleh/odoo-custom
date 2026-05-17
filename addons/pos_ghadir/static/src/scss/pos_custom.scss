@@ -46,7 +46,8 @@
   pointer-events: none !important;
 }
 
-.o_colorlist_item_numpad_color_1 {
+/* Backspace button - expand to double height only in POS screen numpad */
+.leftpane .subpads .numpad .o_colorlist_item_numpad_color_1 {
   top: -100%;
   height: 200%;
 }
@@ -89,6 +90,52 @@
 .pos-receipt-customer-balance {
   margin-top: 0 !important;
   font-weight: 500 !important;
+  align-self: normal !important;
+  font-size: 2rem !important;
+}
+
+.pos-receipt-balance-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.3rem 0 !important;
+}
+
+.pos-receipt-balance-start {
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+
+.pos-receipt-header-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 75% !important;
+}
+
+.pos-receipt-ticket-side {
+  text-align: left !important;
+}
+
+.pos-receipt-date-side {
+  text-align: right !important;
+}
+
+.pos-receipt-balance-label {
+  direction: rtl !important;
+  unicode-bidi: bidi-override !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+}
+
+.pos-receipt-balance-amount {
+  direction: ltr !important;
+  unicode-bidi: bidi-override !important;
+  font-weight: bold !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
   font-size: 1rem !important;
 }
 
@@ -137,7 +184,7 @@
 }
 
 div#order-date {
-  font-size: 1rem !important;
+  font-size: 0.8rem !important;
   font: bold !important;
 }
 
@@ -151,6 +198,7 @@ div#order-date {
 
 .pos-receipt .d-flex.flex-column.align-items-center {
   border-bottom: 3px solid #000 !important;
+  align-items: flex-start !important;
 }
 
 .pos-receipt .product-price {

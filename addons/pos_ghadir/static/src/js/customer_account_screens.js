@@ -209,9 +209,8 @@ export class CustomerAccountStatementScreen extends Component {
             selectedCurrencyId = selected.id;
         }
 
-        const currencyName = selectedCurrencyId
-            ? this.getCurrencyById(selectedCurrencyId).name
-            : this.pos.company.currency_id.name;
+        const currencyId = selectedCurrencyId || this.pos.currency.id;
+        const currencyName = this.getCurrencyById(currencyId).name;
         const amountStr = await makeAwaitable(this.dialog, NumberPopup, {
             title: _t("Make Payment"),
             subtitle: _t("Enter amount in %s", [currencyName]),
@@ -240,8 +239,9 @@ export class CustomerAccountStatementScreen extends Component {
 
             const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
             const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            const customerName = this.state.customer.name;
             this.notification.add(
-                _t("Payment recorded: %s (%s)", [paidFormatted, companyFormatted]),
+                _t("Payment of %s recorded for %s\nEquivalent: %s", [paidFormatted, customerName, companyFormatted]),
                 { type: "success" }
             );
             await this.loadStatement();
@@ -266,9 +266,8 @@ export class CustomerAccountStatementScreen extends Component {
         }
 
         const title = type === "adjustment_add" ? _t("Add to Account") : _t("Remove from Account");
-        const currencyName = selectedCurrencyId
-            ? this.getCurrencyById(selectedCurrencyId).name
-            : this.pos.company.currency_id.name;
+        const currencyId = selectedCurrencyId || this.pos.currency.id;
+        const currencyName = this.getCurrencyById(currencyId).name;
         const amountStr = await makeAwaitable(this.dialog, NumberPopup, {
             title: title,
             subtitle: _t("Enter amount in %s", [currencyName]),
@@ -304,8 +303,9 @@ export class CustomerAccountStatementScreen extends Component {
             const actionText = type === "adjustment_add" ? _t("added to") : _t("removed from");
             const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
             const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            const customerName = this.state.customer.name;
             this.notification.add(
-                _t("%s (%s) %s account", [paidFormatted, companyFormatted, actionText]),
+                _t("%s %s to %s's account\nEquivalent: %s", [paidFormatted, actionText, customerName, companyFormatted]),
                 { type: "success" }
             );
             await this.loadStatement();
@@ -326,7 +326,9 @@ export class CustomerAccountStatementScreen extends Component {
     formatDate(dateStr) {
         if (!dateStr) return "";
         const date = new Date(dateStr);
-        return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        const datePart = date.toLocaleDateString();
+        const timePart = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        return { date: datePart, time: timePart };
     }
 
     formatBalance(amount) {

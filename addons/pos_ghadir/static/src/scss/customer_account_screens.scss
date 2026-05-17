@@ -31,8 +31,40 @@
     }
 }
 
+.customer-account-statement-screen .d-flex.gap-2.p-2.border-bottom .btn {
+    min-height: 60px;
+    font-size: 1.3rem;
+}
+
 .customer-account-statement-screen {
     .bg-200 {
         background-color: var(--o-pos-lighter-color, #e9ecef);
     }
+}
+
+/* NumberPopup numpad styling - match POS screen */
+.modal-dialog:has(.numpad) {
+    max-width: 500px !important;
+}
+
+.modal-dialog:has(.numpad) .numpad {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px;
+    padding: 15px;
+}
+
+.modal-dialog:has(.numpad) .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
+}
+
+.modal-dialog .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
 }

@@ -138,21 +138,24 @@
                                     <th>Document</th>
                                     <th class="text-end">Debit</th>
                                     <th class="text-end">Credit</th>
-                                    <th t-if="isMultiCurrency()" class="text-end">Amount (POS)</th>
+                                    <th t-if="isMultiCurrency()" class="text-end" style="border-right: 1px solid var(--o-pos-border-color, #dee2e6);">Amount (POS)</th>
                                     <th class="text-end">Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="state.transactions" t-as="transaction" t-key="transaction.id">
                                     <tr>
-                                        <td class="text-nowrap" t-esc="formatDate(transaction.date)"/>
+                                        <td class="text-nowrap">
+                                            <div class="fw-bold" t-esc="formatDate(transaction.date).date"/>
+                                            <div class="text-muted small" t-esc="formatDate(transaction.date).time"/>
+                                        </td>
                                         <td>
                                             <div class="fw-bold" t-esc="transaction.move_name"/>
                                             <div class="text-muted small" t-esc="transaction.ref"/>
                                         </td>
                                         <td class="text-end text-danger" t-esc="formatBalance(transaction.debit)"/>
                                         <td class="text-end text-success" t-esc="formatBalance(transaction.credit)"/>
-                                        <td t-if="isMultiCurrency()" class="text-end text-info">
+                                        <td t-if="isMultiCurrency()" class="text-end" style="border-right: 1px solid var(--o-pos-border-color, #dee2e6);" t-att-class="getTransactionBalanceClass(transaction.amount_currency)">
                                             <t t-if="transaction.currency_id" t-esc="formatPosBalance(transaction.amount_currency)"/>
                                             <t t-else="">-</t>
                                         </td>

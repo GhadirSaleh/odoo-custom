@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
+    <t t-name="pos_ghadir.ReceiptHeaderDateTicket" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'text-center') and contains(@class, 'pt-3')]" position="replace">
+            <div class="pos-receipt-header-row pt-3">
+                <span class="pos-receipt-ticket-side">
+                    <span class="ticket-name-prefix">
+                        <t t-if="order.config._IS_VAT"> VAT </t>
+                        Ticket
+                    </span>
+                    <t t-out="order.pos_reference"/>
+                </span>
+                <span t-if="order.date_order" id="order-date" class="pos-receipt-date-side" t-out="order.formatDateOrTime('date_order')"/>
+            </div>
+        </xpath>
+    </t>
+
     <t t-name="pos_ghadir.ReceiptHeaderBalance" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension">
         <xpath expr="//div[@class='pos-receipt-customer mt-2']" position="after">
-            <div class="pos-receipt-customer-balance mt-2">
-                <span>حساب سابق: </span>
-                <span>
-                    $                    <t t-esc="order.partnerBalance"/>
+            <div t-if="order.partnerBalance !== undefined and order.partnerBalance !== null and order.partnerBalance == order.partnerBalance" class="pos-receipt-customer-balance mt-2 pos-receipt-balance-row pos-receipt-balance-start">
+                <span class="pos-receipt-balance-label">: حساب سابق</span>
+                <span class="pos-receipt-balance-amount">
+                    <t t-if="order.partnerBalance &lt; 0">-</t>
+                        <t t-esc="Math.abs(order.partnerBalance)"/>$
                 </span>
             </div>
         </xpath>
@@ -13,10 +29,12 @@
 
     <t t-name="pos_ghadir.OrderReceiptBalance" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
         <xpath expr="//div[@class='before-footer']" position="after">
-            <div class="pos-receipt-customer-balance mt-2 text-center">
-                <span>باقي الحساب: </span>
-                <span>
-                    $                    <t t-esc="order.convertedPartnerDue"/>
+            <div class="pos-receipt-customer-balance mt-2 text-center pos-receipt-balance-row">
+                <span class="pos-receipt-balance-label">: باقي الحساب</span>
+                <span class="pos-receipt-balance-amount">
+                    <t t-if="order.convertedPartnerDue &lt; 0">-</t>
+                    <t t-esc="Math.abs(order.convertedPartnerDue)"/>
+$
                 </span>
             </div>
         </xpath>

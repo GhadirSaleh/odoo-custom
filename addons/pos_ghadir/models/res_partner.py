@@ -58,9 +58,10 @@ class ResPartner(models.Model):
         for line in move_lines:
             running_balance += line.debit - line.credit
             line_amount_currency = line.amount_currency if line.currency_id else (line.debit - line.credit)
+            move_datetime = line.move_id.write_date or line.move_id.create_date
             result.append({
                 'id': line.id,
-                'date': line.date.isoformat() if line.date else '',
+                'date': move_datetime.isoformat() if move_datetime else '',
                 'move_name': line.move_id.name or '',
                 'ref': line.ref or '',
                 'debit': line.debit or 0.0,
@@ -71,7 +72,7 @@ class ResPartner(models.Model):
                 'currency_id': line.currency_id.id if line.currency_id else False,
             })
 
-        return result
+        return list(reversed(result))
 
     @api.model
     def _get_or_create_payment_product(self):
