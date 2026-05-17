@@ -57,6 +57,7 @@ class ResPartner(models.Model):
         running_balance = 0.0
         for line in move_lines:
             running_balance += line.debit - line.credit
+            line_amount_currency = line.amount_currency if line.currency_id else (line.debit - line.credit)
             result.append({
                 'id': line.id,
                 'date': line.date.isoformat() if line.date else '',
@@ -66,6 +67,8 @@ class ResPartner(models.Model):
                 'credit': line.credit or 0.0,
                 'balance': running_balance,
                 'journal_name': line.journal_id.name or '',
+                'amount_currency': line_amount_currency,
+                'currency_id': line.currency_id.id if line.currency_id else False,
             })
 
         return result
@@ -134,59 +137,53 @@ class ResPartner(models.Model):
             if not receivable_account:
                 return {'error': 'Customer has no receivable account configured'}
 
+            is_in_company_currency = session.is_in_company_currency
+            pos_currency = session.currency_id
+            company_currency = session.company_id.currency_id
+            today = fields.Date.today()
+
+            if is_in_company_currency:
+                amount_company = amount
+                amount_pos = amount
+                currency_id = False
+            else:
+                amount_company = pos_currency._convert(amount, company_currency, session.company_id, today)
+                amount_pos = amount
+                currency_id = pos_currency.id
+
+            def _make_line(account_id, partner_id, debit_pos, credit_pos, name):
+                debit_company = debit_pos if is_in_company_currency else pos_currency._convert(debit_pos, company_currency, session.company_id, today)
+                credit_company = credit_pos if is_in_company_currency else pos_currency._convert(credit_pos, company_currency, session.company_id, today)
+                line = {
+                    'account_id': account_id,
+                    'partner_id': partner_id,
+                    'debit': debit_company if debit_company > 0 else 0.0,
+                    'credit': credit_company if credit_company > 0 else 0.0,
+                    'name': name,
+                }
+                if not is_in_company_currency:
+                    amount_cur = debit_pos - credit_pos
+                    line['amount_currency'] = amount_cur
+                    line['currency_id'] = pos_currency.id
+                return Command.create(line)
+
             if order_type == 'payment':
                 move_type = 'entry'
                 line_vals = [
-                    Command.create({
-                        'account_id': journal.default_account_id.id,
-                        'partner_id': partner_id,
-                        'debit': amount,
-                        'credit': 0,
-                        'name': notes or 'Customer Payment',
-                    }),
-                    Command.create({
-                        'account_id': receivable_account.id,
-                        'partner_id': partner_id,
-                        'debit': 0,
-                        'credit': amount,
-                        'name': notes or 'Customer Payment',
-                    }),
+                    _make_line(journal.default_account_id.id, partner_id, amount, 0, notes or 'Customer Payment'),
+                    _make_line(receivable_account.id, partner_id, 0, amount, notes or 'Customer Payment'),
                 ]
             elif order_type == 'adjustment_add':
                 move_type = 'entry'
                 line_vals = [
-                    Command.create({
-                        'account_id': receivable_account.id,
-                        'partner_id': partner_id,
-                        'debit': amount,
-                        'credit': 0,
-                        'name': notes or 'Account Adjustment',
-                    }),
-                    Command.create({
-                        'account_id': journal.default_account_id.id,
-                        'partner_id': partner_id,
-                        'debit': 0,
-                        'credit': amount,
-                        'name': notes or 'Account Adjustment',
-                    }),
+                    _make_line(receivable_account.id, partner_id, amount, 0, notes or 'Account Adjustment'),
+                    _make_line(journal.default_account_id.id, partner_id, 0, amount, notes or 'Account Adjustment'),
                 ]
             elif order_type == 'adjustment_remove':
                 move_type = 'entry'
                 line_vals = [
-                    Command.create({
-                        'account_id': journal.default_account_id.id,
-                        'partner_id': partner_id,
-                        'debit': amount,
-                        'credit': 0,
-                        'name': notes or 'Account Adjustment',
-                    }),
-                    Command.create({
-                        'account_id': receivable_account.id,
-                        'partner_id': partner_id,
-                        'debit': 0,
-                        'credit': amount,
-                        'name': notes or 'Account Adjustment',
-                    }),
+                    _make_line(journal.default_account_id.id, partner_id, amount, 0, notes or 'Account Adjustment'),
+                    _make_line(receivable_account.id, partner_id, 0, amount, notes or 'Account Adjustment'),
                 ]
             else:
                 return {'error': 'Invalid order type'}
@@ -195,7 +192,7 @@ class ResPartner(models.Model):
                 'move_type': move_type,
                 'journal_id': journal.id,
                 'partner_id': partner_id,
-                'date': fields.Date.today(),
+                'date': today,
                 'ref': notes or 'Customer Account Transaction',
                 'line_ids': line_vals,
             })
@@ -213,6 +210,10 @@ class ResPartner(models.Model):
                 'move_id': move.id,
                 'move_name': move.name,
                 'new_balance': new_balance,
+                'amount_pos': amount_pos,
+                'amount_company': amount_company,
+                'currency_id': pos_currency.id,
+                'company_currency_id': company_currency.id,
             }
         except Exception as e:
             _logger.exception("Error creating customer order")

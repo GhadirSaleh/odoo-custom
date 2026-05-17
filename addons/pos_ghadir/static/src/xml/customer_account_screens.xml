@@ -52,7 +52,8 @@
                             <tr>
                                 <th>Customer</th>
                                 <th>Phone</th>
-                                <th class="text-end">Balance</th>
+                                <th class="text-end">Balance (Company)</th>
+                                <th t-if="isMultiCurrency()" class="text-end">Balance (POS)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,6 +64,11 @@
                                     <td class="text-end">
                                         <span t-att-class="getCustomerBalanceClass(customer.balance)" class="fw-bold">
                                             <t t-esc="formatBalance(customer.balance)"/>
+                                        </span>
+                                    </td>
+                                    <td t-if="isMultiCurrency()" class="text-end">
+                                        <span t-att-class="getCustomerBalanceClass(customer.balance)" class="fw-bold">
+                                            <t t-esc="formatPosBalance(convertToPosCurrency(customer.balance))"/>
                                         </span>
                                     </td>
                                 </tr>
@@ -93,6 +99,9 @@
                             <small class="text-muted">Current Balance</small>
                             <div class="fw-bold fs-3" t-att-class="getBalanceClass()">
                                 <t t-esc="formatBalance(state.balance)"/>
+                            </div>
+                            <div t-if="isMultiCurrency()" class="text-muted small">
+                                <t t-esc="formatPosBalance(getPosBalance())"/>
                             </div>
                         </div>
                     </div>
@@ -129,6 +138,7 @@
                                     <th>Document</th>
                                     <th class="text-end">Debit</th>
                                     <th class="text-end">Credit</th>
+                                    <th t-if="isMultiCurrency()" class="text-end">Amount (POS)</th>
                                     <th class="text-end">Balance</th>
                                 </tr>
                             </thead>
@@ -142,6 +152,10 @@
                                         </td>
                                         <td class="text-end text-danger" t-esc="formatBalance(transaction.debit)"/>
                                         <td class="text-end text-success" t-esc="formatBalance(transaction.credit)"/>
+                                        <td t-if="isMultiCurrency()" class="text-end text-info">
+                                            <t t-if="transaction.currency_id" t-esc="formatPosBalance(transaction.amount_currency)"/>
+                                            <t t-else="">-</t>
+                                        </td>
                                         <td class="text-end" t-att-class="getTransactionBalanceClass(transaction.balance)">
                                             <span t-esc="formatBalance(transaction.balance)"/>
                                         </td>

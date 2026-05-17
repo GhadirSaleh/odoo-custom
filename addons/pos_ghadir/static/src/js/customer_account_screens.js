@@ -113,10 +113,24 @@ export class CustomerAccountListScreen extends Component {
         return formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false });
     }
 
+    formatPosBalance(amount) {
+        return formatCurrency(amount, this.pos.currency.id, { trailingZeros: false });
+    }
+
     getCustomerBalanceClass(balance) {
         if (balance > 0) return "text-danger fw-bold";
         if (balance < 0) return "text-success fw-bold";
         return "text-muted fw-bold";
+    }
+
+    isMultiCurrency() {
+        return this.pos.currency.id !== this.pos.company.currency_id.id;
+    }
+
+    convertToPosCurrency(companyAmount) {
+        const rate = this.pos.models._currencyRates?.[this.pos.currency.id];
+        if (!rate || rate === 0) return companyAmount;
+        return companyAmount / rate;
     }
 }
 
@@ -208,7 +222,13 @@ export class CustomerAccountStatementScreen extends Component {
                 return;
             }
 
-            this.notification.add(_t("Payment recorded: %s", [result.move_name]), { type: "success" });
+            if (this.isMultiCurrency()) {
+                const posFormatted = formatCurrency(result.amount_pos, result.currency_id, { trailingZeros: false });
+                const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+                this.notification.add(_t("Payment recorded: %s (%s)", [posFormatted, companyFormatted]), { type: "success" });
+            } else {
+                this.notification.add(_t("Payment recorded: %s", [result.move_name]), { type: "success" });
+            }
             await this.loadStatement();
         } catch (e) {
             console.error("Error making payment:", e);
@@ -252,10 +272,19 @@ export class CustomerAccountStatementScreen extends Component {
             }
 
             const actionText = type === "adjustment_add" ? _t("added to") : _t("removed from");
-            this.notification.add(
-                _t("%s %s account", [formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false }), actionText]),
-                { type: "success" }
-            );
+            if (this.isMultiCurrency()) {
+                const posFormatted = formatCurrency(result.amount_pos, result.currency_id, { trailingZeros: false });
+                const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+                this.notification.add(
+                    _t("%s (%s) %s account", [posFormatted, companyFormatted, actionText]),
+                    { type: "success" }
+                );
+            } else {
+                this.notification.add(
+                    _t("%s %s account", [formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false }), actionText]),
+                    { type: "success" }
+                );
+            }
             await this.loadStatement();
         } catch (e) {
             console.error("Error creating adjustment:", e);
@@ -281,6 +310,10 @@ export class CustomerAccountStatementScreen extends Component {
         return formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false });
     }
 
+    formatPosBalance(amount) {
+        return formatCurrency(amount, this.pos.currency.id, { trailingZeros: false });
+    }
+
     getBalanceClass() {
         if (this.state.balance > 0) return "text-danger";
         if (this.state.balance < 0) return "text-success";
@@ -291,6 +324,20 @@ export class CustomerAccountStatementScreen extends Component {
         if (balance > 0) return "text-danger";
         if (balance < 0) return "text-success";
         return "text-muted";
+    }
+
+    isMultiCurrency() {
+        return this.pos.currency.id !== this.pos.company.currency_id.id;
+    }
+
+    convertToPosCurrency(companyAmount) {
+        const rate = this.pos.models._currencyRates?.[this.pos.currency.id];
+        if (!rate || rate === 0) return companyAmount;
+        return companyAmount / rate;
+    }
+
+    getPosBalance() {
+        return this.convertToPosCurrency(this.state.balance);
     }
 }
 
