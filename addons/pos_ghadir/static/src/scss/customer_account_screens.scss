@@ -1,0 +1,38 @@
+.customer-account-list-screen,
+.customer-account-statement-screen {
+    font-size: 14px;
+
+    .customer-row:hover {
+        background-color: var(--o-pos-light-color, #f8f9fa);
+    }
+
+    table {
+        th {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+        }
+
+        td {
+            padding: 10px 12px;
+            vertical-align: middle;
+        }
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .btn-lg {
+        font-weight: 600;
+    }
+}
+
+.customer-account-statement-screen {
+    .bg-200 {
+        background-color: var(--o-pos-lighter-color, #e9ecef);
+    }
+}

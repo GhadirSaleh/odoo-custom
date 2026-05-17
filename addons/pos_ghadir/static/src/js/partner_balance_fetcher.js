@@ -72,8 +72,8 @@ patch(PosStore.prototype, {
 
   get partnerBalanceClass() {
     const bal = this._partnerBalance?.balance ?? 0;
-    if (bal > 0) return "text-success";
-    if (bal < 0) return "text-danger";
+    if (bal > 0) return "text-danger";
+    if (bal < 0) return "text-success";
     return "text-muted";
   },
 });
