@@ -29,11 +29,11 @@ function injectPricelistButton() {
   }
 
   pricelistBtn = document.createElement("button");
-  pricelistBtn.className = "btn btn-warning btn-lg lh-lg o_pricelist_toggle";
+  pricelistBtn.className = "btn btn-info btn-lg lh-lg o_pricelist_toggle";
   pricelistBtn.innerHTML =
     '<i class="fa fa-th-list me-2"></i><span class="pricelist-name">Pricelist</span>';
   pricelistBtn.style.cssText =
-    "display: flex; align-items: center; gap: 0.5rem; font-weight: bold;";
+    "display: flex; align-items: center; gap: 0.5rem; font-weight: bold; min-width: 0; overflow: hidden; max-width: 200px; flex-shrink: 1;";
 
   const updateLabel = () => {
     const pricelist = pos.getOrder()?.pricelist_id;

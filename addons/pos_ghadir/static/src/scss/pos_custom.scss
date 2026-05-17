@@ -163,3 +163,24 @@ div#order-date {
     -apple-system,
     sans-serif !important;
 }
+
+/* Pricelist cycler button - responsive shrinking */
+.o_pricelist_toggle {
+  max-width: 200px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex-shrink: 1 !important;
+  flex-grow: 0 !important;
+}
+
+.o_pricelist_toggle .pricelist-name {
+  display: inline-block;
+  max-width: 140px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
