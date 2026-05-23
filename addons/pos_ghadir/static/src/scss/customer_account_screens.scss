@@ -1,0 +1,111 @@
+/**
+ * Customer Account Screens Styles
+ * ===============================
+ *
+ * Styles for the CustomerAccountListScreen and CustomerAccountStatementScreen.
+ * Covers table layout, typography, button sizing, and the NumberPopup numpad.
+ *
+ * Sections:
+ * 1. Shared screen styles (list + statement)
+ * 2. List screen — balance column sizing
+ * 3. Statement screen — balance header, table, buttons, background
+ * 4. NumberPopup numpad — match POS numpad appearance
+ */
+
+/* ============================================================
+   1. Shared styles for both customer account screens
+   ============================================================ */
+.customer-account-list-screen,
+.customer-account-statement-screen {
+    font-size: 14px;
+
+    .customer-row:hover {
+        background-color: var(--o-pos-light-color, #f8f9fa);
+    }
+
+    table {
+        th {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 12px;
+        }
+
+        td {
+            padding: 10px 12px;
+            vertical-align: middle;
+        }
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .btn-lg {
+        font-weight: 600;
+    }
+}
+
+/* ============================================================
+   2. List screen — make balance columns larger for readability
+   ============================================================ */
+.customer-account-list-screen .table td:last-child,
+.customer-account-list-screen .table td:nth-last-child(2) {
+    font-size: 18px;
+}
+
+/* ============================================================
+   3. Statement screen — large balance header, table sizing,
+      prominent action buttons, themed background
+   ============================================================ */
+.customer-account-statement-screen .bg-200 .fs-3 {
+    font-size: 2.5rem !important;
+}
+
+.customer-account-statement-screen .table td.text-end {
+    font-size: 17px;
+}
+
+/* Make payment/withdraw buttons tall and prominent */
+.customer-account-statement-screen .d-flex.gap-2.p-2.border-bottom .btn {
+    min-height: 60px;
+    font-size: 1.3rem;
+}
+
+.customer-account-statement-screen {
+    .bg-200 {
+        background-color: var(--o-pos-lighter-color, #e9ecef);
+    }
+}
+
+/* ============================================================
+   4. NumberPopup numpad — match the POS screen numpad appearance
+      Uses :has() selector to target only dialogs containing a numpad
+   ============================================================ */
+.modal-dialog:has(.numpad) {
+    max-width: 500px !important;
+}
+
+.modal-dialog:has(.numpad) .numpad {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px;
+    padding: 15px;
+}
+
+.modal-dialog:has(.numpad) .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
+}
+
+.modal-dialog .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
+}

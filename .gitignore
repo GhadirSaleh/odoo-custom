@@ -1,0 +1,41 @@
+# -----------------------
+# Odoo runtime / data
+# -----------------------
+*.log
+filestore/
+sessions/
+*.pid
+
+# -----------------------
+# Databases / backups
+# -----------------------
+# *.sql
+# scripts/backups/
+*.dump
+*.backup
+
+# -----------------------
+# Python cache
+# -----------------------
+__pycache__/
+*.pyc
+*.pyo
+
+# -----------------------
+# Virtual env
+# -----------------------
+venv/
+.env
+
+# -----------------------
+# Docker volumes (NEVER commit)
+# -----------------------
+odoo-db-data/
+
+# -----------------------
+# IDE / OS
+# -----------------------
+.vscode/
+.idea/
+.DS_Store
+.aider*

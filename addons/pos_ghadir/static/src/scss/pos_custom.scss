@@ -1,0 +1,302 @@
+/**
+ * POS Custom Styles — pos_ghadir
+ * ===============================
+ *
+ * This file contains all custom CSS overrides for the POS interface.
+ * Organized by feature area. All rules use !important to override Odoo's
+ * default styles — this is necessary because Odoo's styles are loaded
+ * after module styles in many cases.
+ *
+ * Sections:
+ * 1. Tax info hiding
+ * 2. Global button sizing
+ * 3. Customer note styling
+ * 4. Receipt note styling
+ * 5. Order container typography
+ * 6. Price button hiding (complements disable_price_button.js)
+ * 7. Numpad customization (backspace, desktop floating layout)
+ * 8. Receipt element hiding (taxes, change, contact info)
+ * 9. Receipt balance row layout
+ * 10. Receipt header row layout
+ * 11. Receipt total/border styling
+ * 12. Receipt typography and spacing
+ * 13. Pricelist button responsive shrinking
+ */
+
+/* ============================================================
+   1. Hide tax info from the product/order screens
+   ============================================================ */
+.tax-info {
+  display: none !important;
+}
+
+/* ============================================================
+   2. Global button sizing — larger, bolder buttons everywhere
+   ============================================================ */
+.product-screen .btn,
+.pos-topheader .btn,
+.leftpane .btn {
+  font-weight: 500 !important;
+  font-size: 1.2rem !important;
+}
+
+/* ============================================================
+   3. Customer note display — bigger, centered, bordered
+   ============================================================ */
+.product-screen .customer-note {
+  font-size: 1.6rem !important;
+  color: black !important;
+  text-align: center !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  background: none !important;
+  border-top: 0.1rem dotted #000 !important;
+  border-bottom: 0.1rem dotted #000 !important;
+}
+
+/* ============================================================
+   4. Receipt screen note styling — bordered, larger text
+   ============================================================ */
+.pos-receipt .mt-1 {
+  font-size: 1.2rem !important;
+  font: bold !important;
+  text-align: left !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  border-top: 1px solid #000 !important;
+}
+
+/* ============================================================
+   5. Order container typography — slightly bolder text
+   ============================================================ */
+.product-screen .order-container,
+.leftpane .order-container {
+  font-weight: 500 !important;
+  font-size: 1.1rem;
+}
+
+/* ============================================================
+   6. Hide the price input field on the numpad
+      (complements disable_price_button.js which disables the button)
+   ============================================================ */
+.numpad-price {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ============================================================
+   7a. Backspace button — expand to double height in POS numpad
+   ============================================================ */
+.leftpane .subpads .numpad .o_colorlist_item_numpad_color_1 {
+  top: -100%;
+  height: 200%;
+}
+
+/* ============================================================
+   7b. Numpad floating layout — desktop only (>= 992px)
+       Positions the numpad at the bottom center of the screen
+       with a card-like appearance (border, shadow, rounded corners)
+   ============================================================ */
+@media (min-width: 992px) {
+  .leftpane .subpads .numpad {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) scale(0.85) !important;
+    width: 500px !important;
+    z-index: 1000;
+    background: var(--bg-view, #ffffff);
+    padding: 15px;
+    border: 2px solid var(--border-color, #dee2e6);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px;
+  }
+
+  /* Larger numpad buttons for the floating layout */
+  .leftpane .subpads .numpad .numpad-button {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    min-height: 70px;
+    padding: 15px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* ============================================================
+   8. Hide receipt elements: taxes, change, contact info
+      Uncomment .pos-receipt .paymentlines to also hide payment lines
+   ============================================================ */
+.pos-receipt-taxes,
+// .pos-receipt .paymentlines,
+.receipt-change {
+  display: none !important;
+}
+
+/* ============================================================
+   9. Receipt customer/balance section — tighter spacing
+   ============================================================ */
+.pos-receipt-customer,
+.pos-receipt-customer-balance {
+  margin-top: 0 !important;
+  font-weight: 500 !important;
+  align-self: normal !important;
+  font-size: 20px !important;
+}
+
+/* ============================================================
+   10. Receipt balance row — flex layout with space-between
+       Used by حساب سابق and باقي الحساب rows
+   ============================================================ */
+.pos-receipt-balance-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.3rem 0 !important;
+}
+
+.pos-receipt-balance-start {
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+
+/* ============================================================
+   11. Receipt header row — ticket number left, date right
+   ============================================================ */
+.pos-receipt-header-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 75% !important;
+}
+
+.pos-receipt-ticket-side {
+  text-align: left !important;
+}
+
+.pos-receipt-date-side {
+  text-align: right !important;
+}
+
+/* ============================================================
+   12. Receipt balance label/amount — RTL for Arabic, LTR for numbers
+       The bidi-override ensures correct rendering of mixed RTL/LTR text
+   ============================================================ */
+.pos-receipt-balance-label {
+  unicode-bidi: bidi-override !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+}
+
+.pos-receipt-balance-amount {
+  direction: ltr !important;
+  unicode-bidi: bidi-override !important;
+  font-weight: bold !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  font-size: 16px !important;
+}
+
+/* ============================================================
+   13. Receipt total section — borders for visual separation
+   ============================================================ */
+.receipt-total {
+  font-size: 1.2rem;
+  border-top: 3px solid #000 !important;
+}
+
+.receipt-company-total {
+  border-bottom: 3px solid #000 !important;
+  margin-top: 0 !important;
+  padding: 0 0 !important;
+}
+
+/* Hide everything after the after-footer section (removes Odoo branding etc.) */
+.after-footer ~ div {
+  display: none !important;
+}
+
+/* ============================================================
+   14. Receipt typography — system font, tighter spacing
+   ============================================================ */
+.product-screen .product-name {
+  padding-bottom: 2px;
+}
+
+.pos-receipt .product-name {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  font-size: 0.9rem !important;
+}
+
+.pos-receipt .qty {
+  padding-top: 5px;
+  text-align: center;
+}
+
+.pos-receipt .pt-3 {
+  padding: 0 !important;
+}
+
+div#order-date {
+  font-size: 0.8rem !important;
+  font: bold !important;
+}
+
+.order-summary .d-flex {
+  font-size: 1.6rem !important;
+}
+
+.pos-receipt .pos-receipt-contact {
+  display: none !important;
+}
+
+.pos-receipt .d-flex.flex-column.align-items-center {
+  border-bottom: 3px solid #000 !important;
+  align-items: flex-start !important;
+}
+
+.pos-receipt .product-price {
+  padding-top: 5px;
+}
+
+/* Use system font instead of monospace for receipt amounts */
+.pos-receipt .font-monospace {
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+}
+
+/* ============================================================
+   15. Pricelist cycler button — responsive shrinking
+       Allows the button to truncate with ellipsis when space is tight
+   ============================================================ */
+.o_pricelist_toggle {
+  max-width: 200px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  flex-shrink: 1 !important;
+  flex-grow: 0 !important;
+}
+
+.o_pricelist_toggle .pricelist-name {
+  display: inline-block;
+  max-width: 140px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}

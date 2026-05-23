@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Customer Account Screens Templates
+    ==================================
+    Three templates:
+    1. NotesPopup — Dialog for capturing free-text notes (optional or required)
+    2. CustomerAccountListScreen — Searchable table of customers with balances
+    3. CustomerAccountStatementScreen — Per-customer accounting history with
+       payment/withdrawal action buttons
+
+    All strings in these templates are extracted by Odoo's translation system
+    and translated via i18n/ar_001.po.
+-->
+<templates id="template" xml:space="preserve">
+    <!-- NotesPopup: Reusable dialog with textarea and confirm/cancel buttons -->
+    <t t-name="pos_ghadir.NotesPopup">
+        <Dialog size="'md'" title="props.title">
+            <div class="mb-3">
+                <textarea t-model="state.notes" class="form-control" rows="3" t-att-placeholder="props.title"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="confirm">Confirm</button>
+                <button class="btn btn-secondary" t-on-click="cancel">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- CustomerAccountListScreen: Search + table of customers -->
+    <t t-name="pos_ghadir.CustomerAccountListScreen">
+        <div class="customer-account-list-screen d-flex flex-column h-100 bg-view">
+            <!-- Header with back button -->
+            <div class="d-flex align-items-center p-2 border-bottom bg-100">
+                <button class="btn btn-light btn-lg me-2" t-on-click="goBack">
+                    <i class="fa fa-arrow-left"/>
+                </button>
+                <h4 class="mb-0 fw-bold">Customer Accounts</h4>
+            </div>
+            <!-- Search bar -->
+            <div class="p-2 border-bottom">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa fa-search"/></span>
+                    <input type="text" class="form-control" placeholder="Search customers..." t-model="state.query" t-on-input="onSearch"/>
+                </div>
+            </div>
+            <!-- Content: loading spinner, empty state, or customer table -->
+            <div class="flex-grow-1 overflow-auto">
+                <t t-if="state.loading">
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <i class="fa fa-spinner fa-spin fa-3x"/>
+                    </div>
+                </t>
+                <t t-elif="state.customers.length === 0">
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                        <i class="fa fa-users fa-3x mb-3"/>
+                        <p>No customers found</p>
+                    </div>
+                </t>
+                <t t-else="">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-100">
+                            <tr>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th class="text-end">Balance (USD)</th>
+                                <th t-if="isMultiCurrency()" class="text-end">Balance (SYP)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.customers" t-as="customer" t-key="customer.id">
+                                <tr class="customer-row" t-on-click="() => this.openCustomerStatement(customer)" style="cursor: pointer;">
+                                    <td class="fw-bold" t-esc="customer.name"/>
+                                    <td t-esc="customer.phone || customer.mobile || ''"/>
+                                    <td class="text-end">
+                                        <span t-att-class="getCustomerBalanceClass(customer.balance)" class="fw-bold">
+                                            <t t-esc="formatBalance(customer.balance)"/>
+                                        </span>
+                                    </td>
+                                    <td t-if="isMultiCurrency()" class="text-end">
+                                        <span t-att-class="getCustomerBalanceClass(customer.balance)" class="fw-bold">
+                                            <t t-esc="formatPosBalance(convertToPosCurrency(customer.balance))"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- CustomerAccountStatementScreen: Customer info + accounting history table -->
+    <t t-name="pos_ghadir.CustomerAccountStatementScreen">
+        <div class="customer-account-statement-screen d-flex flex-column h-100 bg-view">
+            <!-- Header with back button and customer name -->
+            <div class="d-flex align-items-center p-2 border-bottom bg-100">
+                <button class="btn btn-light btn-lg me-2" t-on-click="goBack">
+                    <i class="fa fa-arrow-left"/>
+                </button>
+                <h4 class="mb-0 fw-bold" t-if="state.customer" t-esc="state.customer.name"/>
+            </div>
+            <t t-if="state.customer">
+                <!-- Customer info card: phone + current balance -->
+                <div class="p-3 border-bottom bg-200">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Phone</small>
+                            <div class="fw-bold" t-esc="state.customer.phone || state.customer.mobile || 'N/A'"/>
+                        </div>
+                        <div class="col-6 text-end">
+                            <small class="text-muted">Current Balance</small>
+                            <div class="fw-bold fs-3" t-att-class="getBalanceClass()">
+                                <t t-esc="formatBalance(state.balance)"/>
+                            </div>
+                            <div t-if="isMultiCurrency()" class="text-muted small">
+                                <t t-esc="formatPosBalance(getPosBalance())"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action buttons: Make Payment / Withdraw -->
+                <div class="d-flex gap-2 p-2 border-bottom">
+                    <button class="btn btn-success flex-fill btn-lg" t-on-click="makePayment">
+                        <i class="fa fa-money me-1"/> Make Payment
+                    </button>
+                    <button class="btn btn-warning flex-fill btn-lg" t-on-click="withdraw">
+                        <i class="fa fa-minus-circle me-1"/> Withdraw
+                    </button>
+                </div>
+                <!-- Accounting history table -->
+                <div class="flex-grow-1 overflow-auto">
+                    <h6 class="p-2 mb-0 border-bottom bg-100 fw-bold">Accounting History</h6>
+                    <t t-if="state.loading">
+                        <div class="d-flex justify-content-center align-items-center p-5">
+                            <i class="fa fa-spinner fa-spin fa-2x"/>
+                        </div>
+                    </t>
+                    <t t-elif="state.transactions.length === 0">
+                        <div class="d-flex flex-column align-items-center justify-content-center p-5 text-muted">
+                            <i class="fa fa-history fa-2x mb-2"/>
+                            <p>No accounting entries yet</p>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-100">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Document</th>
+                                    <th class="text-end">Debit</th>
+                                    <th class="text-end">Credit</th>
+                                    <th t-if="isMultiCurrency()" class="text-end" style="border-left: 1px solid var(--o-pos-border-color, #dee2e6);">Amount (SYP)</th>
+                                    <th class="text-end">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.transactions" t-as="transaction" t-key="transaction.id">
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            <div class="fw-bold" t-esc="formatDate(transaction.date).date"/>
+                                            <div class="text-muted small" t-esc="formatDate(transaction.date).time"/>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold" t-esc="transaction.move_name"/>
+                                            <div class="text-muted small" t-esc="transaction.ref"/>
+                                        </td>
+                                        <td class="text-end text-danger" t-esc="formatBalance(transaction.debit)"/>
+                                        <td class="text-end text-success" t-esc="formatBalance(transaction.credit)"/>
+                                        <td t-if="isMultiCurrency()" class="text-end" style="border-left: 1px solid var(--o-pos-border-color, #dee2e6);" t-att-class="getTransactionBalanceClass(transaction.amount_currency)">
+                                            <t t-if="transaction.currency_id" t-esc="formatPosBalance(transaction.amount_currency)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td class="text-end" t-att-class="getTransactionBalanceClass(transaction.balance)">
+                                            <span t-esc="formatBalance(transaction.balance)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

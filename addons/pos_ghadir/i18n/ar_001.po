@@ -1,0 +1,298 @@
+# Translation of pos_ghadir in ar
+# Copyright (C) 2026
+# This file is distributed under the same license as the pos_ghadir module.
+msgid ""
+msgstr ""
+"Project-Id-Version: pos_ghadir 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-19\n"
+"PO-Revision-Date: 2026-05-19\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Customer Accounts"
+msgstr "حسابات العملاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Search customers..."
+msgstr "البحث عن العملاء..."
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Customer"
+msgstr "العميل"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Phone"
+msgstr "الهاتف"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Balance (USD)"
+msgstr "الرصيد (USD)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Balance (SYP)"
+msgstr "الرصيد (SYP)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "No customers found"
+msgstr "لم يتم العثور على عملاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Current Balance"
+msgstr "الرصيد الحالي"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Make Payment"
+msgstr "دفع مبلغ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Withdraw"
+msgstr "سحب مبلغ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Payment notes (optional)"
+msgstr "ملاحظات الدفع (اختياري)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Withdrawal notes (optional)"
+msgstr "ملاحظات السحب (اختياري)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Accounting History"
+msgstr "السجل المحاسبي"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "No accounting entries yet"
+msgstr "لا توجد قيود محاسبية بعد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Date"
+msgstr "التاريخ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Document"
+msgstr "المستند"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Debit"
+msgstr "مدين"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Credit"
+msgstr "دائن"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Amount (SYP)"
+msgstr "المبلغ (SYP)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Balance"
+msgstr "الرصيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Select Payment Currency"
+msgstr "اختر عملة الدفع"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Select Withdrawal Currency"
+msgstr "اختر عملة السحب"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Enter amount in %s"
+msgstr "أدخل المبلغ بـ %s"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Payment via POS"
+msgstr "دفع عبر نقطة البيع"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Payment of %s recorded for %s\nEquivalent: %s"
+msgstr "تم تسجيل دفعة بقيمة %s للعميل %s\nالمعادل: %s"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Error loading customers"
+msgstr "خطأ في تحميل العملاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Error loading statement"
+msgstr "خطأ في تحميل الكشف"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Customer not found"
+msgstr "لم يتم العثور على العميل"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Error processing payment"
+msgstr "خطأ في معالجة الدفع"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Error processing withdrawal"
+msgstr "خطأ في معالجة السحب"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Withdrawal of %s recorded for %s\nEquivalent: %s"
+msgstr "تم تسجيل سحب بقيمة %s للعميل %s\nالمعادل: %s"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Accounts"
+msgstr "الحسابات"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Clear"
+msgstr "مسح"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Pricelist"
+msgstr "قائمة الأسعار"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/clean_currency_format.js:0
+msgid "Free"
+msgstr "مجاني"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Cancel entire order without confirmation"
+msgstr "إلغاء الطلب بالكامل دون تأكيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Pay in"
+msgstr "ادفع بـ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Withdraw in"
+msgstr "اسحب بـ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Phone"
+msgstr "الهاتف"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "N/A"
+msgstr "غير متوفر"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/customer_account_screens.xml:0
+msgid "Accounting History"
+msgstr "السجل المحاسبي"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/dual_currency_display.xml:0
+msgid "Total(%s)"
+msgstr "المجموع(%s)"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/receipt_partner_balance.xml:0
+msgid "VAT"
+msgstr "ضريبة القيمة المضافة"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/receipt_partner_balance.xml:0
+msgid "Ticket"
+msgstr "فاتورة"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/prevent_empty_payment_line.js:0
+msgid "The order is fully paid."
+msgstr "الفاتورة مسددة بالكامل"

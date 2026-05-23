@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Dual Currency Display Templates
+    ===============================
+    Two template extensions:
+    1. OrderDisplayDualCurrency — Shows converted total on the POS order screen
+       (before the total and subtotal spans)
+    2. OrderReceiptDualCurrency — Shows converted total on the printed receipt
+       (after the receipt-total div, labeled with company currency symbol)
+
+    Both are conditional on order.formattedConvertedTotal being non-empty,
+    which only happens when POS currency differs from company currency and
+    the exchange rate is not 1.
+
+    Arabic labels on the receipt (حساب سابق / باقي الحساب) are in
+    receipt_partner_balance.xml, not here.
+-->
+<templates id="template" xml:space="preserve">
+    <!-- Order screen: show converted total before total and subtotal -->
+    <t t-name="pos_ghadir.OrderDisplayDualCurrency" t-inherit="point_of_sale.OrderDisplay" t-inherit-mode="extension">
+        <xpath expr="//span[@class='total']" position="before">
+            <span t-if="order.formattedConvertedTotal" class="converted-total text-muted me-1" dir="ltr">
+                <t t-out="order.formattedConvertedTotal"/>
+            </span>
+        </xpath>
+        <xpath expr="//span[@class='subtotal']" position="before">
+            <span t-if="order.formattedConvertedTotal" class="converted-subtotal text-muted me-1" dir="ltr">
+                <t t-out="order.formattedConvertedTotal"/>
+            </span>
+        </xpath>
+    </t>
+
+    <!-- Receipt: show converted total after the main total -->
+    <t t-name="pos_ghadir.OrderReceiptDualCurrency" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'receipt-total')]" position="after">
+            <div t-if="order.formattedConvertedTotal" class="pos-receipt-amount receipt-company-total">
+                <span class="label-company-total">Total(<t t-out="order.company?.currency_id?.symbol"/>)</span>
+                <span t-out="order.formattedConvertedTotal" class="pos-receipt-right-align font-monospace"/>
+            </div>
+        </xpath>
+    </t>
+</templates>
