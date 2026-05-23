@@ -31,6 +31,7 @@ services:
   odoo:
     image: odoo:19
     entrypoint: /custom-entrypoint.sh
+    command: odoo --config=/etc/odoo/odoo.conf
     restart: unless-stopped
     depends_on:
       db:
