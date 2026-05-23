@@ -232,7 +232,7 @@ On subsequent starts, the check passes and init is skipped.
 
 `config/odoo.conf` sets `addons_path = /mnt/extra-addons` (mapped from the `addons/` directory) and `workers = 2`. The `command:` in `docker-compose.yml` passes `--config=/etc/odoo/odoo.conf` explicitly (overridden in dev with `--dev=all` via `docker-compose.override.yml`).
 
-The admin password hash is a PBKDF2-SHA512 hash of `"hala"` — used to log into the database manager at `/web/database/manager`. To reset, replace the hash with a plaintext password (e.g. `admin_passwd = admin`) and Odoo will prompt for a password change.
+The admin password hash is a PBKDF2-SHA512 hash of `"admin"` — used to log into the database manager at `/web/database/manager`. Odoo detects the password is still the default `admin` (hash or plaintext) and prompts for a change on first visit. To bypass the prompt, use a different password.
 
 ---
 

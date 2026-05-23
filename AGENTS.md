@@ -34,7 +34,7 @@ docker compose exec odoo grep -r "def create" /usr/lib/python3/dist-packages/odo
 - **`docker-compose.override.yml`** — auto-merged in dev: config/addons writable, passes `--dev=all` for hot-reload. Absent in production.
 - **`scripts/custom-entrypoint.sh`** — waits for Postgres, runs one-shot init (`-i base --workers=0 --stop-after-init`) on first start, then hands off to the official `/entrypoint.sh`. `--workers=0` is critical — without it init can leave the DB half-initialised.
 - **Entrypoint env vars**: reads `HOST`, `USER`, `PASSWORD`, `PORT`, `DB` (short names set by Compose `environment:` block), NOT `POSTGRES_*` variables.
-- **`config/odoo.conf`**: `addons_path = /mnt/extra-addons`, `workers = 2`, `proxy_mode = True`. Admin password hash is PBKDF2 of `"hala"` (pre-committed hash). Change to plaintext `admin` if you want Odoo to prompt for a new password on first DB manager visit.
+- **`config/odoo.conf`**: `addons_path = /mnt/extra-addons`, `workers = 2`, `proxy_mode = True`. Admin password hash is PBKDF2 of `"admin"` (pre-committed hash). Odoo prompts for a new password on first DB manager visit when the password resolves to `admin` (hash or plaintext).
 - **Init is one-shot**: skips re-init once `base` module is installed. Force re-init: `docker compose down -v`.
 - **No CI / lint tooling** — Odoo tests via `--test-enable`.
 - **Odoo source lives in the container** at `/usr/lib/python3/dist-packages/odoo/` — useful for looking up base model APIs, reading core module implementations, or finding method signatures. Access via `docker compose exec odoo bash` or one-shot `docker compose exec odoo grep ...`.
@@ -56,5 +56,5 @@ docker compose exec odoo grep -r "def create" /usr/lib/python3/dist-packages/odo
 - Code changes reflect instantly in dev (bind-mount). No rebuild needed.
 - Backup/restore via Odoo's DB manager at `/web/database/manager`, not shell scripts.
 - First-run init uses `--without-demo`. Re-init requires `docker compose down -v`.
-- DB manager admin password is `"hala"` (or whichever plaintext you set in `admin_passwd`).
+- DB manager admin password is `"admin"` (or whichever value you set in `admin_passwd`).
 - **Syriatel mobile (AS48065)** cannot reach `82.137.203.114` (broken peering to STE). Workaround: VPN or Cloudflare Tunnel.
