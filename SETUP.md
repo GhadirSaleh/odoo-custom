@@ -124,20 +124,19 @@ sudo systemctl reload nginx
 
 | File | Purpose |
 |---|---|
-| `docker-compose.yml` | Production baseline (image, read-only mounts) |
-| `docker-compose.override.yml` | Dev overrides (writable mounts, `--dev=all`) |
+| `docker-compose.yml` | Production baseline (image, read-only mounts, `command: odoo --config=/etc/odoo/odoo.conf`) |
+| `docker-compose.override.yml` | Dev overrides (writable mounts, `command: odoo --config=/etc/odoo/odoo.conf --dev=all`) |
 | `config/odoo.conf` | Odoo configuration |
 | `config/odoo-nginx-config` | Nginx server blocks (copy to host) |
 | `.env` | Secrets (gitignored, copy from `.env.example`) |
 | `scripts/custom-entrypoint.sh` | One-shot DB init wrapper |
-| `scripts/backups/` | Database backups |
 
 ### Services
 
 1. **PostgreSQL 15-Alpine** — database
 2. **Odoo 19** — application server with `--proxy-mode`
 
-### Addons (in `addons/`)
+### Addons (`addons/`)
 
 **Custom:**
 - `pos_ghadir` — POS multi-currency, receipt UI (`auto_install: True`)

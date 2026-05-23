@@ -174,8 +174,10 @@ Code changes reflect instantly. No rebuild is ever needed.
 On a server where `docker-compose.override.yml` is absent, the baseline file is used on its own — config and addons are mounted read-only. Deploy with:
 
 ```bash
-docker compose -f docker-compose.yml up -d
+docker compose up -d
 ```
+
+The base `docker-compose.yml` includes `command: odoo --config=/etc/odoo/odoo.conf` so Odoo always starts with an explicit config path. No flag needed.
 
 ### Longpolling & reverse proxy
 
@@ -228,7 +230,9 @@ On subsequent starts, the check passes and init is skipped.
 
 ### Configuration
 
-`config/odoo.conf` sets `addons_path = /mnt/extra-addons` (mapped from the `addons/` directory) and `workers = 2`. The admin password hash is a PBKDF2 of `"admin"` — used to log into the database manager at `/web/database/manager`.
+`config/odoo.conf` sets `addons_path = /mnt/extra-addons` (mapped from the `addons/` directory) and `workers = 2`. The `command:` in `docker-compose.yml` passes `--config=/etc/odoo/odoo.conf` explicitly (overridden in dev with `--dev=all` via `docker-compose.override.yml`).
+
+The admin password hash is a PBKDF2-SHA512 hash of `"hala"` — used to log into the database manager at `/web/database/manager`. To reset, replace the hash with a plaintext password (e.g. `admin_passwd = admin`) and Odoo will prompt for a password change.
 
 ---
 
