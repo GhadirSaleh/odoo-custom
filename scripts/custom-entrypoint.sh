@@ -18,6 +18,9 @@ until pg_isready -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -q; do
 done
 echo "PostgreSQL is ready."
 
+# Ensure config is writable (for saving admin password changes via UI)
+chmod o+w /etc/odoo /etc/odoo/odoo.conf 2>/dev/null || true
+
 IS_INITIALIZED=$(PGPASSWORD="${DB_PASSWORD}" psql \
     -h "${DB_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_NAME}" \
     -tAc "

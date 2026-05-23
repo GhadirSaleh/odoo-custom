@@ -215,6 +215,7 @@ odoo-custom/
 The Odoo service uses the official `odoo:19` Docker image with a custom entrypoint wrapper (`scripts/custom-entrypoint.sh`). On each start:
 
 1. **Wait for Postgres** — polls `pg_isready` until the database is accepting connections.
+2. **Fix config permissions** — runs `chmod o+w` on the config so Odoo can save password changes via the UI.
 2. **Check if initialised** — queries `ir_module_module` for the `base` module's state.
 3. **Auto-init on first run** — if `base` is not installed, runs a one-shot initialisation:
 

@@ -32,7 +32,7 @@ docker compose exec odoo grep -r "def create" /usr/lib/python3/dist-packages/odo
 ## Architecture
 - **`docker-compose.yml`** — production baseline. Uses `image: odoo:19`, mounts config/addons read-only, passes `command: odoo --config=/etc/odoo/odoo.conf` for explicit config path.
 - **`docker-compose.override.yml`** — auto-merged in dev: config/addons writable, passes `--dev=all` for hot-reload. Absent in production.
-- **`scripts/custom-entrypoint.sh`** — waits for Postgres, runs one-shot init (`-i base --workers=0 --stop-after-init`) on first start, then hands off to the official `/entrypoint.sh`. `--workers=0` is critical — without it init can leave the DB half-initialised.
+- **`scripts/custom-entrypoint.sh`** — waits for Postgres, auto-fixes config write permissions (`chmod o+w`), runs one-shot init (`-i base --workers=0 --stop-after-init`) on first start, then hands off to the official `/entrypoint.sh`. `--workers=0` is critical — without it init can leave the DB half-initialised.
 - **Entrypoint env vars**: reads `HOST`, `USER`, `PASSWORD`, `PORT`, `DB` (short names set by Compose `environment:` block), NOT `POSTGRES_*` variables. These are passed as `--db_*` CLI args to the init command, and also detected by the official entrypoint when `db_*` are absent from `odoo.conf`.
 - **`config/odoo.conf`**: `addons_path = /mnt/extra-addons`, `workers = 2`, `proxy_mode = True`. No `db_*` settings — they come from env vars via the official entrypoint as CLI args. Admin password hash is PBKDF2 of `"hala"` — works silently, no prompt.
 - **Init is one-shot**: skips re-init once `base` module is installed. Force re-init: `docker compose down -v`.
