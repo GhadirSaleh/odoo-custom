@@ -39,7 +39,11 @@ if [ "${IS_INITIALIZED}" != "true" ]; then
         -i base \
         --without-demo \
         --workers=0 \
-        --stop-after-init
+        --stop-after-init \
+        --db_host "${DB_HOST}" \
+        --db_port "${DB_PORT}" \
+        --db_user "${DB_USER}" \
+        --db_password "${DB_PASSWORD}"
     echo "Schema initialised."
 else
     echo "Database already initialised — skipping init."
