@@ -59,7 +59,8 @@ Internet
 
 ### OS
 
-(Not documented — fill in: `cat /etc/os-release`)
+The host runs Debian 12 (bookworm) — verified with `cat /etc/os-release`.
+Docker Engine was installed via the official convenience script at `get.docker.com`.
 
 ### Nginx
 

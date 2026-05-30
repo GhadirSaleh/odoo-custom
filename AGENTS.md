@@ -26,7 +26,11 @@ docker compose up      # auto-inits DB on first run
 
 Looking up Odoo's internal APIs:
 ```bash
-docker compose exec odoo grep -r "def create" /usr/lib/python3/dist-packages/odoo/ --include="*.py" | grep "class.*Model"
+# Search for model method definitions (Odoo 19 style)
+docker compose exec odoo grep -rn "@api.model\|def search\|def _search\|def name_get\|def name_search" /usr/lib/python3/dist-packages/odoo/models.py --include="*.py"
+
+# Search across all Odoo source for a method name
+docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-packages/odoo/ --include="*.py"
 ```
 
 ## Architecture

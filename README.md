@@ -3,7 +3,7 @@
 [![Odoo 19](https://img.shields.io/badge/Odoo-19.0-7C7BAD?logo=odoo)](https://www.odoo.com)
 [![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)](https://www.postgresql.org)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)](https://www.docker.com)
-[![License](https://img.shields.io/badge/License-LGPL--3-blue)](https://www.gnu.org/licenses/lgpl-3.0.html)
+[![License](https://img.shields.io/badge/License-AGPL--3-blue)](https://www.gnu.org/licenses/agpl-3.0.html)
 
 Odoo 19 with custom Point of Sale enhancements, a full accounting suite, and the MUK web theme. The entire stack — database, schema init, and application — comes up with a single command on any machine that has Docker installed.
 
@@ -216,7 +216,7 @@ The Odoo service uses the official `odoo:19` Docker image with a custom entrypoi
 
 1. **Wait for Postgres** — polls `pg_isready` until the database is accepting connections.
 2. **Fix config permissions** — runs `chmod o+w` on the config so Odoo can save password changes via the UI.
-2. **Check if initialised** — queries `ir_module_module` for the `base` module's state.
+3. **Check if initialised** — queries `ir_module_module` for the `base` module's state.
 3. **Auto-init on first run** — if `base` is not installed, runs a one-shot initialisation:
 
    ```bash
@@ -239,4 +239,4 @@ The admin password is the PBKDF2-SHA512 hash of `"hala"` — used to log into th
 
 ## License
 
-Distributed under the [Odoo Community License (LGPL-3)](https://www.gnu.org/licenses/lgpl-3.0.html).
+The `pos_ghadir` module is distributed under AGPL-3. Third-party modules carry their own licenses. This project's infrastructure code (Docker Compose, config, scripts) is provided under the [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.html).

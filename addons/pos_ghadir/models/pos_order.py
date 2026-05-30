@@ -30,6 +30,8 @@ import logging
 import time
 
 from odoo import api, models
+from odoo.exceptions import UserError
+from odoo.tools import _
 
 _logger = logging.getLogger(__name__)
 
@@ -66,8 +68,6 @@ class PosOrder(models.Model):
         # Step 1: Lock records and set order state to 'done'
         t1 = time.perf_counter()
         if not self.env['res.company']._with_locked_records(self, allow_raising=False):
-            from odoo.exceptions import UserError
-            from odoo.tools import _
             raise UserError(_("Some orders are already being invoiced. Please try again later."))
         self.state = 'done'
         _logger.info("⏱️ POS order #%d:   lock+state = %.3fs", self.id, time.perf_counter() - t1)
