@@ -17,8 +17,8 @@ docker compose up      # auto-inits DB on first run
 | Start (foreground) | `docker compose up` |
 | Start (background) | `docker compose up -d` |
 | Shell into container | `docker compose exec odoo bash` |
-| Update a module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --stop-after-init` |
-| Run module tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --test-enable --stop-after-init` |
+| Update a module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --stop-after-init --workers=0 --http-port=8067` |
+| Run module tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --test-enable --stop-after-init --workers=0 --http-port=8067` |
 | Scaffold new addon | `docker compose exec odoo odoo scaffold <name> /mnt/extra-addons` |
 | Connect to database | `docker compose exec db psql -U odoo odoo` |
 | View logs | `docker compose logs -f odoo` |
@@ -62,3 +62,4 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 - First-run init uses `--without-demo`. Re-init requires `docker compose down -v`.
 - DB manager admin password is `"hala"` (or whichever value you set in `admin_passwd`).
 - **Syriatel mobile (AS48065)** cannot reach `82.137.203.114` (broken peering to STE). Workaround: VPN or Cloudflare Tunnel.
+- **Module update commands need `--db_host=db --db_user=odoo --db_password=odoo`** because `odoo.conf` has no `db_*` settings (they're passed via the entrypoint, which `docker compose exec odoo odoo ...` bypasses). Also use `--workers=0 --http-port=8067` to avoid port conflicts with the running server.

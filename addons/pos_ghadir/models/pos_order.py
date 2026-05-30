@@ -9,8 +9,11 @@ Model: pos.order (inherit)
    receipts re-print with the same values regardless of later accounting changes.
 
    Fields:
-   - partner_previous_balance: Customer's (credit - debit) at order creation
-   - partner_remaining_balance:  partner_previous_balance + amount_total
+   - partner_previous_balance: Customer's (credit - debit) at order creation,
+     captured BEFORE the invoice is created (avoids including current order).
+   - partner_remaining_balance: For credit/partial-pay orders = previous_balance
+     + order_total (converted to company currency). For fully-paid cash orders
+     = previous_balance (balance unchanged).
 
 2. Performance Instrumentation (existing)
    Timing logs on key sync/processing methods with ⏱️ prefix.
