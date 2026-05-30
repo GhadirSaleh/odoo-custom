@@ -77,6 +77,7 @@ Usage
             'pos_ghadir/static/src/js/auto_enable_invoice.js',
             'pos_ghadir/static/src/js/disable_auto_invoice_download.js',
             'pos_ghadir/static/src/js/prevent_empty_payment_line.js',
+            'pos_ghadir/static/src/js/partner_balance_snapshot.js',
             'pos_ghadir/static/src/xml/receipt_partner_balance.xml',
             'pos_ghadir/static/src/xml/dual_currency_display.xml',
             'pos_ghadir/static/src/xml/customer_account_screens.xml',

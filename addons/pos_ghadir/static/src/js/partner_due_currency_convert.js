@@ -26,6 +26,9 @@
  * - Rates are fetched once on setup, and refreshed when calculatePartnerDue
  *   is called (e.g., after currency changes)
  *
+ * Prefers the stored backend field `partner_remaining_balance` when available
+ * (re-printed receipts) so the value is always the exact snapshot from order time.
+ *
  * Used by: receipt_partner_balance.xml (باقي الحساب display)
  */
 
@@ -36,6 +39,11 @@ import { getCurrencyRates } from "@web/core/currency";
 
 patch(PosOrder.prototype, {
     get convertedPartnerDue() {
+        // Prefer the backend snapshot — exact value from order creation time
+        if (this.partner_remaining_balance !== undefined) {
+            return this.partner_remaining_balance;
+        }
+
         const partnerDue = this.partnerBalance ?? 0;
 
         // Use totalDue because باقي الحساب must reflect the customer's

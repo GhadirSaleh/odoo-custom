@@ -91,8 +91,11 @@ patch(PosStore.prototype, {
                 const balance = credit - debit;
                 this._partnerBalance.balance = balance;
 
-                // Also store on the order so receipt templates can access it
-                if (order) {
+                // Also store on the order so receipt templates can access it.
+                // But only if there's no stored snapshot — a backend snapshot
+                // (partner_previous_balance) represents the exact balance at
+                // order creation time and must not be overwritten by live data.
+                if (order && order.partner_previous_balance === undefined) {
                     order.partnerBalance = balance;
                 }
             }
