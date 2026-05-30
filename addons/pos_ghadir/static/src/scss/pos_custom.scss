@@ -184,24 +184,27 @@
 }
 
 /* ============================================================
-   12. Receipt balance label/amount — RTL for Arabic, LTR for numbers
-       The bidi-override ensures correct rendering of mixed RTL/LTR text
+   12. Receipt balance label/amount — RTL labels, LTR numbers
+       The label is pure Arabic so no override needed.
+       The amount span uses an LTR embedding so digits are never
+       reversed, with the currency symbol placed before the number
+       for correct Arabic receipt display.
    ============================================================ */
 .pos-receipt-balance-label {
-  unicode-bidi: bidi-override !important;
   font-weight: bold !important;
   font-size: 16px !important;
 }
 
 .pos-receipt-balance-amount {
   direction: ltr !important;
-  unicode-bidi: bidi-override !important;
+  unicode-bidi: embed !important;
   font-weight: bold !important;
   font-family:
     system-ui,
     -apple-system,
     sans-serif !important;
   font-size: 16px !important;
+  white-space: nowrap;
 }
 
 /* ============================================================

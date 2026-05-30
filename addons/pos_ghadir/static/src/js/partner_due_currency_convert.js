@@ -18,14 +18,13 @@
  *    in models._currencyRates for use by all currency-related patches.
  *
  * Conversion logic:
+ * - Uses `totalDue` because باقي الحساب must reflect the customer's final
+ *   balance after this transaction (previous balance + full order amount),
+ *   regardless of payment method or amount paid.
  * - If POS currency === company currency: no conversion needed
  * - If different: multiply POS amounts by the exchange rate
  * - Rates are fetched once on setup, and refreshed when calculatePartnerDue
  *   is called (e.g., after currency changes)
- *
- * Special case: If the order is finalized and fully paid with cash,
- * the order total is excluded from the calculation (only partner balance
- * is shown).
  *
  * Used by: receipt_partner_balance.xml (باقي الحساب display)
  */
@@ -38,20 +37,11 @@ import { getCurrencyRates } from "@web/core/currency";
 patch(PosOrder.prototype, {
     get convertedPartnerDue() {
         const partnerDue = this.partnerBalance ?? 0;
-        let orderTotal = 0;
 
-        // Exclude order total if fully finalized and paid with cash
-        const isFinalized = this.finalized;
-        const paidFullyWithCash =
-            isFinalized &&
-            this.payment_ids.length > 0 &&
-            this.payment_ids.every(
-                (p) => p.isDone() && p.payment_method_id.is_cash_count
-            );
-
-        if (!paidFullyWithCash) {
-            orderTotal = this.totalDue ?? 0;
-        }
+        // Use totalDue because باقي الحساب must reflect the customer's
+        // final balance after this transaction: previous balance + full
+        // order amount — regardless of payment method or amount paid.
+        const orderTotal = this.totalDue ?? 0;
 
         const posCurrency = this.currency;
         const companyCurrency = this.company?.currency_id;

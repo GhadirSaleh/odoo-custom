@@ -61,7 +61,7 @@
                             <tr>
                                 <th>Customer</th>
                                 <th>Phone</th>
-                                <th class="text-end">Balance (USD)</th>
+                                <th class="text-end">Balance (company currency)</th>
                                 <th t-if="isMultiCurrency()" class="text-end">Balance (SYP)</th>
                             </tr>
                         </thead>

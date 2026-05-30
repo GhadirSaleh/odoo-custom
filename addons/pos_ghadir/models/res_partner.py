@@ -51,8 +51,12 @@ Multi-currency logic:
   3. Single currency: no conversion needed, use amounts as-is.
 """
 
+import logging
+
 from odoo import models, fields, api
 from odoo.orm.commands import Command
+
+_logger = logging.getLogger(__name__)
 
 
 class ResPartner(models.Model):
@@ -198,9 +202,6 @@ class ResPartner(models.Model):
             dict with move_id, move_name, new_balance, amount_paid, amount_company,
             currency_id, company_currency_id — or {'error': message} on failure.
         """
-        import logging
-        _logger = logging.getLogger(__name__)
-
         try:
             partner = self.env['res.partner'].sudo().browse(partner_id)
             if not partner.exists():

@@ -18,8 +18,7 @@
     Both balance rows use RTL direction for the Arabic labels and LTR for the
     amounts (see pos_custom.scss: .pos-receipt-balance-label / .pos-receipt-balance-amount).
 
-    The dollar sign ($) after the amount is hardcoded — replace with the actual
-    currency symbol if needed.
+    The currency symbol is read from company.currency_id.symbol at render time.
 -->
 <templates id="template" xml:space="preserve">
     <!-- Replace default ticket/date header with custom flex layout -->
@@ -45,9 +44,9 @@
             <div t-if="order.partnerBalance !== undefined and order.partnerBalance !== null and order.partnerBalance == order.partnerBalance and order.partnerBalance != 0" class="pos-receipt-customer-balance mt-2 pos-receipt-balance-row pos-receipt-balance-start">
                 <span class="pos-receipt-balance-label">حساب سابق</span>
                 <span class="pos-receipt-balance-amount">
+                    <t t-esc="order.company?.currency_id?.symbol or '$'"/>
                     <t t-if="order.partnerBalance &lt; 0">-</t>
                     <t t-esc="Math.abs(order.partnerBalance)"/>
-$
                 </span>
             </div>
         </xpath>
@@ -60,9 +59,9 @@ $
             <div t-if="order.convertedPartnerDue !== undefined and order.convertedPartnerDue !== null and order.convertedPartnerDue != 0" class="pos-receipt-customer-balance mt-2 text-center pos-receipt-balance-row">
                 <span class="pos-receipt-balance-label">باقي الحساب</span>
                 <span class="pos-receipt-balance-amount">
+                    <t t-esc="order.company?.currency_id?.symbol or '$'"/>
                     <t t-if="order.convertedPartnerDue &lt; 0">-</t>
                     <t t-esc="Math.abs(order.convertedPartnerDue)"/>
-$
                 </span>
             </div>
         </xpath>
