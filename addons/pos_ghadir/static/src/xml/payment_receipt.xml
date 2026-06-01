@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="pos_ghadir.PaymentReceipt">
+        <div class="pos-receipt pos-receipt-payment">
+            <ReceiptHeader order="props.receipt.order" />
+
+            <div class="pos-receipt-customer mt-2">
+                <div t-esc="props.receipt.customerName"/>
+                <div t-if="props.receipt.customerPhone" class="text-muted small" t-esc="props.receipt.customerPhone"/>
+            </div>
+            <div class="pos-receipt-separator-thick"></div>
+
+            <div class="pos-receipt-balance-row mt-2">
+                <span class="pos-receipt-balance-label">Previous Balance</span>
+                <span class="pos-receipt-balance-amount" t-out="props.receipt.previousBalance"/>
+            </div>
+
+            <div style="text-align: center !important; font-weight: bold !important; font-size: 1.1rem; margin: 4px 0;">
+                <t t-esc="props.receipt.transactionType"/>
+            </div>
+
+            <div class="pos-receipt-balance-row">
+                <span class="pos-receipt-balance-label">Amount</span>
+                <span class="pos-receipt-balance-amount" t-out="props.receipt.amount"/>
+            </div>
+
+            <div t-if="props.receipt.amountCompany" class="pos-receipt-balance-row">
+                <span class="pos-receipt-balance-label">Equivalent</span>
+                <span class="pos-receipt-balance-amount" t-out="props.receipt.amountCompany"/>
+            </div>
+
+            <div class="pos-receipt-separator-thick"></div>
+
+            <div class="pos-receipt-balance-row">
+                <span class="pos-receipt-balance-label">New Balance</span>
+                <span class="pos-receipt-balance-amount fw-bold" t-out="props.receipt.newBalance"/>
+            </div>
+
+            <div t-if="props.receipt.notes" class="pos-receipt-balance-row mt-2">
+                <span class="pos-receipt-balance-label">Notes</span>
+                <span class="pos-receipt-balance-amount small" t-esc="props.receipt.notes"/>
+            </div>
+
+            <div class="receipt-company-total"></div>
+
+            <t t-set="company" t-value="props.receipt.order.company"/>
+            <div class="pos-receipt-footer-name text-center fw-bold">
+                <t t-out="company.name"/>
+            </div>
+            <div class="d-flex gap-2 pt-1">
+                <div class="w-50 text-break text-start" style="font-size: 75%;">
+                    <div>
+                        <t t-if="company.street" t-out="company.street"/>
+                        <t t-if="company.city" t-out="', ' + company.city"/>
+                        <t t-if="company.state_id?.code" t-out="', ' + company.state_id.code"/>
+                        <t t-if="company.zip" t-out="', ' + company.zip"/>
+                    </div>
+                </div>
+                <div class="w-50 text-break text-end" style="font-size: 75%;">
+                    <div>
+                        <div t-if="company.vat">VAT: <t t-out="company.vat"/></div>
+                        <div t-if="company.phone">Tel: <t t-out="company.phone"/></div>
+                        <div t-if="company.email" t-out="company.email"/>
+                        <div t-if="company.website" t-out="company.website"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+    <t t-name="pos_ghadir.PaymentReceiptPopup">
+        <Dialog title="props.receipt.transactionType" size="'lg'">
+            <div class="d-flex justify-content-center" style="max-height: 65vh; overflow-y: auto; padding: 0;">
+                <div class="pos-receipt-print" style="width: 512px; color: #000;">
+                    <PaymentReceipt receipt="props.receipt" />
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="printReceipt">
+                    <i class="fa fa-print me-1"/> Print
+                </button>
+                <button class="btn btn-secondary" t-on-click="close">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

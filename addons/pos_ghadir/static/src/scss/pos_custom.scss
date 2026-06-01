@@ -61,13 +61,13 @@
    ============================================================ */
 .pos-receipt .mt-1 {
   font-size: 1.2rem !important;
-  font: bold !important;
+  font-weight: bold !important;
   text-align: left !important;
   font-family:
     system-ui,
     -apple-system,
     sans-serif !important;
-  border-top: 1px solid #000 !important;
+  border-top: 2px solid #000 !important;
 }
 
 /* ============================================================
@@ -226,9 +226,24 @@
   display: none !important;
 }
 
+/* Company name in receipt footer — centered, bold, larger */
+.pos-receipt .pos-receipt-footer-name {
+  font-size: 1.4rem !important;
+}
+
+/* Light separator line inside receipt */
+.pos-receipt .pos-receipt-separator {
+  border-top: 2px solid #888 !important;
+  margin: 6px 0 !important;
+}
+.pos-receipt .pos-receipt-separator-thick {
+  border-top: 3px solid #000 !important;
+  margin: 6px 0 !important;
+}
+
 /* ============================================================
-   14. Receipt typography — system font, tighter spacing
-   ============================================================ */
+    14. Receipt typography — system font, tighter spacing
+    ============================================================ */
 .product-screen .product-name {
   padding-bottom: 2px;
 }
@@ -252,7 +267,7 @@
 
 div#order-date {
   font-size: 0.8rem !important;
-  font: bold !important;
+  font-weight: bold !important;
 }
 
 .order-summary .d-flex {
@@ -266,6 +281,10 @@ div#order-date {
 .pos-receipt .d-flex.flex-column.align-items-center {
   border-bottom: 3px solid #000 !important;
   align-items: flex-start !important;
+}
+
+.pos-receipt-payment .d-flex.flex-column.align-items-center {
+  border-bottom: none !important;
 }
 
 .pos-receipt .product-price {

@@ -52,7 +52,7 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 
 ## Add-ons
 - **`addons/`** — 17 modules: custom + third-party (no Odoo core).
-- **Custom modules**: `pos_ghadir` (POS UI, multi-currency, receipt) has `auto_install: True` — activates automatically when deps are present.
+- **Custom modules**: `pos_ghadir` (POS UI, multi-currency, receipt, customer account management, payment receipt popup) has `auto_install: True` — activates automatically when deps are present.
 - **Third-party suites**: `om_account_*` + `om_fiscal_year` + `om_recurring_payments` (accounting), `accounting_pdf_reports`, `muk_web_*` (UI theme), `bi_pos_default_customer`.
 
 ## Gotchas
@@ -63,3 +63,5 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 - DB manager admin password is `"hala"` (or whichever value you set in `admin_passwd`).
 - **Syriatel mobile (AS48065)** cannot reach `82.137.203.114` (broken peering to STE). Workaround: VPN or Cloudflare Tunnel.
 - **Module update commands need `--db_host=db --db_user=odoo --db_password=odoo`** because `odoo.conf` has no `db_*` settings (they're passed via the entrypoint, which `docker compose exec odoo odoo ...` bypasses). Also use `--workers=0 --http-port=8067` to avoid port conflicts with the running server.
+- **Custom POS pages need `static storeOnOrder = false`** to allow the Register button to navigate back to ProductScreen. Without it, the order remembers the custom page and Register tries to go back to it instead of ProductScreen.
+- **Payment receipt popup** (`payment_receipt_popup.js`) uses `makeAwaitable` to gate order refresh behind popup close. Dummy `pos.order` record is deleted after popup closes.

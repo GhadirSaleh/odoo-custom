@@ -296,3 +296,45 @@ msgstr "فاتورة"
 #: code:addons/pos_ghadir/static/src/js/prevent_empty_payment_line.js:0
 msgid "The order is fully paid."
 msgstr "الفاتورة مسددة بالكامل"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Amount"
+msgstr "المبلغ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Equivalent"
+msgstr "المعادل"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Notes"
+msgstr "ملاحظات"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Previous Balance"
+msgstr "الرصيد السابق"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "New Balance"
+msgstr "الرصيد الجديد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Payment"
+msgstr "دفع"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Withdrawal"
+msgstr "سحب"
