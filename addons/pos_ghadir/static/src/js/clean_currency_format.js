@@ -25,12 +25,19 @@
 import { patch } from "@web/core/utils/patch";
 import { PosOrderAccounting } from "@point_of_sale/app/models/accounting/pos_order_accounting";
 import { PosOrderlineAccounting } from "@point_of_sale/app/models/accounting/pos_order_line_accounting";
-import { formatCurrency } from "@web/core/currency";
+import { PosPayment } from "@point_of_sale/app/models/pos_payment";
+import { formatCurrency, getCurrency } from "@web/core/currency";
 import { _t } from "@web/core/l10n/translation";
 
 // Helper function to format currency without trailing zeros (.00)
+// Places the symbol after the number: "1,234.56 $" instead of "$ 1,234.56"
 function formatCurrencyNoTrailingZeros(amount, currencyId) {
-    return formatCurrency(amount, currencyId, { trailingZeros: false });
+    const formatted = formatCurrency(amount, currencyId, { trailingZeros: false });
+    const currency = getCurrency(currencyId);
+    if (!currency) return formatted;
+    const symbol = currency.symbol || "";
+    const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
+    return `${numberPart} ${symbol}`;
 }
 
 // Patch order-level price formatters
@@ -65,5 +72,12 @@ patch(PosOrderlineAccounting.prototype, {
     },
     get currencyDisplayPriceUnitExcl() {
         return formatCurrencyNoTrailingZeros(this.displayPriceUnitExcl, this.currency.id);
+    },
+});
+
+// Patch payment lines to format amounts without trailing zeros
+patch(PosPayment.prototype, {
+    get formattedAmount() {
+        return formatCurrencyNoTrailingZeros(this.getAmount(), this.pos_order_id.currency.id);
     },
 });

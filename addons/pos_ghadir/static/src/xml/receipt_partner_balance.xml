@@ -50,6 +50,13 @@
         </xpath>
     </t>
 
+    <!-- Payment Line Amount — use formattedAmount getter (no trailing zeros) -->
+    <t t-name="pos_ghadir.PaymentLineAmount" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'paymentlines')]/span[contains(@class, 'pos-receipt-right-align')]" position="replace">
+            <span t-out="line.formattedAmount" class="pos-receipt-right-align font-monospace"/>
+        </xpath>
+    </t>
+
     <!-- Remaining Balance (باقي الحساب) — shown after order items -->
     <t t-name="pos_ghadir.OrderReceiptBalance" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
         <xpath expr="//div[@class='before-footer']" position="after">

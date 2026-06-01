@@ -47,11 +47,19 @@ import { useService } from "@web/core/utils/hooks";
 import { usePos } from "@point_of_sale/app/hooks/pos_hook";
 import { Component, useState, onMounted } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
-import { formatCurrency } from "@web/core/currency";
+import { formatCurrency, getCurrency } from "@web/core/currency";
 import { Dialog } from "@web/core/dialog/dialog";
 import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/number_popup";
 import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_popup/selection_popup";
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
+
+// Helper: format amount as "1,234.56 $" (number, space, symbol)
+function formatCurrencyAmount(amount, currency) {
+    const formatted = formatCurrency(amount, currency.id, { trailingZeros: false });
+    const symbol = currency.symbol || "";
+    const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
+    return `${numberPart} ${symbol}`;
+}
 
 /**
  * NotesPopup — Dialog for capturing free-text notes.
@@ -87,7 +95,7 @@ export class NotesPopup extends Component {
     }
 
     cancel() {
-        this.props.getPayload(this.props.required ? null : "");
+        this.props.getPayload(null);
         this.props.close();
     }
 }
@@ -169,11 +177,11 @@ export class CustomerAccountListScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false });
+        return formatCurrencyAmount(amount, this.pos.company.currency_id);
     }
 
     formatPosBalance(amount) {
-        return formatCurrency(amount, this.pos.currency.id, { trailingZeros: false });
+        return formatCurrencyAmount(amount, this.pos.currency);
     }
 
     getCustomerBalanceClass(balance) {
@@ -309,8 +317,10 @@ export class CustomerAccountStatementScreen extends Component {
                 return;
             }
 
-            const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
-            const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            const paidCurrency = getCurrency(result.currency_id);
+            const paidFormatted = paidCurrency ? formatCurrencyAmount(result.amount_paid, paidCurrency) : String(result.amount_paid);
+            const companyCurrency = getCurrency(result.company_currency_id);
+            const companyFormatted = companyCurrency ? formatCurrencyAmount(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
             this.notification.add(
                 _t("Payment of %s recorded for %s\nEquivalent: %s", [paidFormatted, customerName, companyFormatted]),
@@ -356,7 +366,7 @@ export class CustomerAccountStatementScreen extends Component {
         if (isNaN(amount) || amount <= 0) return;
 
         const notes = await this.promptForNotes(_t("Withdrawal notes (optional)"));
-        if (!notes) return;
+        if (notes === null) return;
 
         try {
             const result = await this.orm.call("res.partner", "create_customer_adjustment", [
@@ -373,8 +383,10 @@ export class CustomerAccountStatementScreen extends Component {
                 return;
             }
 
-            const paidFormatted = formatCurrency(result.amount_paid, result.currency_id, { trailingZeros: false });
-            const companyFormatted = formatCurrency(result.amount_company, result.company_currency_id, { trailingZeros: false });
+            const paidCurrency = getCurrency(result.currency_id);
+            const paidFormatted = paidCurrency ? formatCurrencyAmount(result.amount_paid, paidCurrency) : String(result.amount_paid);
+            const companyCurrency = getCurrency(result.company_currency_id);
+            const companyFormatted = companyCurrency ? formatCurrencyAmount(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
             this.notification.add(
                 _t("Withdrawal of %s recorded for %s\nEquivalent: %s", [paidFormatted, customerName, companyFormatted]),
@@ -404,11 +416,11 @@ export class CustomerAccountStatementScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatCurrency(amount, this.pos.company.currency_id.id, { trailingZeros: false });
+        return formatCurrencyAmount(amount, this.pos.company.currency_id);
     }
 
     formatPosBalance(amount) {
-        return formatCurrency(amount, this.pos.currency.id, { trailingZeros: false });
+        return formatCurrencyAmount(amount, this.pos.currency);
     }
 
     getBalanceClass() {
