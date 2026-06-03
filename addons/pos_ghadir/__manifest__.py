@@ -1,61 +1,107 @@
 {
-    'name': 'POS Ghadir Custom UI',
+    'name': 'Ghadir POS — Customer Accounts, Multi-Currency & Workflow',
     'version': '1.0',
     'category': 'Point of Sale',
-    'author': 'Cybrosys Techno Solutions',
-    'summary': 'POS enhancements: customer accounts, multi-currency, receipt balance, workflow optimizations',
+    'author': 'Cybrosys Techno Solutions + Ghadir Customizations',
+    'summary': 'Customer account management, multi-currency conversion, receipt enhancements, and workflow optimizations for Odoo POS',
     'description': """
-POS Ghadir Custom UI - Comprehensive POS Extension
-===================================================
+Ghadir POS — Full-Featured POS Extension for Odoo 19
+======================================================
 
-A comprehensive Point of Sale extension module for Odoo 19 that enhances
-the standard POS interface with advanced customer account management,
-multi-currency support, and workflow optimizations.
+A comprehensive Point of Sale extension that transforms Odoo's standard POS
+into a complete retail management system with real-time customer accounting,
+multi-currency support, and streamlined cashier workflows.
 
-Customer Account Management
----------------------------
-* Customer Accounts Screen — Dedicated POS screen showing all customers with real-time balances
-* Account Statement View — Per-customer accounting history with debit/credit and running balance
-* Make Payment — Process payments from POS, creating proper journal entries
-* Account Adjustments — Add or remove amounts with mandatory audit notes
-* Partner Balance Display — Shows customer balance on the customer selection button
+**Why this module?**
+
+Standard Odoo POS lacks built-in customer account management — cashiers
+cannot view balances, make payments, or handle multi-currency at the POS.
+This module fills those gaps while improving everyday usability for
+cashiers and customers alike.
+
+Core Features
+=============
+
+Customer Account Management (POS-native)
+-----------------------------------------
+* **Customer Accounts Screen** — Dedicated POS screen from the hamburger menu
+  showing all customers with real-time credit/debit balances.
+* **Account Statement View** — Per-customer accounting history with running
+  balance, date, document reference, debit, and credit columns.
+* **Make Payment** — Accept payments from customers to reduce their
+  outstanding balance, creating proper journal entries (debit POS journal,
+  credit Accounts Receivable).
+* **Withdraw / Adjust** — Increase a customer's balance (e.g. for new
+  purchases on credit) with mandatory audit notes.
+* **Partner Balance Display** — Live customer balance shown on the customer
+  selection button, color-coded (red = owes, green = credit, muted = zero).
+* **Balance Snapshots** — Backend-stored balance at order creation time,
+  so reprinted receipts always show historic balances, not live ones.
 
 Multi-Currency Support
 ----------------------
-* Automatic Currency Conversion — Fetches live rates, displays company currency equivalent
-* Converted Total Display — Shows converted amount in () on order screen and receipt
-* Partner Due Conversion — Converts partner balance + order total with proper rounding
+* **Live Currency Rates** — Fetches exchange rates from the company's rate
+  list on POS startup.
+* **Converted Total Display** — Shows the order total in the company's base
+  currency alongside the POS currency on both the order screen and receipt.
+* **Partner Due Conversion** — Combines the customer's previous balance with
+  the current order total and converts the result to company currency for
+  the "باقي الحساب" (remaining balance) line on receipts.
+* **Multi-Currency Payments** — Payment and withdrawal flows let the cashier
+  choose the transaction currency.
 
 Receipt Enhancements
 --------------------
-* Previous Balance — Shows customer's outstanding balance on receipt (حساب سابق)
-* Remaining Balance — Shows converted remaining balance (باقي الحساب)
+* **Previous Balance (حساب سابق)** — Shows the customer's outstanding balance
+  at the top of the receipt, below customer info.
+* **Remaining Balance (باقي الحساب)** — Shows the projected balance after
+  this order at the bottom of the receipt.
+* **Dual-Currency Total** — Displays the order equivalent in the company's
+  base currency.
+* **Custom Receipt Layout** — Ticket number on the left, date on the right;
+  cleaner typography; thick borders for totals; no taxes/change/contact noise.
+* **Payment Receipt** — Dedicated receipt layout for payment and withdrawal
+  transactions with full customer details, transaction type, amounts, notes,
+  and new balance.
 
-Workflow Optimizations
-----------------------
-* Quick Cancel Order — One-click order cancellation without confirmation
-* Pricelist Cycler — Navbar button to cycle through available pricelists
-* Default Quantity of 2 — Products added with qty 2 instead of 1
-* Auto-Enable Invoice — Invoice generation enabled by default
-* Disable Auto PDF Download — Prevents automatic invoice PDF download
-* Clean Currency Format — Removes trailing decimal zeros from prices
-* Disable Price Override — Disables the numpad price modification button
+Cashier Workflow Optimizations
+------------------------------
+* **Pricelist Cycler** — Topbar button to cycle through available pricelists
+  without going into settings.
+* **Quick Cancel** — One-click order cancellation without confirmation dialog.
+* **Default Quantity of 2** — Products added with qty 2 instead of 1.
+* **Auto-Enable Invoice** — Invoice toggle is ON by default for every order.
+* **No Auto PDF Download** — Prevents the browser from downloading invoice
+  PDFs automatically after validation.
+* **Clean Currency Format** — Prices displayed without trailing zeros
+  (e.g. "1,500 $" instead of "1,500.00 $").
+* **Disable Price Override** — Cashiers cannot manually change product prices.
+* **Deselect on Background Click** — Clicking empty space clears the selected
+  order line (more intuitive touch behavior).
+* **Prevent Empty Payment** — A toast warns the cashier when trying to add
+  a payment line for an already-paid order.
+* **Note Button Fix** — Fixes an Odoo 19 core bug where adding a note to a
+  partial quantity of an orderline crashed if the selection changed while
+  the note dialog was open.
 
 Technical Details
------------------
-* Odoo Version: 19.0
-* Dependencies: point_of_sale, account, sale, purchase
-* License: AGPL-3
-* Auto Install: Yes
+=================
+* **Odoo Version**: 19.0
+* **Dependencies**: point_of_sale, account, sale, purchase
+* **License**: AGPL-3
+* **Auto Install**: Yes — activates automatically when its dependencies are present.
 
-Usage
------
-1. Customer Accounts: Hamburger menu (☰) → Customer Accounts
-2. View Balance: Select a customer — balance appears next to their name
-3. Make Payment: Open customer account → Make Payment → enter amount
-4. Adjustments: Use Add/Remove buttons with required reason notes
-5. Cycle Pricelists: Click pricelist button in navbar
-6. Quick Cancel: Click Clear button in navbar
+Usage Guide
+===========
+1. **View customer accounts**: Hamburger menu (☰) → Customer Accounts
+2. **Check customer balance**: Select a customer — their balance appears
+   next to their name in the customer button.
+3. **Make a payment**: Customer Accounts → select customer → Make Payment →
+   choose currency → enter amount → confirm.
+4. **Withdraw / adjust**: Customer Accounts → select customer → Withdraw →
+   enter amount → add notes → confirm.
+5. **Cycle pricelists**: Click the pricelist name in the top navbar.
+6. **Quick cancel**: Click the Clear button in the top navbar.
     """,
     'depends': ['point_of_sale', 'account', 'sale', 'purchase'],
     'assets': {
