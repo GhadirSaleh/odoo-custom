@@ -10,17 +10,15 @@
  * Sections:
  * 1. Tax info hiding
  * 2. Global button sizing
- * 3. Customer note styling
- * 4. Receipt note styling
- * 5. Order container typography
- * 6. Price button hiding (complements disable_price_button.js)
- * 7. Numpad customization (backspace, desktop floating layout)
- * 8. Receipt element hiding (taxes, change, contact info)
- * 9. Receipt balance row layout
- * 10. Receipt header row layout
- * 11. Receipt total/border styling
- * 12. Receipt typography and spacing
- * 13. Pricelist button responsive shrinking
+ * 3. Order container typography
+ * 4. Price button hiding (complements disable_price_button.js)
+ * 5. Numpad customization (backspace, desktop floating layout)
+ * 6. Receipt element hiding (taxes, change, contact info)
+ * 7. Receipt balance row layout
+ * 8. Receipt header row layout
+ * 9. Receipt total/border styling
+ * 10. Receipt typography and spacing
+ * 11. Pricelist button responsive shrinking
  */
 
 /* ============================================================
@@ -41,37 +39,7 @@
 }
 
 /* ============================================================
-   3. Customer note display — bigger, centered, bordered
-   ============================================================ */
-.product-screen .customer-note {
-  font-size: 1.6rem !important;
-  color: black !important;
-  text-align: center !important;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif !important;
-  background: none !important;
-  border-top: 0.1rem dotted #000 !important;
-  border-bottom: 0.1rem dotted #000 !important;
-}
-
-/* ============================================================
-   4. Receipt screen note styling — bordered, larger text
-   ============================================================ */
-.pos-receipt .mt-1 {
-  font-size: 1.2rem !important;
-  font-weight: bold !important;
-  text-align: left !important;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif !important;
-  border-top: 2px solid #000 !important;
-}
-
-/* ============================================================
-   5. Order container typography — slightly bolder text
+   3. Order container typography — slightly bolder text
    ============================================================ */
 .product-screen .order-container,
 .leftpane .order-container {
@@ -80,7 +48,7 @@
 }
 
 /* ============================================================
-   6. Hide the price input field on the numpad
+   4. Hide the price input field on the numpad
       (complements disable_price_button.js which disables the button)
    ============================================================ */
 .numpad-price {
@@ -89,7 +57,7 @@
 }
 
 /* ============================================================
-   7a. Backspace button — expand to double height in POS numpad
+   5a. Backspace button — expand to double height in POS numpad
    ============================================================ */
 .leftpane .subpads .numpad .o_colorlist_item_numpad_color_1 {
   top: -100%;
@@ -97,7 +65,7 @@
 }
 
 /* ============================================================
-   7b. Numpad floating layout — desktop only (>= 992px)
+   5b. Numpad floating layout — desktop only (>= 992px)
        Positions the numpad at the bottom center of the screen
        with a card-like appearance (border, shadow, rounded corners)
    ============================================================ */
@@ -129,7 +97,7 @@
 }
 
 /* ============================================================
-   8. Hide receipt elements: taxes, change, contact info
+   6. Hide receipt elements: taxes, change, contact info
       Uncomment .pos-receipt .paymentlines to also hide payment lines
    ============================================================ */
 .pos-receipt-taxes,
@@ -139,7 +107,7 @@
 }
 
 /* ============================================================
-   9. Receipt customer/balance section — tighter spacing
+   7. Receipt customer/balance section — tighter spacing
    ============================================================ */
 .pos-receipt-customer,
 .pos-receipt-customer-balance {
@@ -150,7 +118,7 @@
 }
 
 /* ============================================================
-   10. Receipt balance row — flex layout with space-between
+   7b. Receipt balance row — flex layout with space-between
        Used by حساب سابق and باقي الحساب rows
    ============================================================ */
 .pos-receipt-balance-row {
@@ -166,7 +134,7 @@
 }
 
 /* ============================================================
-   11. Receipt header row — ticket number left, date right
+   8. Receipt header row — ticket number left, date right
    ============================================================ */
 .pos-receipt-header-row {
   display: flex !important;
@@ -184,11 +152,11 @@
 }
 
 /* ============================================================
-   12. Receipt balance label/amount — RTL labels, LTR numbers
-       The label is pure Arabic so no override needed.
-       The amount span uses an LTR embedding so digits are never
-       reversed, with the currency symbol placed before the number
-       for correct Arabic receipt display.
+   9. Receipt balance label/amount — RTL labels, LTR numbers
+      The label is pure Arabic so no override needed.
+      The amount span uses an LTR embedding so digits are never
+      reversed, with the currency symbol placed before the number
+      for correct Arabic receipt display.
    ============================================================ */
 .pos-receipt-balance-label {
   font-weight: bold !important;
@@ -208,7 +176,7 @@
 }
 
 /* ============================================================
-   13. Receipt total section — borders for visual separation
+   9b. Receipt total section — borders for visual separation
    ============================================================ */
 .receipt-total {
   font-size: 1.2rem;
@@ -242,8 +210,8 @@
 }
 
 /* ============================================================
-    14. Receipt typography — system font, tighter spacing
-    ============================================================ */
+   10. Receipt typography — system font, tighter spacing
+   ============================================================ */
 .product-screen .product-name {
   padding-bottom: 2px;
 }
@@ -300,7 +268,7 @@ div#order-date {
 }
 
 /* ============================================================
-   15. Pricelist cycler button — responsive shrinking
+   11. Pricelist cycler button — responsive shrinking
        Allows the button to truncate with ellipsis when space is tight
    ============================================================ */
 .o_pricelist_toggle {

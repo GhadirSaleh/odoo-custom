@@ -80,6 +80,7 @@ Usage
             'pos_ghadir/static/src/js/partner_balance_snapshot.js',
             'pos_ghadir/static/src/js/payment_receipt.js',
             'pos_ghadir/static/src/js/payment_receipt_popup.js',
+            'pos_ghadir/static/src/js/note_button_fix.js',
             'pos_ghadir/static/src/xml/receipt_partner_balance.xml',
             'pos_ghadir/static/src/xml/payment_receipt.xml',
             'pos_ghadir/static/src/xml/dual_currency_display.xml',
