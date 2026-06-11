@@ -37,3 +37,8 @@ odoo-db-data/
 .idea/
 .DS_Store
 .aider*
+
+# -----------------------
+# Odoo source cache (container → host copy for AI tooling)
+# -----------------------
+/.odoo-src/
