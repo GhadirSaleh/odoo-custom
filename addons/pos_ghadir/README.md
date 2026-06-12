@@ -117,6 +117,8 @@ pos_ghadir/
 │   ├── product_product.py      # Stock RPC method + POS field list
 │   ├── product_template.py     # qty_available in POS field list
 │   └── res_partner.py          # RPC: customer accounts, payments, adjustments
+├── views/
+│   └── pos_config_view.xml     # Stock alerts settings in POS config form
 └── static/
     └── src/
         ├── js/

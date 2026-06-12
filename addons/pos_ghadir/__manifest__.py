@@ -64,6 +64,14 @@ Receipt Enhancements
   transactions with full customer details, transaction type, amounts, notes,
   and new balance.
 
+Stock Alerts
+------------
+* **Color-coded stock badges** — Real-time stock levels on product cards (green=ok, amber=low, red=out).
+* **Configurable threshold** — Set low-stock warning level per POS config.
+* **Post-order refresh** — Stock updates immediately via RPC after each sale validation.
+* **Batch fetch at startup** — All product stock loaded in one shot when the POS session opens.
+* **Toggle on/off** — Enable or disable from POS settings.
+
 Cashier Workflow Optimizations
 ------------------------------
 * **Pricelist Cycler** — Topbar button to cycle through available pricelists
@@ -87,7 +95,7 @@ Cashier Workflow Optimizations
 Technical Details
 =================
 * **Odoo Version**: 19.0
-* **Dependencies**: point_of_sale, account, sale, purchase
+* **Dependencies**: point_of_sale, account, sale, purchase, stock
 * **License**: AGPL-3
 * **Auto Install**: Yes — activates automatically when its dependencies are present.
 
@@ -102,7 +110,12 @@ Usage Guide
    enter amount → add notes → confirm.
 5. **Cycle pricelists**: Click the pricelist name in the top navbar.
 6. **Quick cancel**: Click the Clear button in the top navbar.
+7. **Configure stock alerts**: PoS → Settings → enable "Show Stock Alerts" + set "Low Stock Threshold".
+8. **Check stock badge**: Look at the top-left corner of any product card.
     """,
+    'data': [
+        'views/pos_config_view.xml',
+    ],
     'depends': ['point_of_sale', 'account', 'sale', 'purchase', 'stock'],
     'assets': {
         'web.assets_backend': [

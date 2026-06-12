@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_config_form_inherit_stock" model="ir.ui.view">
+        <field name="name">pos.config.form.inherit.stock</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_settings_container') and not(@id='restaurant_on_create')]" position="inside">
+                <setting string="Stock Alerts">
+                    <field name="pos_show_stock_alerts" class="me-2"/>
+                    <div class="content-group" invisible="not pos_show_stock_alerts">
+                        <div class="row mt-2">
+                            <div class="col-lg-6">
+                                <label string="Low Stock Threshold" for="pos_low_stock_threshold"/>
+                            </div>
+                            <div class="col-lg-6">
+                                <field name="pos_low_stock_threshold"/>
+                            </div>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

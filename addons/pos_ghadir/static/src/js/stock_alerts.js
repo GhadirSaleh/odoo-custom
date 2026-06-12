@@ -5,24 +5,27 @@ import { PosData } from "@point_of_sale/app/services/data_service";
 import { ProductCard } from "@point_of_sale/app/components/product_card/product_card";
 import OrderPaymentValidation from "@point_of_sale/app/utils/order_payment_validation";
 
-/**
- * Stock badge on product cards
- * Evaluates stockLevel at render time using the product's qty_available.
- * Falls back to the template's qty_available for single-variant products.
- */
 patch(ProductCard.prototype, {
     setup() {
         this.pos = usePos();
     },
     get stockLevel() {
         const product = this.props.product;
-        if (!product || !product.is_storable) return null;
+        if (!product) return null;
+        const isStorable = product.is_storable ?? product.product_tmpl_id?.is_storable ?? false;
+        if (!isStorable) return null;
         if (!this.pos?.config?.pos_show_stock_alerts) return null;
         const qty = product.qty_available ?? product.product_tmpl_id?.qty_available ?? 0;
         if (qty <= 0) return 'out';
         const threshold = this.pos.config.pos_low_stock_threshold || 5;
         if (qty <= threshold) return 'low';
         return 'ok';
+    },
+    get stockQty() {
+        const product = this.props.product;
+        if (!product) return null;
+        const qty = product.qty_available ?? product.product_tmpl_id?.qty_available;
+        return qty != null ? qty : null;
     },
 });
 
@@ -79,7 +82,7 @@ patch(PosData.prototype, {
         const config = this.models["pos.config"]?.get(odoo.pos_config_id);
         if (!config?.pos_show_stock_alerts) return;
         const variants = this.models["product.product"]?.getAll() || [];
-        const storableIds = variants.filter(p => p.is_storable).map(p => p.id);
+        const storableIds = variants.filter(p => p.is_storable ?? p.product_tmpl_id?.is_storable ?? false).map(p => p.id);
         if (storableIds.length === 0) return;
         const chunkSize = 200;
         for (let i = 0; i < storableIds.length; i += chunkSize) {

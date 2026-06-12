@@ -11,6 +11,8 @@ Odoo 19 with custom Point of Sale enhancements, a full accounting suite, and the
 
 ## Features
 
+> `pos_ghadir` has `auto_install: True` — it activates automatically when `point_of_sale` is installed.
+
 ### POS Enhancements (`pos_ghadir`)
 
 #### Customer Account Management
@@ -26,11 +28,24 @@ Odoo 19 with custom Point of Sale enhancements, a full accounting suite, and the
 - Automatic Currency Conversion — Fetches live rates, displays company currency equivalent
 - Converted Total Display — Shows converted amount in parentheses on order screen and receipt
 - Partner Due Conversion — Converts partner balance and order total with proper rounding
+- Multi-Currency Payments — Currency selection in payment/withdrawal flows
 
 #### Receipt Enhancements
 
 - Previous Balance — Shows customer's outstanding balance on receipt (حساب سابق)
-- Remaining Balance — Shows converted remaining balance (باقي الحساب)
+- Remaining Balance — Shows projected balance after this order (باقي الحساب)
+- Dual-Currency Total — Order equivalent in company's base currency
+- Custom Receipt Layout — Ticket number left, date right; thick borders; no taxes/change noise
+- Payment Receipt — Dedicated layout for payment/withdrawal transactions
+- Balance Snapshots — Historic balance at order time, not live value
+
+#### Stock Alerts
+
+- Color-coded badges on product cards — green (ok), amber (low), red (out of stock)
+- Configurable low-stock threshold per POS config
+- Real-time updates after each order via RPC
+- All-stock batch fetch at POS session start
+- Toggle on/off in POS settings
 
 #### Workflow Optimizations
 
@@ -41,6 +56,9 @@ Odoo 19 with custom Point of Sale enhancements, a full accounting suite, and the
 - Disable Auto PDF Download — Prevents automatic invoice PDF download
 - Clean Currency Format — Removes trailing decimal zeros from prices
 - Disable Price Override — Disables the numpad price modification button
+- Deselect on Background Click — Click empty space to clear order line selection
+- Empty Payment Prevention — Toast warning when adding payment to an already-paid order
+- Note Button Fix — Fixes Odoo 19 core bug with partial-qty notes
 
 ### Accounting Suite
 
