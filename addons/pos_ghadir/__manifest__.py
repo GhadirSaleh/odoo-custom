@@ -3,7 +3,7 @@
     'version': '1.0',
     'category': 'Point of Sale',
     'author': 'Cybrosys Techno Solutions + Ghadir Customizations',
-    'summary': 'Customer account management, multi-currency conversion, receipt enhancements, and workflow optimizations for Odoo POS',
+    'summary': 'Customer account management, multi-currency conversion, stock alerts, receipt enhancements, and workflow optimizations for Odoo POS',
     'description': """
 Ghadir POS — Full-Featured POS Extension for Odoo 19
 ======================================================
@@ -103,13 +103,14 @@ Usage Guide
 5. **Cycle pricelists**: Click the pricelist name in the top navbar.
 6. **Quick cancel**: Click the Clear button in the top navbar.
     """,
-    'depends': ['point_of_sale', 'account', 'sale', 'purchase'],
+    'depends': ['point_of_sale', 'account', 'sale', 'purchase', 'stock'],
     'assets': {
         'web.assets_backend': [
             'pos_ghadir/static/src/scss/hide_chatter.scss',
         ],
         'point_of_sale._assets_pos': [
             'pos_ghadir/static/src/scss/pos_custom.scss',
+            'pos_ghadir/static/src/scss/stock_alerts.scss',
             'pos_ghadir/static/src/scss/customer_account_screens.scss',
             'pos_ghadir/static/src/js/disable_price_button.js',
             'pos_ghadir/static/src/js/topbar_buttons.js',
@@ -127,7 +128,9 @@ Usage Guide
             'pos_ghadir/static/src/js/payment_receipt.js',
             'pos_ghadir/static/src/js/payment_receipt_popup.js',
             'pos_ghadir/static/src/js/note_button_fix.js',
+            'pos_ghadir/static/src/js/stock_alerts.js',
             'pos_ghadir/static/src/xml/receipt_partner_balance.xml',
+            'pos_ghadir/static/src/xml/stock_alerts.xml',
             'pos_ghadir/static/src/xml/payment_receipt.xml',
             'pos_ghadir/static/src/xml/dual_currency_display.xml',
             'pos_ghadir/static/src/xml/customer_account_screens.xml',

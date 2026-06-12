@@ -1,0 +1,23 @@
+.product-stock-badge {
+    z-index: 2;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    pointer-events: none;
+    border-radius: 2px;
+    padding: 0 4px;
+
+    &.stock-ok {
+        background-color: rgba(40, 167, 69, 0.12);
+        color: rgba(40, 167, 69, 0.7);
+    }
+
+    &.stock-low {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: rgba(133, 100, 4, 0.75);
+    }
+
+    &.stock-out {
+        background-color: rgba(220, 53, 69, 0.12);
+        color: rgba(220, 53, 69, 0.7);
+    }
+}
