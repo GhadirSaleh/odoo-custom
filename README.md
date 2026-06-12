@@ -147,8 +147,8 @@ Every subsequent `docker compose up` finds the schema already in place and skips
 | **Wipe everything** | `docker compose down -v` |
 | Shell into container | `docker compose exec odoo bash` |
 | Connect to database | `docker compose exec db psql -U odoo odoo` |
-| Update a module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --stop-after-init` |
-| Run module tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --test-enable --stop-after-init` |
+| Update a module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --stop-after-init --workers=0 --http-port=8067` |
+| Run module tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --test-enable --stop-after-init --workers=0 --http-port=8067` |
 | Scaffold new addon | `docker compose exec odoo odoo scaffold <name> /mnt/extra-addons` |
 
 > `docker compose down -v` permanently deletes the `odoo-db-data` and `odoo-data` named volumes. Only use it when you want a completely clean slate.
@@ -216,7 +216,7 @@ The `workers = 2` setting in `config/odoo.conf` is required for longpolling to f
 
 ```ssh
 odoo-custom/
-├── addons/                      # 17 custom + third-party modules
+├── addons/                      # 18 custom + third-party modules
 ├── config/
 │   └── odoo.conf                # DB connection, workers, addons path
 ├── scripts/

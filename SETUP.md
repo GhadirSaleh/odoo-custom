@@ -140,7 +140,7 @@ sudo systemctl reload nginx
 ### Addons (`addons/`)
 
 **Custom:**
-- `pos_ghadir` — POS multi-currency, receipt UI (`auto_install: True`)
+- `pos_ghadir` — POS multi-currency, stock alerts, receipt UI (`auto_install: True`)
 
 **Third-party suites:**
 - `muk_web_*` (7 modules) — UI theme framework
@@ -158,8 +158,8 @@ All commands run from the project root (`/home/hermanus/odoo-custom`):
 | Start (detached) | `docker compose up -d` |
 | Stop | `docker compose down` |
 | Shell into Odoo | `docker compose exec odoo bash` |
-| Update module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --stop-after-init` |
-| Run tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf -d odoo -u <module> --test-enable --stop-after-init` |
+| Update module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --stop-after-init --workers=0 --http-port=8067` |
+| Run tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --test-enable --stop-after-init --workers=0 --http-port=8067` |
 | View logs | `docker compose logs -f odoo` |
 | Wipe everything | `docker compose down -v` |
 | Connect to DB | `docker compose exec db psql -U odoo odoo` |

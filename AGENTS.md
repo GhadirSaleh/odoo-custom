@@ -51,8 +51,8 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 - Full host setup guide in [`SETUP.md`](SETUP.md).
 
 ## Add-ons
-- **`addons/`** — 17 modules: custom + third-party (no Odoo core).
-- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management, multi-currency conversion, receipt balance display, pricelist cycler, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix. Detailed docs in its `README.md`.
+- **`addons/`** — 18 modules: custom + third-party (no Odoo core).
+- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management, multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix. Detailed docs in its `README.md`.
 - **Custom modules**: `product_last_purchase_cost` — adds "Auto-Update Cost from Purchase" checkbox on product categories. When enabled, the product's cost (`standard_price`) is set to the purchase line unit price upon receipt validation. Depends on `purchase_stock`, `stock_account`.
 - **Third-party suites**: `om_account_*` + `om_fiscal_year` + `om_recurring_payments` (accounting), `accounting_pdf_reports`, `muk_web_*` (UI theme), `bi_pos_default_customer`.
 
