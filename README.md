@@ -124,7 +124,7 @@ docker compose up
 
 On the very first run the entrypoint detects an empty database and initialises the Odoo schema automatically before serving:
 
-```
+```ssh
 Waiting for PostgreSQL at db:5432 ...
 PostgreSQL is ready.
 Database not fully initialised — running first-time setup (this runs once)...
@@ -214,7 +214,7 @@ The `workers = 2` setting in `config/odoo.conf` is required for longpolling to f
 
 ## Architecture
 
-```
+```ssh
 odoo-custom/
 ├── addons/                      # 17 custom + third-party modules
 ├── config/
@@ -235,7 +235,7 @@ The Odoo service uses the official `odoo:19` Docker image with a custom entrypoi
 1. **Wait for Postgres** — polls `pg_isready` until the database is accepting connections.
 2. **Fix config permissions** — runs `chmod o+w` on the config so Odoo can save password changes via the UI.
 3. **Check if initialised** — queries `ir_module_module` for the `base` module's state.
-3. **Auto-init on first run** — if `base` is not installed, runs a one-shot initialisation:
+4. **Auto-init on first run** — if `base` is not installed, runs a one-shot initialisation:
 
    ```bash
    odoo -c /etc/odoo/odoo.conf -d odoo -i base --without-demo --workers=0 --stop-after-init
@@ -243,7 +243,7 @@ The Odoo service uses the official `odoo:19` Docker image with a custom entrypoi
 
    `--workers=0` ensures init runs synchronously. Without it, `--stop-after-init` can fire on the master process before workers finish writing module data, leaving the database half-initialised.
 
-4. **Hand off** — delegates to the image's built-in `/entrypoint.sh`, which resolves DB connection parameters and starts Odoo normally.
+5. **Hand off** — delegates to the image's built-in `/entrypoint.sh`, which resolves DB connection parameters and starts Odoo normally.
 
 On subsequent starts, the check passes and init is skipped.
 
