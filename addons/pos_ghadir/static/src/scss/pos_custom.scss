@@ -189,8 +189,15 @@
   padding: 0 0 !important;
 }
 
-/* Hide everything after the after-footer section (removes Odoo branding etc.) */
-.after-footer ~ div {
+/* Separator above the after-footer section (payment terminal tickets) */
+.after-footer {
+  border-top: 3px solid #000 !important;
+  margin-top: 6px !important;
+  padding-top: 2px !important;
+}
+
+/* Hide the "Powered by Odoo" footer at the end of the receipt */
+.pos-receipt-order-data:last-child {
   display: none !important;
 }
 

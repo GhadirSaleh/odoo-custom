@@ -69,4 +69,16 @@
             </div>
         </xpath>
     </t>
+
+    <!-- Move POS config name to centered bold footer -->
+    <t t-name="pos_ghadir.OrderReceiptConfigName" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <!-- Insert centered bold config name after the address/contact section -->
+        <xpath expr="//div[contains(@class, 'd-flex')][.//div[@class='pos-config-name']]" position="after">
+            <div class="pos-receipt-footer-name text-center fw-bold">
+                <t t-esc="order.config.name"/>
+            </div>
+        </xpath>
+        <!-- Remove config name from original address left column -->
+        <xpath expr="//div[@class='pos-config-name']" position="replace"/>
+    </t>
 </templates>
