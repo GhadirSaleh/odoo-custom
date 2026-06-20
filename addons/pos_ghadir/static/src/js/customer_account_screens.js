@@ -102,6 +102,43 @@ export class NotesPopup extends Component {
 }
 
 /**
+ * SettleBalanceConfirmPopup — Confirmation dialog for settling customer balance.
+ *
+ * Shows customer name, current balance (color-coded), settlement amount,
+ * and resulting zero balance. Uses Arabic-friendly layout.
+ *
+ * Props:
+ *  - customerName: string
+ *  - formattedBalance: string (color will be auto-detected from sign)
+ *  - formattedSettle: string
+ *  - balanceSign: 'positive' | 'negative'
+ *  - close: Function
+ *  - getPayload: Function(bool) — called with true/false
+ */
+export class SettleBalanceConfirmPopup extends Component {
+    static template = "pos_ghadir.SettleBalanceConfirmPopup";
+    static components = { Dialog };
+    static props = {
+        close: Function,
+        getPayload: Function,
+        customerName: String,
+        formattedBalance: String,
+        formattedSettle: String,
+        balanceSign: { type: String, validate: (s) => ["positive", "negative"].includes(s) },
+    };
+
+    confirm() {
+        this.props.getPayload(true);
+        this.props.close();
+    }
+
+    cancel() {
+        this.props.getPayload(false);
+        this.props.close();
+    }
+}
+
+/**
  * CustomerAccountListScreen — Searchable customer list with balances.
  *
  * Loads customers from the backend with their credit/debit balances.
@@ -458,6 +495,114 @@ export class CustomerAccountStatementScreen extends Component {
         } catch (e) {
             console.error("Error processing withdrawal:", e);
             this.notification.add(_t("Error processing withdrawal"), { type: "danger" });
+        }
+    }
+
+    /**
+     * Settle Balance — Auto-creates a transaction to bring the balance to zero.
+     *
+     * If balance > 0 (customer owes): Creates a payment for the full balance.
+     * If balance < 0 (customer has credit): Creates an adjustment to bring to zero.
+     * If balance === 0: Shows notification, no action.
+     */
+    async settleBalance() {
+        if (!this.state.customer) return;
+
+        const balance = this.state.balance;
+        if (balance === 0) {
+            this.notification.add(_t("Balance is already zero"), { type: "info" });
+            return;
+        }
+
+        const settleAmount = Math.abs(balance);
+        const customerName = this.state.customer.name;
+        const formattedBalance = this.formatBalance(balance);
+        const formattedSettle = this.formatBalance(settleAmount);
+        const balanceSign = balance > 0 ? "positive" : "negative";
+
+        const confirmed = await makeAwaitable(this.dialog, SettleBalanceConfirmPopup, {
+            customerName: customerName,
+            formattedBalance: formattedBalance,
+            formattedSettle: formattedSettle,
+            balanceSign: balanceSign,
+        });
+        if (!confirmed) return;
+
+        const previousBalance = this.state.balance;
+        this.state.loading = true;
+
+        try {
+            let result;
+            if (balance > 0) {
+                result = await this.orm.call("res.partner", "create_customer_payment", [
+                    this.state.customer.id,
+                    settleAmount,
+                    _t("Balance settlement"),
+                    this.pos.config.id,
+                    this.pos.company.currency_id.id,
+                ]);
+            } else {
+                result = await this.orm.call("res.partner", "create_customer_adjustment", [
+                    this.state.customer.id,
+                    "adjustment_add",
+                    settleAmount,
+                    _t("Balance settlement"),
+                    this.pos.config.id,
+                    this.pos.company.currency_id.id,
+                ]);
+            }
+
+            if (result.error) {
+                this.notification.add(_t(result.error), { type: "danger" });
+                return;
+            }
+
+            const paidCurrency = getCurrency(result.currency_id);
+            const paidFormatted = paidCurrency
+                ? formatCurrencyAmount(result.amount_paid, paidCurrency)
+                : String(result.amount_paid);
+            const companyCurrency = getCurrency(result.company_currency_id);
+            const companyFormatted = companyCurrency
+                ? formatCurrencyAmount(result.amount_company, companyCurrency)
+                : String(result.amount_company);
+
+            const dummyOrder = this.pos.models["pos.order"].create({
+                session_id: this.pos.session,
+                company_id: this.pos.company,
+                config_id: this.pos.config,
+                user_id: this.pos.user,
+                ticket_code: "",
+                tracking_number: "",
+                sequence_number: 0,
+                pos_reference: result.move_name || "",
+            });
+            await makeAwaitable(this.dialog, PaymentReceiptPopup, {
+                receipt: {
+                    order: dummyOrder,
+                    reference: result.move_name || "",
+                    date: new Date().toLocaleString(),
+                    customerName: customerName,
+                    customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
+                    transactionType: _t("Balance Settlement"),
+                    amount: paidFormatted,
+                    amountCompany: this.isMultiCurrency() ? companyFormatted : "",
+                    notes: _t("Balance settlement"),
+                    previousBalance: this.formatBalance(previousBalance),
+                    newBalance: this.formatBalance(result.new_balance),
+                },
+            });
+            this.pos.models["pos.order"].delete(dummyOrder);
+
+            this.notification.add(
+                _t("Account settled for %s", [customerName]),
+                { type: "success" }
+            );
+            await this.loadStatement();
+        } catch (e) {
+            console.error("Error settling balance:", e);
+            this.notification.add(_t("Error settling balance"), { type: "danger" });
+        } finally {
+            this.state.loading = false;
         }
     }
 

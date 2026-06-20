@@ -338,3 +338,27 @@ msgstr "دفع"
 #: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
 msgid "Withdrawal"
 msgstr "سحب"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Balance is already zero"
+msgstr "الرصيد صفر بالفعل"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Balance settlement"
+msgstr "تسوية الرصيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Error settling balance"
+msgstr "خطأ في تسوية الرصيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Account settled for %s"
+msgstr "تمت تسوية رصيد %s"

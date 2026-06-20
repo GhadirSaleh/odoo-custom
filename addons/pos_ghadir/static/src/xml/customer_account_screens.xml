@@ -25,6 +25,44 @@
         </Dialog>
     </t>
 
+    <!-- SettleBalanceConfirmPopup: Color-coded settlement confirmation dialog -->
+    <t t-name="pos_ghadir.SettleBalanceConfirmPopup">
+        <Dialog size="'md'" title="'تسوية الرصيد'">
+            <div class="settle-confirm-body">
+                <div class="settle-confirm-customer">
+                    <span class="settle-confirm-label">العميل</span>
+                    <span class="settle-confirm-value" t-esc="props.customerName"/>
+                </div>
+                <div class="settle-confirm-balance-row">
+                    <div class="settle-confirm-balance-box" t-att-class="'settle-balance-' + props.balanceSign">
+                        <div class="settle-confirm-balance-label">الرصيد الحالي</div>
+                        <div class="settle-confirm-balance-amount" t-esc="props.formattedBalance"/>
+                    </div>
+                    <div class="settle-confirm-arrow">
+                        <i class="fa fa-arrow-right"/>
+                    </div>
+                    <div class="settle-confirm-balance-box settle-balance-zero">
+                        <div class="settle-confirm-balance-label">الرصيد بعد التسوية</div>
+                        <div class="settle-confirm-balance-amount">٠</div>
+                    </div>
+                </div>
+                <div class="settle-confirm-description">
+                    <i class="fa fa-info-circle settle-confirm-info-icon"/>
+                    <span t-if="props.balanceSign === 'positive'">
+                        سيتم إنشاء دفعة بقيمة <strong t-esc="props.formattedSettle"/> لتسوية رصيد العميل
+                    </span>
+                    <span t-else="">
+                        سيتم إضافة مبلغ <strong t-esc="props.formattedSettle"/> لتسوية رصيد العميل
+                    </span>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary btn-lg" t-on-click="cancel">إلغاء</button>
+                <button class="btn btn-primary btn-lg" t-on-click="confirm">تسوية</button>
+            </t>
+        </Dialog>
+    </t>
+
     <!-- CustomerAccountListScreen: Search + table of customers -->
     <t t-name="pos_ghadir.CustomerAccountListScreen">
         <div class="customer-account-list-screen d-flex flex-column h-100 bg-view">
@@ -118,7 +156,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Action buttons: Make Payment / Withdraw -->
+                <!-- Action buttons: Settle Balance (prominent), Make Payment / Withdraw -->
+                <div class="p-2 border-bottom">
+                    <button class="btn btn-primary w-100 btn-lg" t-on-click="settleBalance">
+                        <i class="fa fa-check-circle me-1"/> تسوية الرصيد
+                    </button>
+                </div>
                 <div class="d-flex gap-2 p-2 border-bottom">
                     <button class="btn btn-success flex-fill btn-lg" t-on-click="makePayment">
                         <i class="fa fa-money me-1"/> Make Payment
