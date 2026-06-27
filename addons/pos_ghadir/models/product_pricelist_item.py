@@ -1,0 +1,93 @@
+"""
+Pricelist Item Price Computation — Always Round Up
+===================================================
+Overrides `_compute_price` and `_compute_rule_tip` on
+`product.pricelist.item` to apply ceiling rounding (UP) instead of the
+default HALF-UP when the pricelist's `round_up` toggle is enabled.
+
+The methods are fully duplicated from Odoo 19 core because the rounding
+step sits in the middle of the method, and downstream calculations
+(surcharge, min/max margins) depend on the rounded value. Simply calling
+super and re-rounding would give incorrect results (a value rounded down
+by HALF-UP cannot be "unrounded" to apply UP correctly).
+"""
+
+from odoo import _, api, models
+from odoo.tools import float_round, format_amount
+
+
+class ProductPricelistItem(models.Model):
+    _inherit = 'product.pricelist.item'
+
+    def _compute_price(self, product, quantity, uom, date, currency=None, **kwargs):
+        self and self.ensure_one()
+        product.ensure_one()
+        uom.ensure_one()
+
+        currency = currency or self.currency_id or self.env.company.currency_id
+        currency.ensure_one()
+
+        product_uom = product.uom_id
+        if product_uom != uom:
+            convert = lambda p: product_uom._compute_price(p, uom)
+        else:
+            convert = lambda p: p
+
+        if self.compute_price == 'fixed':
+            price = convert(self.fixed_price)
+        elif self.compute_price == 'percentage':
+            base_price = self._compute_base_price(product, quantity, uom, date, currency, **kwargs)
+            price = (base_price - (base_price * (self.percent_price / 100))) or 0.0
+        elif self.compute_price == 'formula':
+            base_price = self._compute_base_price(product, quantity, uom, date, currency, **kwargs)
+            price_limit = base_price
+            discount = self.price_discount if self.base != 'standard_price' else -self.price_markup
+            price = base_price - (base_price * (discount / 100))
+            if self.price_round:
+                # Use UP (ceiling) rounding if the pricelist has round_up enabled
+                rounding_method = 'UP' if self.pricelist_id.round_up else 'HALF-UP'
+                price = float_round(price, precision_rounding=self.price_round, rounding_method=rounding_method)
+            if self.price_surcharge:
+                price += convert(self.price_surcharge)
+            if self.price_min_margin:
+                price = max(price, price_limit + convert(self.price_min_margin))
+            if self.price_max_margin:
+                price = min(price, price_limit + convert(self.price_max_margin))
+        else:
+            price = self._compute_base_price(product, quantity, uom, date, currency, **kwargs)
+
+        return price
+
+    @api.depends_context('lang')
+    @api.depends(
+        'base', 'compute_price', 'price_discount', 'price_markup', 'price_round', 'price_surcharge',
+    )
+    def _compute_rule_tip(self):
+        base_selection_vals = dict(self._fields['base']._description_selection(self.env))
+        self.rule_tip = False
+        for item in self:
+            if item.compute_price != 'formula' or not item.base:
+                continue
+            base_amount = 100
+            discount = item.price_discount if item.base != 'standard_price' else -item.price_markup
+            discount_factor = (100 - discount) / 100
+            discounted_price = base_amount * discount_factor
+            if item.price_round:
+                rounding_method = 'UP' if item.pricelist_id.round_up else 'HALF-UP'
+                discounted_price = float_round(discounted_price, precision_rounding=item.price_round, rounding_method=rounding_method)
+            surcharge = format_amount(item.env, item.price_surcharge, item.currency_id)
+            discount_type, discount = self._get_displayed_discount(item)
+
+            item.rule_tip = _(
+                "%(base)s with a %(discount)s %% %(discount_type)s and %(surcharge)s extra fee\n"
+                "Example: %(amount)s * %(discount_charge)s + %(price_surcharge)s → %(total_amount)s",
+                base=base_selection_vals[item.base],
+                discount=discount,
+                discount_type=discount_type,
+                surcharge=surcharge,
+                amount=format_amount(item.env, 100, item.currency_id),
+                discount_charge=discount_factor,
+                price_surcharge=surcharge,
+                total_amount=format_amount(
+                    item.env, discounted_price + item.price_surcharge, item.currency_id),
+            )

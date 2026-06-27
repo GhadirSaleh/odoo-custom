@@ -115,6 +115,7 @@ Usage Guide
     """,
     'data': [
         'views/pos_config_view.xml',
+        'views/product_pricelist_view.xml',
     ],
     'depends': ['point_of_sale', 'account', 'sale', 'purchase', 'stock'],
     'assets': {
@@ -141,6 +142,7 @@ Usage Guide
             'pos_ghadir/static/src/js/payment_receipt.js',
             'pos_ghadir/static/src/js/payment_receipt_popup.js',
             'pos_ghadir/static/src/js/note_button_fix.js',
+            'pos_ghadir/static/src/js/pricelist_round_up.js',
             'pos_ghadir/static/src/js/stock_alerts.js',
             'pos_ghadir/static/src/xml/receipt_partner_balance.xml',
             'pos_ghadir/static/src/xml/stock_alerts.xml',

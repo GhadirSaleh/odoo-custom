@@ -43,6 +43,17 @@ real-time customer account management and multi-currency support.
 - Empty payment prevention.
 - Note-button bug fix (Odoo 19 core).
 
+### Pricelist Rounding
+
+- **Always Round Up** — per-pricelist toggle that changes price rounding
+  from standard HALF-UP to ceiling (UP).
+- **Applies globally**: sale orders, invoices, POS, ecommerce, pricelist
+  reports — anywhere a pricelist price is computed.
+- **Pricelist-level setting**: each pricelist has its own checkbox, so you
+  can mix rounding strategies (e.g. round-up for retail, standard for wholesale).
+- **Synced to POS**: the toggle is loaded into the POS session so rounding
+  behavior is consistent between backend and frontend.
+
 ### Stock Alerts
 
 - **Color-coded badges** on product cards showing real-time stock levels.
@@ -67,6 +78,12 @@ Two fields are added to the POS configuration form (PoS → Settings → Point o
 | --- | --- | --- |
 | `pos_show_stock_alerts` | Enable/disable stock badges on product cards | True |
 | `pos_low_stock_threshold` | Quantity below which a product is considered "low stock" | 5.0 |
+
+One field is added to the pricelist form (Sales → Products → Pricelists → open a pricelist):
+
+| Field | Description | Default |
+| --- | --- | --- |
+| `round_up` | When checked, all price rounding in this pricelist uses ceiling rounding instead of standard HALF-UP | False |
 
 ## Dependencies
 
@@ -97,6 +114,7 @@ docker compose exec odoo odoo -c /etc/odoo/odoo.conf \
 | Withdraw/adjust | Customer Accounts → select → Withdraw → enter amount → add notes → confirm |
 | Cycle pricelists | Click pricelist name in navbar |
 | Quick cancel | Click Clear in navbar |
+| Enable round-up | Sales → Products → Pricelists → open pricelist → check **Always Round Up** |
 | Configure stock alerts | PoS → Settings → Show Stock Alerts + Low Stock Threshold |
 | Prerequisite: stock mode | Settings → Companies → Update Stock Quantities → In real time |
 | Check stock badge | Look at the top-left corner of each product card |
@@ -114,11 +132,14 @@ pos_ghadir/
 │   ├── __init__.py
 │   ├── pos_order.py            # Balance snapshot fields + perf logging
 │   ├── pos_config.py           # Stock alert config fields
+│   ├── product_pricelist.py    # round_up toggle field + POS data sync
+│   ├── product_pricelist_item.py  # Override rounding to UP when toggle is on
 │   ├── product_product.py      # Stock RPC method + POS field list
 │   ├── product_template.py     # qty_available in POS field list
 │   └── res_partner.py          # RPC: customer accounts, payments, adjustments
 ├── views/
-│   └── pos_config_view.xml     # Stock alerts settings in POS config form
+│   ├── pos_config_view.xml     # Stock alerts settings in POS config form
+│   └── product_pricelist_view.xml  # Always Round Up checkbox on pricelist form
 └── static/
     └── src/
         ├── js/
@@ -132,6 +153,7 @@ pos_ghadir/
         │   ├── dual_currency_display.js
         │   ├── note_button_fix.js
         │   ├── partner_balance_fetcher.js
+        │   ├── pricelist_round_up.js    # Patches getPrice to use UP rounding when toggled
         │   ├── partner_balance_snapshot.js
         │   ├── partner_due_currency_convert.js
         │   ├── payment_receipt.js
