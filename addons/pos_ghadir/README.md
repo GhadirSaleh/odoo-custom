@@ -17,6 +17,9 @@ real-time customer account management and multi-currency support.
 ### Multi-Currency
 
 - Live exchange rates fetched on POS startup.
+- **Quick Rate Setter** — Topbar button showing `Rate: 13,000`. Tap to
+  update today's SYP/USD rate from the register. Sets the backend
+  `res.currency.rate` record and triggers a full POS reload.
 - Order total converted to company currency on screen and receipt.
 - Partner due (balance + order) converted for remaining-balance display.
 - Currency selection in payment/withdrawal flows.
@@ -113,6 +116,7 @@ docker compose exec odoo odoo -c /etc/odoo/odoo.conf \
 | Make payment | Customer Accounts → select → Make Payment → choose currency → enter amount → confirm |
 | Withdraw/adjust | Customer Accounts → select → Withdraw → enter amount → add notes → confirm |
 | Cycle pricelists | Click pricelist name in navbar |
+| Set exchange rate | Tap **Rate** in topbar → enter new value → confirm |
 | Quick cancel | Click Clear in navbar |
 | Enable round-up | Sales → Products → Pricelists → open pricelist → check **Always Round Up** |
 | Configure stock alerts | PoS → Settings → Show Stock Alerts + Low Stock Threshold |
@@ -136,6 +140,7 @@ pos_ghadir/
 │   ├── product_pricelist_item.py  # Override rounding to UP when toggle is on
 │   ├── product_product.py      # Stock RPC method + POS field list
 │   ├── product_template.py     # qty_available in POS field list
+│   ├── res_currency.py         # RPC: set_currency_rate_from_pos (quick rate setter)
 │   └── res_partner.py          # RPC: customer accounts, payments, adjustments
 ├── views/
 │   ├── pos_config_view.xml     # Stock alerts settings in POS config form
@@ -160,7 +165,7 @@ pos_ghadir/
         │   ├── payment_receipt_popup.js
         │   ├── prevent_empty_payment_line.js
         │   ├── stock_alerts.js          # ProductCard badge + batch RPC + post-order refresh
-        │   └── topbar_buttons.js
+        │   └── topbar_buttons.js        # Topbar: pricelist cycler, quick cancel, accounts, rate setter
         ├── scss/
         │   ├── customer_account_screens.scss
         │   ├── hide_chatter.scss

@@ -52,7 +52,7 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 
 ## Add-ons
 - **`addons/`** — 18 modules: custom + third-party (no Odoo core).
-- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management, multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, pricelist round-up toggle, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix. Detailed docs in its `README.md`.
+- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management, multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, pricelist round-up toggle, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix, quick rate setter. Detailed docs in its `README.md`.
 - **Custom modules**: `product_last_purchase_cost` — adds "Auto-Update Cost from Purchase" checkbox on product categories. When enabled, the product's cost (`standard_price`) is set to the purchase line unit price upon receipt validation. Depends on `purchase_stock`, `stock_account`.
 - **Third-party suites**: `om_account_*` + `om_fiscal_year` + `om_recurring_payments` (accounting), `accounting_pdf_reports`, `muk_web_*` (UI theme), `bi_pos_default_customer`.
 
@@ -68,3 +68,11 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 - **Payment receipt popup** (`payment_receipt_popup.js`) uses `makeAwaitable` to gate order refresh behind popup close. Dummy `pos.order` record is deleted after popup closes.
 - **Pricelist round-up toggle** (`product.pricelist.round_up`) is a per-pricelist Boolean. When enabled, all `float_round`/`roundPrecision` calls in pricelist price computation use `'UP'` (ceiling) instead of `'HALF-UP'`. The override is in `product_pricelist_item.py` (backend) and `pricelist_round_up.js` (POS frontend). Both methods are fully duplicated from Odoo 19 core because the rounding step sits mid-method — calling super and re-rounding would give incorrect results.
 - **`.odoo-src/`** — cached copy of Odoo container source at `/usr/lib/python3/dist-packages/odoo/`, used by AI tooling for direct file access. Re-copy after updating the Odoo image: `docker compose exec odoo tar -C /usr/lib/python3/dist-packages/odoo -cf - . | tar -C .odoo-src/odoo -xf -`
+- **Quick Rate Setter** (`topbar_buttons.js`, `models/res_currency.py`):
+  - Topbar button shows `Rate: 13,000` (POS currency per 1 company currency, rounded).
+  - Tap → NumberPopup → enter new rate → `set_currency_rate_from_pos` RPC.
+  - Creates/updates today's `res.currency.rate` record for the POS currency via `sudo()`.
+  - `sudo()` required because `res.currency.rate` write needs Account Manager group.
+  - On success: `pos.reloadData(true)` — full reload with `?limited_loading=0`.
+  - Unsaved orders WILL be lost on reload (same as "Reload Data → Full" menu).
+  - Only visible on ProductScreen when POS currency ≠ company currency.

@@ -91,6 +91,9 @@ Cashier Workflow Optimizations
 * **Note Button Fix** — Fixes an Odoo 19 core bug where adding a note to a
   partial quantity of an orderline crashed if the selection changed while
   the note dialog was open.
+* **Quick Rate Setter** — Topbar button showing the current exchange rate;
+  tap to update today's rate directly from the POS. Triggers a full data
+  reload so all prices and conversions use the new rate.
 
 Technical Details
 =================
@@ -112,6 +115,8 @@ Usage Guide
 6. **Quick cancel**: Click the Clear button in the top navbar.
 7. **Configure stock alerts**: PoS → Settings → enable "Show Stock Alerts" + set "Low Stock Threshold".
 8. **Check stock badge**: Look at the top-left corner of any product card.
+9. **Set exchange rate**: Tap the **Rate** button in the topbar → enter
+   new value → confirm (full reload applies it everywhere).
     """,
     'data': [
         'views/pos_config_view.xml',

@@ -5,7 +5,7 @@
  * ==================================================================
  * Pattern: Raw DOM injection (no Owl patch)
  *
- * Adds three custom buttons to the POS top navigation bar:
+ * Adds custom buttons to the POS top navigation bar:
  *
  * 1. Pricelist Cycler — Cycles through available pricelists on each click.
  *    Shows the current pricelist name as the label. Patches pos.selectPricelist
@@ -16,6 +16,8 @@
  *
  * 3. Customer Accounts — Navigates to the CustomerAccountListScreen for
  *    viewing and managing customer balances.
+ *
+ * 4. Currency Rate Setter — Inline button showing current exchange rate.
  *
  * Visibility: Buttons are only shown on the ProductScreen. A MutationObserver
  * watches the DOM to toggle visibility when navigating between screens.
@@ -29,12 +31,15 @@
  */
 
 import { _t } from "@web/core/l10n/translation";
+import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
+import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/number_popup";
 
 (function () {
     let injected = false;
     let pricelistBtn = null;
     let clearBtn = null;
     let accountBtn = null;
+    let rateBtn = null;
     let wrapper = null;
 
     function isOnProductScreen() {
@@ -46,6 +51,7 @@ import { _t } from "@web/core/l10n/translation";
         if (pricelistBtn) pricelistBtn.style.display = display;
         if (clearBtn) clearBtn.style.display = display;
         if (accountBtn) accountBtn.style.display = display;
+        if (rateBtn) rateBtn.style.display = display;
     }
 
     function updatePricelistLabel() {
@@ -56,6 +62,30 @@ import { _t } from "@web/core/l10n/translation";
         if (nameSpan) {
             nameSpan.textContent = pricelist ? pricelist.display_name : _t("Pricelist");
         }
+    }
+
+    function formatRate(rate) {
+        return Math.round(rate).toLocaleString();
+    }
+
+    function updateRateLabel() {
+        if (!rateBtn) return;
+        const pos = window.posmodel;
+        if (!pos) return;
+        const posCurrency = pos.currency;
+        const companyCurrency = pos.company?.currency_id;
+        if (!companyCurrency || posCurrency.id === companyCurrency.id) {
+            rateBtn.style.display = "none";
+            return;
+        }
+        const inverseRate = pos.models._currencyRates?.[posCurrency.id];
+        if (!inverseRate || inverseRate === 0) {
+            rateBtn.querySelector(".rate-value").textContent = "—";
+            return;
+        }
+        const displayRate = 1 / inverseRate;
+        rateBtn.querySelector(".rate-value").textContent = formatRate(displayRate);
+        rateBtn.style.display = "flex";
     }
 
     function injectButtons() {
@@ -70,6 +100,7 @@ import { _t } from "@web/core/l10n/translation";
             pricelistBtn = navbar.querySelector(".o_pricelist_toggle");
             clearBtn = navbar.querySelector(".o_clear_cart_btn");
             accountBtn = navbar.querySelector(".o_customer_account_btn");
+            rateBtn = navbar.querySelector(".o_currency_rate_btn");
             updateVisibility();
             return;
         }
@@ -127,6 +158,45 @@ import { _t } from "@web/core/l10n/translation";
         wrapper.appendChild(clearBtn);
         wrapper.appendChild(accountBtn);
 
+        // --- Currency Rate Setter Button ---
+        rateBtn = document.createElement("button");
+        rateBtn.className = "btn btn-success btn-lg lh-lg o_currency_rate_btn";
+        rateBtn.innerHTML = '<i class="fa fa-exchange me-1"></i><span>Rate: <span class="rate-value fw-bold">\u2014</span></span>';
+        rateBtn.style.cssText = "display: flex; align-items: center; gap: 0.3rem;";
+        rateBtn.title = _t("Set currency exchange rate");
+
+        rateBtn.addEventListener("click", async () => {
+            const posCurrency = pos.currency;
+            const companyCurrency = pos.company?.currency_id;
+            if (!companyCurrency || posCurrency.id === companyCurrency.id) return;
+
+            const inverseRate = pos.models._currencyRates?.[posCurrency.id];
+            const currentRate = inverseRate ? Math.round(1 / inverseRate) : 0;
+
+            const newRate = await makeAwaitable(pos.dialog, NumberPopup, {
+                title: _t("Set Exchange Rate"),
+                number: currentRate || 0,
+                subtitle: _t("%s per %s", posCurrency.name, companyCurrency.name),
+            });
+
+            if (!newRate || parseFloat(newRate) <= 0) return;
+
+            try {
+                const result = await pos.data.call(
+                    "res.currency",
+                    "set_currency_rate_from_pos",
+                    [posCurrency.id, parseFloat(newRate)],
+                );
+                if (result?.success) {
+                    await pos.reloadData(true);
+                }
+            } catch (e) {
+                console.error("Error setting currency rate:", e);
+            }
+        });
+
+        wrapper.appendChild(rateBtn);
+
         // Insert into navbar at the right position
         const rightheader = navbar.querySelector(".pos-rightheader");
         const centerheader = navbar.querySelector(".pos-centerheader");
@@ -142,6 +212,7 @@ import { _t } from "@web/core/l10n/translation";
         injected = true;
         updatePricelistLabel();
         updateVisibility();
+        updateRateLabel();
 
         // Patch selectPricelist to update the button label after pricelist changes
         const originalSelectPricelist = pos.selectPricelist;
