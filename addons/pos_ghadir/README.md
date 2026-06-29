@@ -13,6 +13,12 @@ real-time customer account management and multi-currency support.
   document references, and full transaction history.
 - **Make Payment** — Accept customer payments at the POS, creating
   proper accounting entries (Dr. POS journal / Cr. Accounts Receivable).
+- **Settle Balance** — One-tap "تسوية الرصيد" to bring a customer's balance
+  to zero. If the customer owes, creates a payment; if they have credit,
+  creates an adjustment. Shows a color-coded confirmation dialog with
+  current balance, settlement amount, and resulting zero balance.
+- **Withdraw / Adjust** — Increase a customer's balance (e.g. for new
+  purchases on credit) with mandatory audit notes.
 
 ### Multi-Currency
 
@@ -32,6 +38,9 @@ real-time customer account management and multi-currency support.
 - Custom header (ticket left / date right).
 - Clean typography: no taxes, change, or contact noise.
 - Dedicated payment/withdrawal receipt layout.
+- Config name footer — POS register name displayed as centered bold text at
+  the bottom of each receipt.
+- Payment line amounts use `formattedAmount` getter (no trailing zeros).
 
 ### Workflow Optimizations
 
@@ -48,13 +57,15 @@ real-time customer account management and multi-currency support.
 
 ### Pricelist Rounding
 
-- **Always Round Up** — per-pricelist toggle that changes price rounding
-  from standard HALF-UP to ceiling (UP).
+- **Rounding Threshold** — Per-pricelist percentage field replacing the old
+  boolean round-up toggle. Controls the cutoff between rounding down and
+  rounding up (0–100%). Example: threshold 30% with precision 100 means
+  129→100, 130→100, 131→200.
 - **Applies globally**: sale orders, invoices, POS, ecommerce, pricelist
   reports — anywhere a pricelist price is computed.
-- **Pricelist-level setting**: each pricelist has its own checkbox, so you
-  can mix rounding strategies (e.g. round-up for retail, standard for wholesale).
-- **Synced to POS**: the toggle is loaded into the POS session so rounding
+- **Pricelist-level setting**: each pricelist has its own threshold, so you
+  can mix rounding strategies (e.g. 30% for retail, 50% for wholesale).
+- **Synced to POS**: the threshold is loaded into the POS session so rounding
   behavior is consistent between backend and frontend.
 
 ### Stock Alerts
@@ -66,6 +77,12 @@ real-time customer account management and multi-currency support.
 - **Batch fetch at startup** — all product stock loaded in one shot on session open.
 - **Toggle on/off** — enable/disable via POS settings → Show Stock Alerts.
 - **Storable only** — badges only appear for products with `is_storable` enabled (not consumables/services).
+
+### Additional
+
+- **Hide Chatter** — The Odoo chatter (message/activity stream) is hidden
+  globally on backend forms via `hide_chatter.scss`, because this POS does
+  not use internal chatter for customer communication.
 
 ### Prerequisites
 
@@ -86,7 +103,7 @@ One field is added to the pricelist form (Sales → Products → Pricelists → 
 
 | Field | Description | Default |
 | --- | --- | --- |
-| `round_up` | When checked, all price rounding in this pricelist uses ceiling rounding instead of standard HALF-UP | False |
+| `rounding_threshold` | Fractional threshold for rounding (0.00 = always down, 0.50 ≈ HALF-UP, 1.00 = always up). If the fractional part exceeds this value, the price rounds up. | 0.50 |
 
 ## Dependencies
 
@@ -115,10 +132,11 @@ docker compose exec odoo odoo -c /etc/odoo/odoo.conf \
 | Check balance | Select a customer |
 | Make payment | Customer Accounts → select → Make Payment → choose currency → enter amount → confirm |
 | Withdraw/adjust | Customer Accounts → select → Withdraw → enter amount → add notes → confirm |
+| Settle balance | Customer Accounts → select customer → **تسوية الرصيد** → confirm settlement |
 | Cycle pricelists | Click pricelist name in navbar |
 | Set exchange rate | Tap **Rate** in topbar → enter new value → confirm |
 | Quick cancel | Click Clear in navbar |
-| Enable round-up | Sales → Products → Pricelists → open pricelist → check **Always Round Up** |
+| Configure rounding threshold | Sales → Products → Pricelists → open pricelist → set **Rounding Threshold** |
 | Configure stock alerts | PoS → Settings → Show Stock Alerts + Low Stock Threshold |
 | Prerequisite: stock mode | Settings → Companies → Update Stock Quantities → In real time |
 | Check stock badge | Look at the top-left corner of each product card |
@@ -136,15 +154,15 @@ pos_ghadir/
 │   ├── __init__.py
 │   ├── pos_order.py            # Balance snapshot fields + perf logging
 │   ├── pos_config.py           # Stock alert config fields
-│   ├── product_pricelist.py    # round_up toggle field + POS data sync
-│   ├── product_pricelist_item.py  # Override rounding to UP when toggle is on
+│   ├── product_pricelist.py    # rounding_threshold field + POS data sync
+│   ├── product_pricelist_item.py  # Custom rounding with configurable threshold
 │   ├── product_product.py      # Stock RPC method + POS field list
 │   ├── product_template.py     # qty_available in POS field list
 │   ├── res_currency.py         # RPC: set_currency_rate_from_pos (quick rate setter)
 │   └── res_partner.py          # RPC: customer accounts, payments, adjustments
 ├── views/
 │   ├── pos_config_view.xml     # Stock alerts settings in POS config form
-│   └── product_pricelist_view.xml  # Always Round Up checkbox on pricelist form
+│   └── product_pricelist_view.xml  # Rounding Threshold percent_pie widget on pricelist form
 └── static/
     └── src/
         ├── js/
@@ -158,7 +176,7 @@ pos_ghadir/
         │   ├── dual_currency_display.js
         │   ├── note_button_fix.js
         │   ├── partner_balance_fetcher.js
-        │   ├── pricelist_round_up.js    # Patches getPrice to use UP rounding when toggled
+        │   ├── pricelist_rounding.js    # Patches getPrice with configurable rounding threshold
         │   ├── partner_balance_snapshot.js
         │   ├── partner_due_currency_convert.js
         │   ├── payment_receipt.js

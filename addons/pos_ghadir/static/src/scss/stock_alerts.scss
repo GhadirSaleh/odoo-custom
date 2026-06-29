@@ -1,3 +1,15 @@
+/*
+ * Stock Alert Badge Styles
+ * ========================
+ * Color-coded badges for real-time stock levels on POS product cards:
+ * - stock-ok:  green  (qty_available >= threshold)
+ * - stock-low: amber  (0 < qty_available < threshold)
+ * - stock-out: red    (qty_available <= 0)
+ *
+ * Badges are injected into ProductCard via stock_alerts.xml and use the
+ * "product-stock-badge" class with one of the three state classes above.
+ */
+
 .product-stock-badge {
     z-index: 2;
     font-size: 0.6rem;

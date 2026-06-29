@@ -1,5 +1,23 @@
 /** @odoo-module **/
 
+/**
+ * Note Button Fix — Odoo 19 Core Bug Workaround
+ * ================================================
+ * Patches: NoteButton, InternalNoteButton
+ *
+ * Problem: In Odoo 19 POS, the note button (NotesPopup) breaks when:
+ * 1. An orderline has been partially modified (e.g., qty changed via qty popup)
+ * 2. The user opens the note dialog on a different line
+ * 3. Odoo's internal order change tracking loses the mapping
+ * This causes a crash when trying to add a note to a partial quantity.
+ *
+ * Solution: Override setChanges to detect the partial-quantity scenario
+ * and create a separate order line for the portion getting the note,
+ * rather than trying to split the existing line. The original line is
+ * reduced by the noted quantity. If the note applies to the full line
+ * (no partial quantity), delegates to the standard setOrderlineNote.
+ */
+
 import { patch } from "@web/core/utils/patch";
 import {
     NoteButton,

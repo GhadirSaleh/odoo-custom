@@ -1,33 +1,43 @@
 /** @odoo-module **/
 
 /**
- * Pricelist Always Round Up (POS Frontend)
- * =========================================
+ * Pricelist Custom Rounding Threshold (POS Frontend)
+ * ====================================================
  * Patches: ProductTemplateAccounting.getPrice
  *
  * Problem: Odoo's default pricelist rounding uses HALF-UP (standard
- * rounding). Some businesses need prices to always round up (ceiling)
- * — e.g. 12.01 rounds to 13.00 when price_round is 1.00, not 12.00.
+ * rounding). Some businesses need a configurable rounding threshold
+ * — e.g., threshold 0.30 means fractional parts above 0.30 round up,
+ * below round down (so 130 rounds to 100, 131 to 200).
  *
- * Solution: Override getPrice to check `pricelist.round_up`. When true,
- * pass "UP" as the rounding method to roundPrecision; otherwise fall
- * back to the default "HALF-UP".
+ * Solution: Override getPrice to read `pricelist.rounding_threshold`
+ * and apply a custom rounding function instead of the built-in
+ * roundPrecision.
  *
  * The full method body is duplicated from Odoo 19 core because the
  * rounding step sits mid-method after the discount calculation but
  * before surcharge/margin adjustments. Calling super and re-rounding
- * would be incorrect — a value already rounded down by HALF-UP can't
- * be "unrounded" to apply UP.
+ * would be incorrect — a value already rounded by one method can't
+ * be "unrounded" to apply a different threshold.
  *
  * Server counterpart: product_pricelist_item.py (Python)
  *
- * @see pricelist.round_up field on product.pricelist
+ * @see pricelist.rounding_threshold field on product.pricelist
  */
 
-import { roundPrecision } from "@web/core/utils/numbers";
 import { ProductTemplateAccounting } from "@point_of_sale/app/models/accounting/product_template_accounting";
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
+
+function roundWithThreshold(value, precision, threshold) {
+    if (!precision) return value;
+    const normalized = value / precision;
+    const integer = Math.trunc(normalized);
+    if (normalized - integer > threshold) {
+        return (integer + 1) * precision;
+    }
+    return integer * precision;
+}
 
 patch(ProductTemplateAccounting.prototype, {
     getPrice(
@@ -123,9 +133,8 @@ patch(ProductTemplateAccounting.prototype, {
             var price_limit = price;
             price -= price * ((rule.price_discount || 0) / 100);
             if (rule.price_round) {
-                // Use UP (ceiling) if the pricelist has round_up enabled
-                const method = pricelist.round_up ? "UP" : "HALF-UP";
-                price = roundPrecision(price, rule.price_round, method);
+                const threshold = pricelist.rounding_threshold ?? 0.5;
+                price = roundWithThreshold(price, rule.price_round, threshold);
             }
             if (rule.price_surcharge) {
                 price += rule.price_surcharge;

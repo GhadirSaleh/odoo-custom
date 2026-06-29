@@ -1,5 +1,21 @@
 /** @odoo-module **/
 
+/**
+ * PaymentReceiptPopup — Receipt Preview/Print Dialog for Account Transactions
+ * =============================================================================
+ * Displays a modal dialog showing the receipt for a customer payment, withdrawal,
+ * or balance settlement. Provides Print and Close buttons.
+ *
+ * Key behaviors:
+ * - Print button: Calls the printer service with the PaymentReceipt component.
+ * - Close button: Calls getPayload(true) (print) or getPayload() (close only)
+ *   to unblock the caller (which is awaiting via makeAwaitable).
+ * - The caller creates a dummy pos.order record to pass to the popup, then
+ *   deletes it after the popup closes (see customer_account_screens.js).
+ *
+ * Used by: CustomerAccountStatementScreen for payment, withdrawal, and settle balance flows.
+ */
+
 import { Component } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";

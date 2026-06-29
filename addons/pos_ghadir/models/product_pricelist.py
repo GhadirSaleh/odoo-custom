@@ -1,10 +1,15 @@
 """
-Pricelist Rounding Toggle
-=========================
-Adds an `Always Round Up` checkbox on the pricelist form. When checked,
-all price rounding in that pricelist uses ceiling rounding (UP) instead
-of the default HALF-UP. The field is synced to the POS frontend so the
-behavior applies both server-side and in the POS client.
+Pricelist Rounding Threshold
+=============================
+Adds a `Rounding Threshold` percentage field on the pricelist form.
+Controls where the rounding cutoff sits between DOWN and UP:
+- 0.00 = always round down (floor)
+- 0.50 = closest to standard HALF-UP
+- 1.00 = always round up (ceiling)
+- Custom value = fractional part must exceed this threshold to round up
+
+The field is synced to the POS frontend so the behavior applies both
+server-side and in the POS client.
 """
 
 from odoo import api, fields, models
@@ -13,14 +18,19 @@ from odoo import api, fields, models
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
-    round_up = fields.Boolean(
-        string="Always Round Up",
-        help="If set, price rounding for this pricelist will always round up (ceiling). "
-             "Otherwise standard rounding (HALF-UP) is used.",
+    rounding_threshold = fields.Float(
+        string="Rounding Threshold",
+        default=0.50,
+        help="Fractional threshold for rounding. "
+             "If the fractional part exceeds this value, the price rounds up; "
+             "otherwise it rounds down.\n"
+             "0.00 = always round down (floor)\n"
+             "0.50 = closest to standard HALF-UP\n"
+             "1.00 = always round up (ceiling)",
     )
 
     @api.model
     def _load_pos_data_fields(self, config):
         fields = super()._load_pos_data_fields(config)
-        fields.append('round_up')
+        fields.append('rounding_threshold')
         return fields

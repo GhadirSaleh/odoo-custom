@@ -72,6 +72,14 @@ Stock Alerts
 * **Batch fetch at startup** — All product stock loaded in one shot when the POS session opens.
 * **Toggle on/off** — Enable or disable from POS settings.
 
+Pricelist Rounding Threshold
+-----------------------------
+* **Configurable Rounding Threshold** — Per-pricelist percentage field
+  replacing the old boolean round-up toggle. Controls where the cutoff
+  between rounding down and rounding up sits: 50% ≈ standard HALF-UP;
+  30% means prices at 130 round to 100, 131 rounds to 200 (precision 100).
+  Synced to the POS frontend for consistent server-side and POS behavior.
+
 Cashier Workflow Optimizations
 ------------------------------
 * **Pricelist Cycler** — Topbar button to cycle through available pricelists
@@ -117,6 +125,9 @@ Usage Guide
 8. **Check stock badge**: Look at the top-left corner of any product card.
 9. **Set exchange rate**: Tap the **Rate** button in the topbar → enter
    new value → confirm (full reload applies it everywhere).
+10. **Settle a partner balance**: Customer Accounts → select customer →
+    **تسوية الرصيد** → confirm settlement. Creates a payment or adjustment
+    to bring the customer's balance to zero.
     """,
     'data': [
         'views/pos_config_view.xml',
@@ -147,7 +158,7 @@ Usage Guide
             'pos_ghadir/static/src/js/payment_receipt.js',
             'pos_ghadir/static/src/js/payment_receipt_popup.js',
             'pos_ghadir/static/src/js/note_button_fix.js',
-            'pos_ghadir/static/src/js/pricelist_round_up.js',
+            'pos_ghadir/static/src/js/pricelist_rounding.js',
             'pos_ghadir/static/src/js/stock_alerts.js',
             'pos_ghadir/static/src/xml/receipt_partner_balance.xml',
             'pos_ghadir/static/src/xml/stock_alerts.xml',

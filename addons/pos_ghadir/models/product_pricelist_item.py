@@ -1,19 +1,41 @@
 """
-Pricelist Item Price Computation — Always Round Up
-===================================================
+Pricelist Item Price Computation — Custom Rounding Threshold
+=============================================================
 Overrides `_compute_price` and `_compute_rule_tip` on
-`product.pricelist.item` to apply ceiling rounding (UP) instead of the
-default HALF-UP when the pricelist's `round_up` toggle is enabled.
+`product.pricelist.item` to use a configurable rounding threshold
+instead of hardcoded HALF-UP or UP.
 
 The methods are fully duplicated from Odoo 19 core because the rounding
 step sits in the middle of the method, and downstream calculations
 (surcharge, min/max margins) depend on the rounded value. Simply calling
 super and re-rounding would give incorrect results (a value rounded down
-by HALF-UP cannot be "unrounded" to apply UP correctly).
+by HALF-UP cannot be "unrounded" to apply a different method correctly).
 """
 
+import math
+
 from odoo import _, api, models
-from odoo.tools import float_round, format_amount
+from odoo.tools import format_amount
+
+
+def _round_with_threshold(value, precision, threshold):
+    """Round `value` to `precision` using a configurable threshold.
+
+    If the fractional part of (value / precision) exceeds `threshold`,
+    the value rounds up; otherwise it rounds down.
+
+    Examples with precision=100, threshold=0.30:
+      129 → 100  (frac=0.29, not > 0.30)
+      130 → 100  (frac=0.30, not > 0.30)
+      131 → 200  (frac=0.31,     > 0.30)
+    """
+    if not precision:
+        return value
+    normalized = value / precision
+    integer = math.trunc(normalized)
+    if normalized - integer > threshold:
+        return (integer + 1) * precision
+    return integer * precision
 
 
 class ProductPricelistItem(models.Model):
@@ -44,9 +66,8 @@ class ProductPricelistItem(models.Model):
             discount = self.price_discount if self.base != 'standard_price' else -self.price_markup
             price = base_price - (base_price * (discount / 100))
             if self.price_round:
-                # Use UP (ceiling) rounding if the pricelist has round_up enabled
-                rounding_method = 'UP' if self.pricelist_id.round_up else 'HALF-UP'
-                price = float_round(price, precision_rounding=self.price_round, rounding_method=rounding_method)
+                threshold = self.pricelist_id.rounding_threshold
+                price = _round_with_threshold(price, self.price_round, threshold)
             if self.price_surcharge:
                 price += convert(self.price_surcharge)
             if self.price_min_margin:
@@ -73,8 +94,8 @@ class ProductPricelistItem(models.Model):
             discount_factor = (100 - discount) / 100
             discounted_price = base_amount * discount_factor
             if item.price_round:
-                rounding_method = 'UP' if item.pricelist_id.round_up else 'HALF-UP'
-                discounted_price = float_round(discounted_price, precision_rounding=item.price_round, rounding_method=rounding_method)
+                threshold = item.pricelist_id.rounding_threshold
+                discounted_price = _round_with_threshold(discounted_price, item.price_round, threshold)
             surcharge = format_amount(item.env, item.price_surcharge, item.currency_id)
             discount_type, discount = self._get_displayed_discount(item)
 
