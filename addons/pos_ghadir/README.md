@@ -80,6 +80,14 @@ real-time customer account management and multi-currency support.
 
 ### Additional
 
+- **Price Catalog PDF** — Hamburger menu (☰) → **Print Price Catalog**.
+  Generates a landscape A4 PDF listing all POS products grouped by category,
+  with prices from the currently active pricelist. Uses a compact 4-column
+  layout with gridlines and alternating row colors (no currency symbol).
+  Prices are computed using the pricelist's rounding threshold.
+- **Quick Rate Setter** — Exchange icon button in the topbar. Click to open
+  a popup showing the current rate (e.g. "1 USD = 13,000 SYP") and update
+  today's exchange rate. Triggers a full POS data reload.
 - **Hide Chatter** — The Odoo chatter (message/activity stream) is hidden
   globally on backend forms via `hide_chatter.scss`, because this POS does
   not use internal chatter for customer communication.

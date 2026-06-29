@@ -99,9 +99,13 @@ Cashier Workflow Optimizations
 * **Note Button Fix** — Fixes an Odoo 19 core bug where adding a note to a
   partial quantity of an orderline crashed if the selection changed while
   the note dialog was open.
-* **Quick Rate Setter** — Topbar button showing the current exchange rate;
-  tap to update today's rate directly from the POS. Triggers a full data
-  reload so all prices and conversions use the new rate.
+* **Quick Rate Setter** — Topbar exchange icon button; tap to see the current
+  rate (e.g. "1 USD = 13,000 SYP") and update today's rate directly from POS.
+  Triggers a full data reload so all prices and conversions use the new rate.
+* **Price Catalog PDF** — Hamburger menu (☰) → Print Price Catalog. Generates
+  a landscape A4 PDF listing all POS products grouped by category with prices
+  from the active pricelist. Compact 4-column layout with gridlines and
+  alternating row colors.
 
 Technical Details
 =================
@@ -123,15 +127,20 @@ Usage Guide
 6. **Quick cancel**: Click the Clear button in the top navbar.
 7. **Configure stock alerts**: PoS → Settings → enable "Show Stock Alerts" + set "Low Stock Threshold".
 8. **Check stock badge**: Look at the top-left corner of any product card.
-9. **Set exchange rate**: Tap the **Rate** button in the topbar → enter
-   new value → confirm (full reload applies it everywhere).
-10. **Settle a partner balance**: Customer Accounts → select customer →
-    **تسوية الرصيد** → confirm settlement. Creates a payment or adjustment
-    to bring the customer's balance to zero.
+9. **Set exchange rate**: Tap the exchange icon (⟳) in the topbar → popup
+   shows "1 USD = 13,000 SYP" → enter new value → confirm (full reload).
+10. **Print Price Catalog**: Hamburger menu (☰) → **Print Price Catalog** →
+   opens a landscape PDF with all POS products grouped by category, priced
+   from the active pricelist.
+11. **Settle a partner balance**: Customer Accounts → select customer →
+   **تسوية الرصيد** → confirm settlement. Creates a payment or adjustment
+   to bring the customer's balance to zero.
     """,
     'data': [
         'views/pos_config_view.xml',
         'views/product_pricelist_view.xml',
+        'report/price_catalog_report.xml',
+        'report/price_catalog_templates.xml',
     ],
     'depends': ['point_of_sale', 'account', 'sale', 'purchase', 'stock'],
     'assets': {

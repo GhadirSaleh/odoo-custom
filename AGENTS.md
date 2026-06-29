@@ -52,7 +52,7 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 
 ## Add-ons
 - **`addons/`** — 18 modules: custom + third-party (no Odoo core).
-- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management (payments, adjustments, settle balance), multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, configurable rounding threshold, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix, quick rate setter. Detailed docs in its `README.md`.
+- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management (payments, adjustments, settle balance), multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, configurable rounding threshold, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix, quick rate setter, price catalog PDF. Detailed docs in its `README.md`.
 - **Custom modules**: `product_last_purchase_cost` — adds "Auto-Update Cost from Purchase" checkbox on product categories. When enabled, the product's cost (`standard_price`) is set to the purchase line unit price upon receipt validation. Depends on `purchase_stock`, `stock_account`.
 - **Third-party suites**: `om_account_*` + `om_fiscal_year` + `om_recurring_payments` (accounting), `accounting_pdf_reports`, `muk_web_*` (UI theme), `bi_pos_default_customer`.
 
@@ -67,9 +67,15 @@ docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-p
 - **Custom POS pages need `static storeOnOrder = false`** to allow the Register button to navigate back to ProductScreen. Without it, the order remembers the custom page and Register tries to go back to it instead of ProductScreen.
 - **Payment receipt popup** (`payment_receipt_popup.js`) uses `makeAwaitable` to gate order refresh behind popup close. Dummy `pos.order` record is deleted after popup closes.
 - **Pricelist rounding threshold** (`product.pricelist.rounding_threshold`) is a per-pricelist Float (0.0–1.0, default 0.50) replacing the old `round_up` Boolean. The threshold controls the cutoff between rounding down and rounding up: if the fractional part exceeds the threshold, the price rounds up. Implemented via a custom `_round_with_threshold()` helper in both Python (`product_pricelist_item.py`) and JavaScript (`pricelist_rounding.js`) because the rounding step sits mid-method — calling super and re-rounding would give incorrect results. Both methods are fully duplicated from Odoo 19 core.
+- **Price Catalog PDF** (`report/price_catalog.py`, `topbar_buttons.js`):
+  - Custom QWeb report renders via `web.basic_layout` (no Odoo header/footer).
+  - Paperformat must set all margins to 0 — CSS `@page { margin: 0 }` alone won't override wkhtmltopdf's `--margin-top` CLI arg.
+  - `table-layout: fixed` is required because wkhtmltopdf ignores `max-width` on cells.
+  - Dropdown menu item is injected via MutationObserver watching `.pos-burger-menu-items`.
+  - Opens PDF with `window.open('/report/pdf/pos_ghadir.price_catalog/' + pricelist.id, '_blank')`.
 - **`.odoo-src/`** — cached copy of Odoo container source at `/usr/lib/python3/dist-packages/odoo/`, used by AI tooling for direct file access. Re-copy after updating the Odoo image: `docker compose exec odoo tar -C /usr/lib/python3/dist-packages/odoo -cf - . | tar -C .odoo-src/odoo -xf -`
 - **Quick Rate Setter** (`topbar_buttons.js`, `models/res_currency.py`):
-  - Topbar button shows `Rate: 13,000` (POS currency per 1 company currency, rounded).
+  - Topbar shows exchange icon (⟳), rate is in popup subtitle: "1 USD = 13,000 SYP".
   - Tap → NumberPopup → enter new rate → `set_currency_rate_from_pos` RPC.
   - Creates/updates today's `res.currency.rate` record for the POS currency via `sudo()`.
   - `sudo()` required because `res.currency.rate` write needs Account Manager group.

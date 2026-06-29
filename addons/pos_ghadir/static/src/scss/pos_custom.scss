@@ -297,3 +297,10 @@ div#order-date {
   white-space: nowrap;
   vertical-align: middle;
 }
+
+/* Force LTR direction on NumberPopup subtitle (e.g. "1 USD = 13,000 SYP")
+   so RTL layout doesn't reverse the currency expression */
+.pos .subtitle {
+  direction: rtl !important;
+  text-align: center !important;
+}

@@ -359,6 +359,42 @@ msgstr "خطأ في تسوية الرصيد"
 
 #. module: pos_ghadir
 #. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Print Price Catalog"
+msgstr "طباعة نشرة أسعار"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Set currency exchange rate"
+msgstr "تعيين سعر الصرف"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Set Exchange Rate"
+msgstr "تعيين سعر الصرف"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "1 %s = %s %s"
+msgstr "1 %s = %s %s"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/payment_receipt_popup.js:0
+msgid "Error printing receipt"
+msgstr "خطأ في طباعة الإيصال"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
+msgid "Balance Settlement"
+msgstr "تسوية الرصيد"
+
+#. module: pos_ghadir
+#. odoo-javascript
 #: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
 msgid "Account settled for %s"
 msgstr "تمت تسوية رصيد %s"

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Price Catalog QWeb PDF Template
+        ================================
+        Landscape A4 layout with 4 columns per row. Categories are sorted by
+        item count descending so the most-populous categories appear first.
+
+        Design:
+        - Zero page margins (paperformat handles this)
+        - Header: company name (22px) + date and pricelist name (16px)
+        - Each category: light gray bold header (15px) + two-column table
+          (product name | price) with gridlines and alternating row colors
+        - Price column is fixed at 33% width; product name fills the rest
+        - Product names too long for the column are truncated with ellipsis
+    -->
+
+    <template id="price_catalog">
+        <t t-call="web.html_container">
+            <t t-set="data_report_dpi" t-value="110"/>
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <style>
+                        @page { margin: 0; }
+                        html, body { margin: 0; padding: 0; }
+                        #wrapwrap, main, .container { margin: 0; padding: 0; }
+                        .article, .page { padding: 0; margin: 0; }
+                        .cat-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+                        .cat-table th, .cat-table td { border: 1px solid #999; padding: 1px 3px; }
+                        .cat-table tr.odd td { background: #f0f0f0; }
+                        .cat-table tr.even td { background: #ffffff; }
+                        .cat-table td:first-child { width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+                        .cat-table td:last-child { width: 33%; white-space: nowrap; }
+                        .cat-header { background: #d9d9d9; font-weight: bold; text-align: center; padding: 3px 4px; border: 1px solid #999; font-size: 15px; }
+                        .col-wrap { float: left; width: 25%; padding: 0 3px; box-sizing: border-box; }
+                        .row-group { overflow: hidden; margin-bottom: 2px; }
+                        .price-cell { text-align: right; white-space: nowrap; }
+                        .header-title { text-align: center; font-size: 22px; font-weight: bold; }
+                        .header-sub { text-align: center; font-size: 16px; color: #555; margin-bottom: 4px; }
+                    </style>
+
+                    <div class="header-title">
+                        <t t-esc="company.name"/>
+                    </div>
+                    <div class="header-sub">
+                        <t t-esc="date"/>
+                        — <t t-esc="pricelist.name"/>
+                    </div>
+
+                    <t t-foreach="category_rows" t-as="row">
+                        <div class="row-group">
+                            <t t-foreach="row" t-as="cat" t-lw="4">
+                                <div class="col-wrap">
+                                    <div class="cat-header">
+                                        <t t-esc="cat['name']"/>
+                                    </div>
+                                    <table class="cat-table">
+                                        <tbody>
+                                            <tr t-foreach="cat['items']" t-as="item" t-att-class="item['parity']">
+                                                <td><t t-esc="item['name']"/></td>
+                                                <td class="price-cell"><t t-esc="item['price']"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

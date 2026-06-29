@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Price Catalog Paper Format
+        ===========================
+        A4 Landscape with zero margins — maximizes usable space for the
+        4-column category grid. No header line or spacing.
+    -->
+    <record id="paperformat_price_catalog" model="report.paperformat">
+        <field name="name">A4 Landscape - Price Catalog</field>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="dpi">90</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_spacing">0</field>
+        <field name="header_line">False</field>
+    </record>
+
+    <!--
+        Price Catalog Report Action
+        =============================
+        Model is product.pricelist — the report receives pricelist IDs as
+        docids. The report model report.pos_ghadir.price_catalog handles
+        fetching all POS products and computing their prices.
+    -->
+    <record id="action_report_price_catalog" model="ir.actions.report">
+        <field name="name">Price Catalog</field>
+        <field name="model">product.pricelist</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pos_ghadir.price_catalog</field>
+        <field name="report_file">pos_ghadir.price_catalog</field>
+        <field name="paperformat_id" ref="paperformat_price_catalog"/>
+    </record>
+
+</odoo>

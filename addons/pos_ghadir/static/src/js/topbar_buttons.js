@@ -1,11 +1,12 @@
 /** @odoo-module **/
 
 /**
- * Topbar Buttons — Pricelist Cycler, Quick Cancel, Customer Accounts
- * ==================================================================
+ * Topbar Buttons & Dropdown Menu Items
+ * ======================================
  * Pattern: Raw DOM injection (no Owl patch)
  *
- * Adds custom buttons to the POS top navigation bar:
+ * Adds custom buttons to the POS top navigation bar and items to the
+ * hamburger dropdown menu:
  *
  * 1. Pricelist Cycler — Cycles through available pricelists on each click.
  *    Shows the current pricelist name as the label. Patches pos.selectPricelist
@@ -17,10 +18,16 @@
  * 3. Customer Accounts — Navigates to the CustomerAccountListScreen for
  *    viewing and managing customer balances.
  *
- * 4. Currency Rate Setter — Inline button showing current exchange rate.
+ * 4. Currency Rate Setter — Topbar button with exchange icon; click opens
+ *    a popup to update today's exchange rate. Rate is shown inside the popup,
+ *    not on the button itself. Triggers a full POS data reload on success.
  *
- * Visibility: Buttons are only shown on the ProductScreen. A MutationObserver
- * watches the DOM to toggle visibility when navigating between screens.
+ * 5. Print Price Catalog — Dropdown menu item in the hamburger menu (☰).
+ *    Opens a landscape A4 PDF listing all POS products grouped by category
+ *    with their prices from the currently active pricelist.
+ *
+ * Visibility: Topbar buttons only show on ProductScreen. The dropdown item
+ * is always available in the hamburger menu.
  *
  * Gotchas:
  * - Uses polling (setTimeout loop) to wait for the POS navbar and posmodel
@@ -75,6 +82,26 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
             return;
         }
         rateBtn.style.display = "flex";
+    }
+
+    function injectPriceCatalogMenuItem() {
+        const container = document.querySelector(".pos-burger-menu-items");
+        if (!container) return;
+        if (container.querySelector(".o_price_catalog_item")) return;
+        const item = document.createElement("span");
+        item.className = "o-dropdown-item dropdown-item o-navigable o_price_catalog_item";
+        item.setAttribute("role", "menuitem");
+        item.setAttribute("tabindex", "0");
+        item.textContent = _t("Print Price Catalog");
+        item.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            const pos = window.posmodel;
+            const order = pos.getOrder();
+            const pricelist = order?.pricelist_id;
+            if (!pricelist) return;
+            window.open("/report/pdf/pos_ghadir.price_catalog/" + pricelist.id, "_blank");
+        });
+        container.appendChild(item);
     }
 
     function injectButtons() {
@@ -164,7 +191,7 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
 
             const newRate = await makeAwaitable(pos.dialog, NumberPopup, {
                 title: _t("Set Exchange Rate"),
-                number: currentRate || 0,
+                startingValue: currentRate || 0,
                 subtitle: _t("1 %s = %s %s", companyCurrency.name, Math.round(currentRate).toLocaleString(), posCurrency.name),
             });
 
@@ -213,6 +240,7 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
         // Watch for DOM changes to toggle button visibility on screen navigation
         const observer = new MutationObserver(() => {
             updateVisibility();
+            injectPriceCatalogMenuItem();
         });
         observer.observe(document.body, { childList: true, subtree: true });
     }
