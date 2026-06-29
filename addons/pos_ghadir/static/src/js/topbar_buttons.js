@@ -64,11 +64,7 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
         }
     }
 
-    function formatRate(rate) {
-        return Math.round(rate).toLocaleString();
-    }
-
-    function updateRateLabel() {
+    function updateRateVisibility() {
         if (!rateBtn) return;
         const pos = window.posmodel;
         if (!pos) return;
@@ -78,13 +74,6 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
             rateBtn.style.display = "none";
             return;
         }
-        const inverseRate = pos.models._currencyRates?.[posCurrency.id];
-        if (!inverseRate || inverseRate === 0) {
-            rateBtn.querySelector(".rate-value").textContent = "—";
-            return;
-        }
-        const displayRate = 1 / inverseRate;
-        rateBtn.querySelector(".rate-value").textContent = formatRate(displayRate);
         rateBtn.style.display = "flex";
     }
 
@@ -161,8 +150,8 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
         // --- Currency Rate Setter Button ---
         rateBtn = document.createElement("button");
         rateBtn.className = "btn btn-success btn-lg lh-lg o_currency_rate_btn";
-        rateBtn.innerHTML = '<i class="fa fa-exchange me-1"></i><span>Rate: <span class="rate-value fw-bold">\u2014</span></span>';
-        rateBtn.style.cssText = "display: flex; align-items: center; gap: 0.3rem;";
+        rateBtn.innerHTML = '<i class="fa fa-exchange"></i>';
+        rateBtn.style.cssText = "display: flex !important; align-items: center; gap: 0.3rem;";
         rateBtn.title = _t("Set currency exchange rate");
 
         rateBtn.addEventListener("click", async () => {
@@ -176,7 +165,7 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
             const newRate = await makeAwaitable(pos.dialog, NumberPopup, {
                 title: _t("Set Exchange Rate"),
                 number: currentRate || 0,
-                subtitle: _t("%s per %s", posCurrency.name, companyCurrency.name),
+                subtitle: _t("1 %s = %s %s", companyCurrency.name, Math.round(currentRate).toLocaleString(), posCurrency.name),
             });
 
             if (!newRate || parseFloat(newRate) <= 0) return;
@@ -212,7 +201,7 @@ import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/n
         injected = true;
         updatePricelistLabel();
         updateVisibility();
-        updateRateLabel();
+        updateRateVisibility();
 
         // Patch selectPricelist to update the button label after pricelist changes
         const originalSelectPricelist = pos.selectPricelist;
