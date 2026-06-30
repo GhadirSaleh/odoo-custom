@@ -58,7 +58,7 @@ class ReportPriceCatalog(models.AbstractModel):
             raw_price = pricelist._get_product_price(product, 1.0)
             formatted_price = self._format_price(raw_price)
             seen_categories[cat.id]['items'].append({
-                'name': product.display_name,
+                'name': product.name,
                 'price': formatted_price,
             })
 
