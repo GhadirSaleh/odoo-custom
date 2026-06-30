@@ -66,7 +66,7 @@ function autoDetect(header, fieldOptions) {
     let bestField = null;
     let bestLen = 0;
     for (const entry of AUTO_MAP) {
-        if (!fieldOptions.hasOwnProperty(entry.field)) continue;
+        if (!Object.hasOwn(fieldOptions, entry.field)) continue;
         for (const pat of entry.patterns) {
             const matches = pat.length <= 3 ? h === pat : (h.startsWith(pat) || h === pat);
             if (matches) {

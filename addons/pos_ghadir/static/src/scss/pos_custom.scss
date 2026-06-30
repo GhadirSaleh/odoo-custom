@@ -101,7 +101,6 @@
       Uncomment .pos-receipt .paymentlines to also hide payment lines
    ============================================================ */
 .pos-receipt-taxes,
-// .pos-receipt .paymentlines,
 .receipt-change {
   display: none !important;
 }
@@ -186,7 +185,7 @@
 .receipt-company-total {
   border-bottom: 3px solid #000 !important;
   margin-top: 0 !important;
-  padding: 0 0 !important;
+  padding: 0;
 }
 
 /* Separator above the after-footer section (payment terminal tickets) */

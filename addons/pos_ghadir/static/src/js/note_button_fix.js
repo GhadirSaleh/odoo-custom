@@ -26,7 +26,7 @@ import {
 
 patch(NoteButton.prototype, {
     async setChanges(selectedOrderline, payload) {
-        var quantity_with_note = 0;
+        let quantity_with_note = 0;
         const changes = this.pos.getOrderChanges();
         for (const key in changes.orderlines) {
             if (changes.orderlines[key].uuid == selectedOrderline.uuid) {
