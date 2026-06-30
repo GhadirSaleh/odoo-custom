@@ -33,8 +33,6 @@ import logging
 import time
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
-from odoo.tools import _
 
 _logger = logging.getLogger(__name__)
 
@@ -142,57 +140,7 @@ class PosOrder(models.Model):
 
     def _generate_pos_order_invoice(self):
         t0 = time.perf_counter()
-
-        # Step 1: Lock records and set order state to 'done'
-        t1 = time.perf_counter()
-        if not self.env['res.company']._with_locked_records(self, allow_raising=False):
-            raise UserError(_("Some orders are already being invoiced. Please try again later."))
-        self.state = 'done'
-        _logger.info("⏱️ POS order #%d:   lock+state = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 2: Create the invoice record
-        t1 = time.perf_counter()
-        company = self.company_id
-        invoice_vals = self._prepare_invoice_vals()
-        invoice = self._create_invoice(invoice_vals)
-        _logger.info("⏱️ POS order #%d:   create invoice = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 3: Post the invoice (makes it official in accounting)
-        t1 = time.perf_counter()
-        invoice.sudo().with_company(company).with_context(**self._get_invoice_post_context())._post()
-        _logger.info("⏱️ POS order #%d:   post invoice = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 4: Create payment journal entries
-        t1 = time.perf_counter()
-        payment_moves_from_closed_sessions = {}
-        all_payment_moves = self.env['account.move']
-        for session, orders in self.grouped('session_id').items():
-            is_session_closed = session.state == 'closed'
-            for order in orders:
-                order_payments = order._get_payments()
-                payment_moves = order_payments._create_payment_moves(is_session_closed)
-                all_payment_moves |= payment_moves
-                if is_session_closed:
-                    payment_moves_from_closed_sessions[order] = payment_moves
-        _logger.info("⏱️ POS order #%d:   payment moves = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 5: Reconcile invoice with payments
-        t1 = time.perf_counter()
-        self._reconcile_invoice_payments(invoice, all_payment_moves)
-        _logger.info("⏱️ POS order #%d:   reconcile = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 6: Create reversal entries for closed sessions
-        t1 = time.perf_counter()
-        for order, payment_moves in payment_moves_from_closed_sessions.items():
-            order._create_misc_reversal_move(payment_moves)
-        _logger.info("⏱️ POS order #%d:   reversal moves = %.3fs", self.id, time.perf_counter() - t1)
-
-        # Step 7: Generate and send PDF (only if not disabled via context)
-        if self.env.context.get('generate_pdf', True):
-            t1 = time.perf_counter()
-            invoice.with_context(skip_invoice_sync=True)._generate_and_send()
-            _logger.info("⏱️ POS order #%d:   PDF generation = %.3fs", self.id, time.perf_counter() - t1)
-
+        invoice = super()._generate_pos_order_invoice()
         total = time.perf_counter() - t0
         _logger.info("⏱️ POS order #%d: _generate_pos_order_invoice TOTAL = %.3fs", self.id, total)
         return invoice
