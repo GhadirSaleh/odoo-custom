@@ -4,16 +4,20 @@
     <!--
         Price Catalog QWeb PDF Template
         ================================
-        Landscape A4 layout with 4 columns per row. Categories are sorted by
+        Landscape A4 layout with 7 columns per row. Categories are sorted by
         item count descending so the most-populous categories appear first.
+        Oversized categories are pre-split by the Python report class into
+        adjacent columns (labeled 1/2, 2/3, etc.) to avoid mid-category page
+        breaks. As a safety net, each column has page-break-inside: avoid.
 
         Design:
         - Zero page margins (paperformat handles this)
-        - Header: company name (22px) + date and pricelist name (16px)
-        - Each category: light gray bold header (15px) + two-column table
+        - Header: company name (25px) + date and pricelist name (19px)
+        - Each category: light gray bold header (18px) + two-column table
           (product name | price) with gridlines and alternating row colors
         - Price column is fixed at 33% width; product name fills the rest
         - Product names too long for the column are truncated with ellipsis
+        - 8px margin between row groups for visual separation
     -->
 
     <template id="price_catalog">
@@ -26,18 +30,18 @@
                         html, body { margin: 0; padding: 0; }
                         #wrapwrap, main, .container { margin: 0; padding: 0; }
                         .article, .page { padding: 0; margin: 0; }
-                        .cat-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
-                        .cat-table th, .cat-table td { border: 1px solid #999; padding: 1px 3px; }
+                        .cat-table { width: 100%; border-collapse: collapse; font-size: 17px; table-layout: fixed; }
+                        .cat-table th, .cat-table td { border: 1px solid #999; padding: 2px 4px; }
                         .cat-table tr.odd td { background: #f0f0f0; }
                         .cat-table tr.even td { background: #ffffff; }
                         .cat-table td:first-child { width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
                         .cat-table td:last-child { width: 33%; white-space: nowrap; }
-                        .cat-header { background: #d9d9d9; font-weight: bold; text-align: center; padding: 3px 4px; border: 1px solid #999; font-size: 15px; }
-                        .col-wrap { float: left; width: 25%; padding: 0 3px; box-sizing: border-box; }
-                        .row-group { overflow: hidden; margin-bottom: 2px; }
+                        .cat-header { background: #d9d9d9; font-weight: bold; text-align: center; padding: 4px 6px; border: 1px solid #999; font-size: 18px; }
+                        .col-wrap { float: left; width: 14.28%; padding: 0 3px; box-sizing: border-box; page-break-inside: avoid; }
+                        .row-group { overflow: hidden; margin-bottom: 8px; page-break-after: auto; }
                         .price-cell { text-align: right; white-space: nowrap; }
-                        .header-title { text-align: center; font-size: 22px; font-weight: bold; }
-                        .header-sub { text-align: center; font-size: 16px; color: #555; margin-bottom: 4px; }
+                        .header-title { text-align: center; font-size: 25px; font-weight: bold; }
+                        .header-sub { text-align: center; font-size: 19px; color: #555; margin-bottom: 4px; }
                     </style>
 
                     <div class="header-title">
@@ -50,7 +54,7 @@
 
                     <t t-foreach="category_rows" t-as="row">
                         <div class="row-group">
-                            <t t-foreach="row" t-as="cat" t-lw="4">
+                            <t t-foreach="row" t-as="cat">
                                 <div class="col-wrap">
                                     <div class="cat-header">
                                         <t t-esc="cat['name']"/>

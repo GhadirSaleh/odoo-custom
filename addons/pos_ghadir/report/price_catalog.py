@@ -3,7 +3,11 @@ Price Catalog Report — Landscape A4 PDF of POS products by category
 ====================================================================
 Generates a compact multi-column PDF listing all products available in POS
 with their prices from a given pricelist. Products are grouped by category,
-sorted by most-populous categories first, and laid out in 4 columns per row.
+sorted by most-populous categories first, and laid out in 7 columns per row.
+
+Categories that exceed MAX_ITEMS_PER_COL are automatically split across
+multiple adjacent columns with "(1/2)", "(2/3)" etc. labels to prevent
+mid-category page breaks.
 
 The report is triggered from the POS hamburger dropdown menu via
 `/report/pdf/pos_ghadir.price_catalog/<pricelist_id>`. Uses the standard
@@ -12,8 +16,14 @@ Odoo QWeb PDF rendering pipeline with a custom A4 landscape paperformat
 """
 
 import datetime
+import math
 
 from odoo import api, models
+
+# Max items rendered inside a single column. Categories with more
+# items than this are split across adjacent columns. Tuned for A4
+# landscape at 110 DPI (~35 rows fit comfortably; 30 leaves margin).
+MAX_ITEMS_PER_COL = 30
 
 
 class ReportPriceCatalog(models.AbstractModel):
@@ -57,11 +67,34 @@ class ReportPriceCatalog(models.AbstractModel):
             for idx, item in enumerate(cat['items']):
                 item['parity'] = 'odd' if idx % 2 == 0 else 'even'
 
-        # Sort categories by item count descending, group into rows of 4
+        # Split oversized categories into multi-column chunks so that no
+        # single column exceeds MAX_ITEMS_PER_COL. This prevents ugly
+        # mid-table page breaks in the PDF.
+        split_data = []
+        for cat in category_data:
+            items = cat['items']
+            if len(items) > MAX_ITEMS_PER_COL:
+                n_chunks = math.ceil(len(items) / MAX_ITEMS_PER_COL)
+                chunk_size = math.ceil(len(items) / n_chunks)
+                for i in range(n_chunks):
+                    chunk_items = items[i * chunk_size:(i + 1) * chunk_size]
+                    # Re-apply zebra parity within each chunk
+                    for idx, item in enumerate(chunk_items):
+                        item['parity'] = 'odd' if idx % 2 == 0 else 'even'
+                    suffix = '' if n_chunks == 1 else f' ({i + 1}/{n_chunks})'
+                    split_data.append({
+                        'name': cat['name'] + suffix,
+                        'items': chunk_items,
+                    })
+            else:
+                split_data.append(cat)
+        category_data = split_data
+
+        # Sort categories by item count descending, group into rows of 7
         category_data.sort(key=lambda c: len(c['items']), reverse=True)
         category_rows = []
-        for i in range(0, len(category_data), 4):
-            row = category_data[i:i + 4]
+        for i in range(0, len(category_data), 7):
+            row = category_data[i:i + 7]
             category_rows.append(row)
 
         return {
