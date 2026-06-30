@@ -34,12 +34,10 @@
  * is prompted to select which currency to use for payments/withdrawals.
  * Amounts are converted on the backend using Odoo's currency rate system.
  *
- * Shared methods between ListScreen and StatementScreen (could be extracted
- * into a mixin in a future refactor):
- * - formatBalance(amount) — format in company currency
- * - formatPosBalance(amount) — format in POS currency
- * - isMultiCurrency() — check if POS currency differs from company currency
- * - convertToPosCurrency(companyAmount) — convert using stored exchange rates
+ * Shared helpers (formatBalance, formatPosBalance, isMultiCurrency,
+ * convertToPosCurrency) are extracted into account_utils.js and delegated
+ * to from both screens. Receipt display uses showPaymentReceipt() from
+ * the same utility module to avoid duplicating the dummy-order pattern.
  */
 
 import { registry } from "@web/core/registry";

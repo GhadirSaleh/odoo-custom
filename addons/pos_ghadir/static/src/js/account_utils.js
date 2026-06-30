@@ -1,5 +1,23 @@
 /** @odoo-module **/
 
+/**
+ * Account Utilities
+ * ==================
+ * Shared helpers for customer account screens, extracted to eliminate
+ * method duplication between CustomerAccountListScreen and
+ * CustomerAccountStatementScreen.
+ *
+ * Exports:
+ * - formatBalance(pos, amount)         — format in company currency
+ * - formatPosBalance(pos, amount)      — format in POS currency
+ * - isMultiCurrency(pos)               — check if POS != company currency
+ * - convertToPosCurrency(pos, amount)  — convert company → POS via internal rate
+ * - showPaymentReceipt(dialog, pos, receiptProps)
+ *   Creates a dummy pos.order, displays a PaymentReceiptPopup, then
+ *   deletes the dummy order. Wraps the create-dispose cycle shared by
+ *   makePayment, withdraw, and settleBalance flows.
+ */
+
 import { formatAmountAfterSymbol } from "./currency_utils";
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
 import { PaymentReceiptPopup } from "./payment_receipt_popup";

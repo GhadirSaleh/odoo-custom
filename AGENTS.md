@@ -56,6 +56,12 @@ docker compose up      # auto-inits DB on first run
   await new Promise(resolve => dialog.add(MyPopup, { getPayload: () => resolve() }));
   ```
   The `makeAwaitable` utility from `@point_of_sale/app/utils/make_awaitable_dialog` is used for numeric-input popups.
+- **Dummy-order receipt pattern**: Extracted to `account_utils.showPaymentReceipt()` to avoid duplicating the create-use-delete cycle for dummy `pos.order` records in payment/withdraw/settle flows.
+- **Currency formatting utility**: `currency_utils.js` exports `formatAmountAfterSymbol(amount, currencyOrId)` that strips the symbol from Odoo's `formatCurrency` and places it after the number for Arabic-compatible display. Accepts both currency objects and numeric IDs.
+- **Shared account helpers**: `account_utils.js` exports `formatBalance`, `formatPosBalance`, `isMultiCurrency`, and `convertToPosCurrency` — all take `pos` as first param to avoid `this` binding issues in utility functions.
+- **Extracting inner functions**: Instead of nested closures in Python model methods, extract as proper `@api.model` methods (e.g. `_build_currency_move_line` from `_create_customer_order`) for testability and cleaner code.
+- **Avoid duplicating Odoo core methods**: When only adding timing instrumentation, wrap `super()` and log total time instead of copying the entire method body. Per-step breakdown is lost but core compatibility is preserved.
+- **`_load_pos_data_fields`**: Use `if 'field' not in fields: fields.append('field')` instead of `fields += ['field']` to prevent duplicates when super already includes the field.
 
 ## Gotchas
 - Module update commands need `--db_host=db --db_user=odoo --db_password=odoo` because `odoo.conf` has no `db_*` settings — they come from the entrypoint, which `docker compose exec odoo odoo ...` bypasses. Use `--workers=0 --http-port=8067` to avoid port conflict with the running server.

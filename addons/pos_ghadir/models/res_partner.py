@@ -43,7 +43,7 @@ Internal methods:
   * Supports three currencies: transaction, company, and POS
 
 Multi-currency logic:
-  The _make_line helper inside _create_customer_order handles three scenarios:
+  The _build_currency_move_line model method handles three scenarios:
   1. Transaction currency != company currency: convert amounts to both
      company currency (for debit/credit) and POS currency (for amount_currency).
   2. Multi-currency POS but transaction = company currency: use company

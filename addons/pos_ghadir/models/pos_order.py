@@ -23,9 +23,8 @@ Instrumented methods:
 - _process_order: Time to process + writes balance snapshot
 - _process_saved_order: Time to process a saved/draft order
   (also disables PDF generation via generate_pdf=False context)
-- _generate_pos_order_invoice: Breakdown of invoice creation steps:
-  * lock+state, create invoice, post invoice, payment moves,
-    reconcile, reversal moves, PDF generation
+- _generate_pos_order_invoice: Calls super() and logs total time only
+  (per-step breakdown removed in favor of not duplicating core logic)
 - read_pos_data: Time to read POS data for an order
 """
 

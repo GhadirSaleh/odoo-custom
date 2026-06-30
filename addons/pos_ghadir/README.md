@@ -200,8 +200,10 @@ pos_ghadir/
 └── static/
     └── src/
         ├── js/
+        │   ├── account_utils.js           # Shared account helpers + showPaymentReceipt
         │   ├── auto_enable_invoice.js
         │   ├── clean_currency_format.js
+        │   ├── currency_utils.js           # formatAmountAfterSymbol (shared currency formatting)
         │   ├── csv_import_popup.js        # 3-step wizard: mapping, preview, import
         │   ├── customer_account_screens.js  # NotesPopup, CustomerAccountListScreen, StatementScreen
         │   ├── default_qty_two.js
