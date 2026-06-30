@@ -181,6 +181,56 @@ class ResPartner(models.Model):
         type: 'adjustment_add' (increase balance) or 'adjustment_remove' (decrease)."""
         return self._create_customer_order(partner_id, amount, notes, config_id, type, currency_id)
 
+    @api.model
+    def _build_currency_move_line(self, account_id, partner_id, debit_amount, credit_amount, name,
+                                  needs_currency_conversion, transaction_currency, company_currency,
+                                  company, pos_currency, is_multi_currency):
+        """Build a journal entry line dict with proper currency handling.
+
+        Three scenarios:
+        1. Transaction currency != company currency (needs_currency_conversion):
+           convert amounts to both company and POS currencies.
+        2. Multi-currency POS but transaction = company currency (is_multi_currency):
+           use company amounts directly, convert to POS currency for amount_currency.
+        3. Single currency: no conversion needed.
+        """
+        today = fields.Date.today()
+        if needs_currency_conversion:
+            debit_company = transaction_currency._convert(debit_amount, company_currency, company, today) if debit_amount > 0 else 0.0
+            credit_company = transaction_currency._convert(credit_amount, company_currency, company, today) if credit_amount > 0 else 0.0
+            amount_cur = transaction_currency._convert(debit_amount - credit_amount, pos_currency, company, today)
+            line = {
+                'account_id': account_id,
+                'partner_id': partner_id,
+                'debit': debit_company,
+                'credit': credit_company,
+                'name': name,
+                'amount_currency': amount_cur,
+                'currency_id': pos_currency.id,
+            }
+        elif is_multi_currency:
+            debit_company = debit_amount if debit_amount > 0 else 0.0
+            credit_company = credit_amount if credit_amount > 0 else 0.0
+            amount_cur = company_currency._convert(debit_amount - credit_amount, pos_currency, company, today)
+            line = {
+                'account_id': account_id,
+                'partner_id': partner_id,
+                'debit': debit_company,
+                'credit': credit_company,
+                'name': name,
+                'amount_currency': amount_cur,
+                'currency_id': pos_currency.id,
+            }
+        else:
+            line = {
+                'account_id': account_id,
+                'partner_id': partner_id,
+                'debit': debit_amount if debit_amount > 0 else 0.0,
+                'credit': credit_amount if credit_amount > 0 else 0.0,
+                'name': name,
+            }
+        return Command.create(line)
+
     def _create_customer_order(self, partner_id, amount, notes, config_id, order_type, currency_id=False):
         """Core method for creating journal entries for payments and adjustments.
 
@@ -248,67 +298,38 @@ class ResPartner(models.Model):
             else:
                 amount_company = amount
 
-            def _make_line(account_id, partner_id, debit_selected, credit_selected, name):
-                """Build a journal entry line dict with proper currency handling.
-                Three scenarios: multi-currency conversion, multi-currency POS with
-                same transaction currency, or single currency (no conversion)."""
-                if needs_currency_conversion:
-                    debit_company = transaction_currency._convert(debit_selected, company_currency, session.company_id, today) if debit_selected > 0 else 0.0
-                    credit_company = transaction_currency._convert(credit_selected, company_currency, session.company_id, today) if credit_selected > 0 else 0.0
-                    amount_cur = transaction_currency._convert(debit_selected - credit_selected, pos_currency, session.company_id, today)
-                    line = {
-                        'account_id': account_id,
-                        'partner_id': partner_id,
-                        'debit': debit_company,
-                        'credit': credit_company,
-                        'name': name,
-                        'amount_currency': amount_cur,
-                        'currency_id': pos_currency.id,
-                    }
-                elif is_multi_currency:
-                    debit_company = debit_selected if debit_selected > 0 else 0.0
-                    credit_company = credit_selected if credit_selected > 0 else 0.0
-                    amount_cur = company_currency._convert(debit_selected - credit_selected, pos_currency, session.company_id, today)
-                    line = {
-                        'account_id': account_id,
-                        'partner_id': partner_id,
-                        'debit': debit_company,
-                        'credit': credit_company,
-                        'name': name,
-                        'amount_currency': amount_cur,
-                        'currency_id': pos_currency.id,
-                    }
-                else:
-                    line = {
-                        'account_id': account_id,
-                        'partner_id': partner_id,
-                        'debit': debit_selected if debit_selected > 0 else 0.0,
-                        'credit': credit_selected if credit_selected > 0 else 0.0,
-                        'name': name,
-                    }
-                return Command.create(line)
+            cur_ctx = {
+                'needs_currency_conversion': needs_currency_conversion,
+                'transaction_currency': transaction_currency,
+                'company_currency': company_currency,
+                'company': session.company_id,
+                'pos_currency': pos_currency,
+                'is_multi_currency': is_multi_currency,
+            }
 
-            # Build journal entry lines based on order type
             if order_type == 'payment':
-                # Debit journal, credit receivable (customer pays → balance decreases)
                 move_type = 'entry'
                 line_vals = [
-                    _make_line(journal.default_account_id.id, partner_id, amount, 0, notes or 'Customer Payment'),
-                    _make_line(receivable_account.id, partner_id, 0, amount, notes or 'Customer Payment'),
+                    self._build_currency_move_line(account_id=journal.default_account_id.id, partner_id=partner_id,
+                        debit_amount=amount, credit_amount=0, name=notes or 'Customer Payment', **cur_ctx),
+                    self._build_currency_move_line(account_id=receivable_account.id, partner_id=partner_id,
+                        debit_amount=0, credit_amount=amount, name=notes or 'Customer Payment', **cur_ctx),
                 ]
             elif order_type == 'adjustment_add':
-                # Debit receivable, credit journal (increase customer balance)
                 move_type = 'entry'
                 line_vals = [
-                    _make_line(receivable_account.id, partner_id, amount, 0, notes or 'Account Adjustment'),
-                    _make_line(journal.default_account_id.id, partner_id, 0, amount, notes or 'Account Adjustment'),
+                    self._build_currency_move_line(account_id=receivable_account.id, partner_id=partner_id,
+                        debit_amount=amount, credit_amount=0, name=notes or 'Account Adjustment', **cur_ctx),
+                    self._build_currency_move_line(account_id=journal.default_account_id.id, partner_id=partner_id,
+                        debit_amount=0, credit_amount=amount, name=notes or 'Account Adjustment', **cur_ctx),
                 ]
             elif order_type == 'adjustment_remove':
-                # Debit journal, credit receivable (decrease customer balance)
                 move_type = 'entry'
                 line_vals = [
-                    _make_line(journal.default_account_id.id, partner_id, amount, 0, notes or 'Account Adjustment'),
-                    _make_line(receivable_account.id, partner_id, 0, amount, notes or 'Account Adjustment'),
+                    self._build_currency_move_line(account_id=journal.default_account_id.id, partner_id=partner_id,
+                        debit_amount=amount, credit_amount=0, name=notes or 'Account Adjustment', **cur_ctx),
+                    self._build_currency_move_line(account_id=receivable_account.id, partner_id=partner_id,
+                        debit_amount=0, credit_amount=amount, name=notes or 'Account Adjustment', **cur_ctx),
                 ]
             else:
                 return {'error': 'Invalid order type'}
