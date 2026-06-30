@@ -401,6 +401,30 @@ msgstr "تمت تسوية رصيد %s"
 
 #. module: pos_ghadir
 #. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "VAT:"
+msgstr "ضريبة القيمة المضافة:"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Tel:"
+msgstr "هاتف:"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Print"
+msgstr "طباعة"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/payment_receipt.xml:0
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: pos_ghadir
+#. odoo-javascript
 #: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
 msgid "Import Products CSV"
 msgstr "استيراد منتجات من CSV"

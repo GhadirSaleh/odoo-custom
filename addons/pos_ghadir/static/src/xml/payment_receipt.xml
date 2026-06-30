@@ -24,7 +24,7 @@
             <div class="pos-receipt-separator-thick"></div>
 
             <div class="pos-receipt-balance-row mt-2">
-                <span class="pos-receipt-balance-label">Previous Balance</span>
+                <span class="pos-receipt-balance-label"><t t-esc="_t('Previous Balance')"/></span>
                 <span class="pos-receipt-balance-amount" t-out="props.receipt.previousBalance"/>
             </div>
 
@@ -33,24 +33,24 @@
             </div>
 
             <div class="pos-receipt-balance-row">
-                <span class="pos-receipt-balance-label">Amount</span>
+                <span class="pos-receipt-balance-label"><t t-esc="_t('Amount')"/></span>
                 <span class="pos-receipt-balance-amount" t-out="props.receipt.amount"/>
             </div>
 
             <div t-if="props.receipt.amountCompany" class="pos-receipt-balance-row">
-                <span class="pos-receipt-balance-label">Equivalent</span>
+                <span class="pos-receipt-balance-label"><t t-esc="_t('Equivalent')"/></span>
                 <span class="pos-receipt-balance-amount" t-out="props.receipt.amountCompany"/>
             </div>
 
             <div class="pos-receipt-separator-thick"></div>
 
             <div class="pos-receipt-balance-row">
-                <span class="pos-receipt-balance-label">New Balance</span>
+                <span class="pos-receipt-balance-label"><t t-esc="_t('New Balance')"/></span>
                 <span class="pos-receipt-balance-amount fw-bold" t-out="props.receipt.newBalance"/>
             </div>
 
             <div t-if="props.receipt.notes" class="pos-receipt-balance-row mt-2">
-                <span class="pos-receipt-balance-label">Notes</span>
+                <span class="pos-receipt-balance-label"><t t-esc="_t('Notes')"/></span>
                 <span class="pos-receipt-balance-amount small" t-esc="props.receipt.notes"/>
             </div>
 
@@ -71,8 +71,8 @@
                 </div>
                 <div class="w-50 text-break text-end" style="font-size: 75%;">
                     <div>
-                        <div t-if="company.vat">VAT: <t t-out="company.vat"/></div>
-                        <div t-if="company.phone">Tel: <t t-out="company.phone"/></div>
+                        <div t-if="company.vat"><t t-esc="_t('VAT:')"/> <t t-out="company.vat"/></div>
+                        <div t-if="company.phone"><t t-esc="_t('Tel:')"/> <t t-out="company.phone"/></div>
                         <div t-if="company.email" t-out="company.email"/>
                         <div t-if="company.website" t-out="company.website"/>
                     </div>
@@ -91,9 +91,9 @@
             </div>
             <t t-set-slot="footer">
                 <button class="btn btn-primary" t-on-click="printReceipt">
-                    <i class="fa fa-print me-1"/> Print
+                    <i class="fa fa-print me-1"/> <t t-esc="_t('Print')"/>
                 </button>
-                <button class="btn btn-secondary" t-on-click="close">Close</button>
+                <button class="btn btn-secondary" t-on-click="close"><t t-esc="_t('Close')"/></button>
             </t>
         </Dialog>
     </t>

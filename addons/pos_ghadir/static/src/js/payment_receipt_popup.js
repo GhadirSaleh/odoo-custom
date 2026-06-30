@@ -32,6 +32,7 @@ export class PaymentReceiptPopup extends Component {
     };
 
     setup() {
+        this._t = _t;
         this.printer = useService("printer");
         this.notification = useService("notification");
     }

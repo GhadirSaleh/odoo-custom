@@ -19,6 +19,7 @@
 
 import { Component } from "@odoo/owl";
 import { ReceiptHeader } from "@point_of_sale/app/screens/receipt_screen/receipt/receipt_header/receipt_header";
+import { _t } from "@web/core/l10n/translation";
 
 export class PaymentReceipt extends Component {
     static template = "pos_ghadir.PaymentReceipt";
@@ -26,4 +27,8 @@ export class PaymentReceipt extends Component {
     static props = {
         receipt: Object,
     };
+
+    setup() {
+        this._t = _t;
+    }
 }
