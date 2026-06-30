@@ -18,5 +18,6 @@ class ProductTemplate(models.Model):
     def _load_pos_data_fields(self, config_id):
         """Include qty_available in the template-level POS data fields."""
         fields = super()._load_pos_data_fields(config_id)
-        fields += ['qty_available']
+        if 'qty_available' not in fields:
+            fields.append('qty_available')
         return fields
