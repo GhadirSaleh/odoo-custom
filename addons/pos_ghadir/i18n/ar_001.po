@@ -516,6 +516,18 @@ msgstr "خطأ"
 #. module: pos_ghadir
 #. odoo-javascript
 #: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "warning(s)"
+msgstr "تحذير"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "rows with warnings."
+msgstr "صف بها تحذيرات"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
 msgid "Import Complete"
 msgstr "اكتمل الاستيراد"
 

@@ -7,7 +7,9 @@
     All user-facing strings are wrapped in _t() for Arabic support.
 
   Step 2 (preview): Dry-run validation results showing each row's action
-    (Create/Update) and per-row error count. Error tooltips show details.
+    (Create/Update), per-row error count (red, hover for details), and
+    per-row warning count (orange, hover for details). Missing vendors
+    generate warnings instead of errors — the import auto-creates them.
 
   Step 3 (done): Summary of created/updated/orderpoints. Close triggers
     full POS reload (reloadData(true)).
@@ -63,6 +65,11 @@
                             <t t-esc="state.previewErrors.length"/> <t t-esc="_t('rows with errors.')"/>
                         </span>
                     </t>
+                    <t t-if="state.previewWarnings.length">
+                        <span class="text-warning">
+                            ⚠ <t t-esc="state.previewWarnings.length"/> <t t-esc="_t('rows with warnings.')"/>
+                        </span>
+                    </t>
                 </p>
                 <div style="max-height: 50vh; overflow-y: auto;">
                     <table class="table table-sm table-bordered">
@@ -85,10 +92,13 @@
                                     <span t-if="pr.action === 'Update'" class="text-success fw-bold"><t t-esc="_t('Update')"/></span>
                                 </td>
                                 <td>
-                                    <span t-if="!pr.has_errors" class="text-success">✓ <t t-esc="_t('OK')"/></span>
                                     <span t-if="pr.has_errors" class="text-danger" t-att-title="pr.errors.join('\n')">
                                         ✗ <t t-esc="pr.errors.length"/> <t t-esc="_t('error(s)')"/>
                                     </span>
+                                    <span t-elif="pr.has_warnings" class="text-warning" t-att-title="pr.warnings.join('\n')">
+                                        ⚠ <t t-esc="pr.warnings.length"/> <t t-esc="_t('warning(s)')"/>
+                                    </span>
+                                    <span t-else="" class="text-success">✓ <t t-esc="_t('OK')"/></span>
                                 </td>
                             </tr>
                         </tbody>

@@ -8,8 +8,10 @@
  *   1. **Mapping** — For each CSV header, the user selects an Odoo field
  *      from a dropdown. Auto-detection (longest-pattern match via AUTO_MAP)
  *      pre-selects most columns.
- *   2. **Preview** — Validates all rows (dry-run), shows create/update action
- *      and per-row error count. User can go back to fix mapping.
+ *   2. **Preview** — Validates all rows (dry-run), shows create/update action,
+ *      per-row error count (red, hover for details), and per-row warning
+ *      count (orange, hover for details). Missing vendors generate warnings
+ *      instead of errors — the import auto-creates them.
  *   3. **Result** — Summary of created/updated/orderpoints/errors.
  *      Close button triggers full POS reload (reloadData(true)).
  *
@@ -99,6 +101,7 @@ export class CsvImportPopup extends Component {
             mapping: {},
             previewRows: [],
             previewErrors: [],
+            previewWarnings: [],
             result: null,
         };
         this._loadFieldOptions();
@@ -165,6 +168,7 @@ export class CsvImportPopup extends Component {
 
             this.state.previewRows = data.preview || [];
             this.state.previewErrors = (data.preview || []).filter(r => r.has_errors);
+            this.state.previewWarnings = (data.preview || []).filter(r => r.has_warnings);
             this.state.step = "preview";
             this.render();
         } catch (err) {

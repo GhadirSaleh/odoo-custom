@@ -9,7 +9,9 @@ so any CSV column can map to any product field. Supports:
   csv_import_popup.js). Server also returns all field options for manual
   mapping in the dropdown.
 - Virtual fields: reorder_min/max (creates stock.warehouse.orderpoint),
-  seller_id (creates supplier info), pos_categ_ids (assigns POS categories)
+  seller_id (creates supplier info) — vendor is auto-created as a minimal
+  partner record if the name doesn't exist in the DB, with a warning shown
+  in the preview step. pos_categ_ids (assigns POS categories).
 - Blank-cell clearing: type-appropriate empty values (0/' '/False) are
   written to the DB so the field is zeroed/cleared, not skipped.
 - Full POS reload on Close to pick up imported products.
@@ -212,7 +214,8 @@ class ProductImportController(http.Controller):
                 'updated': int,
                 'orderpoints': int,
                 'errors': [str],
-                'preview': [{row, name, sku, has_errors, errors, action}]
+                'preview': [{row, name, sku, has_errors, errors, has_warnings,
+                             warnings, action}]
             }
             On error: {'error': str}
         """
@@ -254,7 +257,7 @@ class ProductImportController(http.Controller):
                 sku = mapped.get('default_code', '')
 
                 if preview:
-                    errors = self._validate_row(
+                    errors, warnings = self._validate_row(
                         env, mapped, field_types)
                     stats['preview'].append({
                         'row': row_num,
@@ -262,6 +265,8 @@ class ProductImportController(http.Controller):
                         'sku': sku,
                         'has_errors': bool(errors),
                         'errors': errors,
+                        'has_warnings': bool(warnings),
+                        'warnings': warnings,
                         'action': _guess_action(env, sku, name),
                     })
                 else:
@@ -283,6 +288,8 @@ class ProductImportController(http.Controller):
         - Many2one field values exist in their target model.
         - Boolean values are recognized.
         - Virtual fields (seller_id, pos_categ_ids) reference real records.
+        - Missing vendors are reported as warnings (not errors) because the
+          import will auto-create them.
 
         Args:
             env: Odoo environment.
@@ -290,9 +297,10 @@ class ProductImportController(http.Controller):
             field_types (dict): From _get_importable_fields() for type info.
 
         Returns:
-            list[str]: Error messages (empty list if valid).
+            tuple (list[str], list[str]): Error messages and warning messages.
         """
         errors = []
+        warnings = []
         name = mapped.get('name', '')
         if not name:
             errors.append('Missing product name')
@@ -328,17 +336,17 @@ class ProductImportController(http.Controller):
                 if raw_val.lower() not in ('yes', 'true', '1', 't', 'no', 'false', '0', 'f', 'on', 'off', ''):
                     errors.append(f"Invalid boolean '{raw_val}' for {finfo['string']}")
 
-        # Validate virtual fields
+        # Validate virtual fields — missing vendors become warnings (auto-created during import)
         if 'seller_id' in mapped and mapped['seller_id'].strip():
             vname = mapped['seller_id'].strip()
             if not env['res.partner'].search([('name', 'ilike', vname)], limit=1):
-                errors.append(f"Unknown vendor '{vname}'")
+                warnings.append(f"Vendor '{vname}' not found — will be created automatically")
         if 'pos_categ_ids' in mapped and mapped['pos_categ_ids'].strip():
             for cname in (c.strip() for c in mapped['pos_categ_ids'].split(',') if c.strip()):
                 if not env['pos.category'].search([('name', '=', cname)], limit=1):
                     errors.append(f"Unknown POS category '{cname}'")
 
-        return errors
+        return errors, warnings
 
     def _import_row(self, env, mapped, field_types, vendor, warehouse,
                     route_buy, stats):
@@ -408,11 +416,16 @@ class ProductImportController(http.Controller):
             if route_buy:
                 tvals['route_ids'] = [(4, route_buy.id)]
 
-            # Handle seller_id (virtual) — lookup vendor by name
+            # Handle seller_id (virtual) — lookup vendor by name, auto-create if missing
             if 'seller_id' in mapped and mapped['seller_id'].strip():
                 vendor_name = mapped['seller_id'].strip()
                 csv_vendor = env['res.partner'].search(
                     [('name', 'ilike', vendor_name)], limit=1)
+                if not csv_vendor:
+                    csv_vendor = env['res.partner'].create({
+                        'name': vendor_name,
+                        'supplier_rank': 1,
+                    })
                 if csv_vendor:
                     tvals['seller_ids'] = [(0, 0, {
                         'partner_id': csv_vendor.id,
