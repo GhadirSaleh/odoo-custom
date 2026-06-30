@@ -153,6 +153,7 @@ Usage Guide
             'pos_ghadir/static/src/scss/customer_account_screens.scss',
             'pos_ghadir/static/src/js/disable_price_button.js',
             'pos_ghadir/static/src/js/currency_utils.js',
+            'pos_ghadir/static/src/js/account_utils.js',
             'pos_ghadir/static/src/js/topbar_buttons.js',
             'pos_ghadir/static/src/js/default_qty_two.js',
             'pos_ghadir/static/src/js/clean_currency_format.js',

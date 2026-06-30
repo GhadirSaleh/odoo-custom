@@ -54,6 +54,7 @@ import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_p
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
 import { PaymentReceiptPopup } from "./payment_receipt_popup";
 import { formatAmountAfterSymbol } from "./currency_utils";
+import * as accountUtils from "./account_utils";
 
 /**
  * NotesPopup — Dialog for capturing free-text notes.
@@ -209,11 +210,11 @@ export class CustomerAccountListScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatAmountAfterSymbol(amount, this.pos.company.currency_id);
+        return accountUtils.formatBalance(this.pos, amount);
     }
 
     formatPosBalance(amount) {
-        return formatAmountAfterSymbol(amount, this.pos.currency);
+        return accountUtils.formatPosBalance(this.pos, amount);
     }
 
     getCustomerBalanceClass(balance) {
@@ -223,13 +224,11 @@ export class CustomerAccountListScreen extends Component {
     }
 
     isMultiCurrency() {
-        return this.pos.currency.id !== this.pos.company.currency_id.id;
+        return accountUtils.isMultiCurrency(this.pos);
     }
 
     convertToPosCurrency(companyAmount) {
-        const rate = this.pos.models._currencyRates?.[this.pos.currency.id];
-        if (!rate || rate === 0) return companyAmount;
-        return companyAmount / rate;
+        return accountUtils.convertToPosCurrency(this.pos, companyAmount);
     }
 }
 
@@ -616,11 +615,11 @@ export class CustomerAccountStatementScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatAmountAfterSymbol(amount, this.pos.company.currency_id);
+        return accountUtils.formatBalance(this.pos, amount);
     }
 
     formatPosBalance(amount) {
-        return formatAmountAfterSymbol(amount, this.pos.currency);
+        return accountUtils.formatPosBalance(this.pos, amount);
     }
 
     getBalanceClass() {
@@ -636,13 +635,11 @@ export class CustomerAccountStatementScreen extends Component {
     }
 
     isMultiCurrency() {
-        return this.pos.currency.id !== this.pos.company.currency_id.id;
+        return accountUtils.isMultiCurrency(this.pos);
     }
 
     convertToPosCurrency(companyAmount) {
-        const rate = this.pos.models._currencyRates?.[this.pos.currency.id];
-        if (!rate || rate === 0) return companyAmount;
-        return companyAmount / rate;
+        return accountUtils.convertToPosCurrency(this.pos, companyAmount);
     }
 
     getPosBalance() {
