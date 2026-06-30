@@ -35,7 +35,8 @@
 import { patch } from "@web/core/utils/patch";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { PosOrder } from "@point_of_sale/app/models/pos_order";
-import { formatCurrency, getCurrencyRates } from "@web/core/currency";
+import { getCurrencyRates } from "@web/core/currency";
+import { formatAmountAfterSymbol } from "./currency_utils";
 
 patch(PosOrder.prototype, {
     get convertedPartnerDue() {
@@ -70,14 +71,7 @@ patch(PosOrder.prototype, {
 
     get formattedConvertedPartnerDue() {
         if (this.convertedPartnerDue === undefined || this.convertedPartnerDue === null) return "";
-        const companyCurrency = this.company?.currency_id;
-        if (!companyCurrency) {
-            return formatCurrency(this.convertedPartnerDue, null, { trailingZeros: false });
-        }
-        const symbol = companyCurrency.symbol || "";
-        const formatted = formatCurrency(this.convertedPartnerDue, companyCurrency.id, { trailingZeros: false });
-        const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
-        return `${numberPart} ${symbol}`;
+        return formatAmountAfterSymbol(this.convertedPartnerDue, this.company?.currency_id);
     },
 });
 

@@ -34,7 +34,7 @@ import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { PosOrder } from "@point_of_sale/app/models/pos_order";
 import { SelectPartnerButton } from "@point_of_sale/app/screens/product_screen/control_buttons/select_partner_button/select_partner_button";
 import { xml } from "@odoo/owl";
-import { formatCurrency } from "@web/core/currency";
+import { formatAmountAfterSymbol } from "./currency_utils";
 
 // ---------------------------------------------------------------------------
 // 1. Patch PosStore — use reactive() instead of useState() (it's a service,
@@ -120,14 +120,7 @@ patch(PosStore.prototype, {
 patch(PosOrder.prototype, {
     get formattedPartnerBalance() {
         if (this.partnerBalance === undefined || this.partnerBalance === null) return "";
-        const companyCurrency = this.company?.currency_id;
-        if (!companyCurrency) {
-            return formatCurrency(this.partnerBalance, null, { trailingZeros: false });
-        }
-        const symbol = companyCurrency.symbol || "";
-        const formatted = formatCurrency(this.partnerBalance, companyCurrency.id, { trailingZeros: false });
-        const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
-        return `${numberPart} ${symbol}`;
+        return formatAmountAfterSymbol(this.partnerBalance, this.company?.currency_id);
     },
 });
 
@@ -136,15 +129,7 @@ patch(PosOrder.prototype, {
 // ---------------------------------------------------------------------------
 patch(PosStore.prototype, {
     get formattedCurrentPartnerBalance() {
-        const balance = this.currentPartnerBalance;
-        const companyCurrency = this.company?.currency_id;
-        if (!companyCurrency) {
-            return formatCurrency(balance, null, { trailingZeros: false });
-        }
-        const symbol = companyCurrency.symbol || "";
-        const formatted = formatCurrency(balance, companyCurrency.id, { trailingZeros: false });
-        const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
-        return `${numberPart} ${symbol}`;
+        return formatAmountAfterSymbol(this.currentPartnerBalance, this.company?.currency_id);
     },
 });
 

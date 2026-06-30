@@ -35,7 +35,7 @@ import { patch } from "@web/core/utils/patch";
 import { PosOrder } from "@point_of_sale/app/models/pos_order";
 import { PosStore } from "@point_of_sale/app/services/pos_store";
 import { OrderDisplay } from "@point_of_sale/app/components/order_display/order_display";
-import { formatCurrency } from "@web/core/currency";
+import { formatAmountAfterSymbol } from "./currency_utils";
 
 patch(PosOrder.prototype, {
     get convertedTotal() {
@@ -59,21 +59,8 @@ patch(PosOrder.prototype, {
 
     get formattedConvertedTotal() {
         const converted = this.convertedTotal;
-        if (converted === null) {
-            return "";
-        }
-        const companyCurrency = this.company?.currency_id;
-        if (!companyCurrency) {
-            return "";
-        }
-        const symbol = companyCurrency.symbol || "";
-        // formatCurrency includes the symbol; strip it to avoid duplication
-        // since we append the symbol manually
-        const formatted = formatCurrency(converted, companyCurrency.id, {
-            trailingZeros: false,
-        });
-        const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
-        return `${numberPart} ${symbol}`;
+        if (converted === null) return "";
+        return formatAmountAfterSymbol(converted, this.company?.currency_id);
     },
 });
 

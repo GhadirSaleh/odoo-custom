@@ -47,20 +47,13 @@ import { useService } from "@web/core/utils/hooks";
 import { usePos } from "@point_of_sale/app/hooks/pos_hook";
 import { Component, useState, onMounted } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
-import { formatCurrency, getCurrency } from "@web/core/currency";
+import { getCurrency } from "@web/core/currency";
 import { Dialog } from "@web/core/dialog/dialog";
 import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/number_popup";
 import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_popup/selection_popup";
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
 import { PaymentReceiptPopup } from "./payment_receipt_popup";
-
-// Helper: format amount as "1,234.56 $" (number, space, symbol)
-function formatCurrencyAmount(amount, currency) {
-    const formatted = formatCurrency(amount, currency.id, { trailingZeros: false });
-    const symbol = currency.symbol || "";
-    const numberPart = formatted.replace(new RegExp(`\\s*${symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`, "g"), "").trim();
-    return `${numberPart} ${symbol}`;
-}
+import { formatAmountAfterSymbol } from "./currency_utils";
 
 /**
  * NotesPopup — Dialog for capturing free-text notes.
@@ -216,11 +209,11 @@ export class CustomerAccountListScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatCurrencyAmount(amount, this.pos.company.currency_id);
+        return formatAmountAfterSymbol(amount, this.pos.company.currency_id);
     }
 
     formatPosBalance(amount) {
-        return formatCurrencyAmount(amount, this.pos.currency);
+        return formatAmountAfterSymbol(amount, this.pos.currency);
     }
 
     getCustomerBalanceClass(balance) {
@@ -360,9 +353,9 @@ export class CustomerAccountStatementScreen extends Component {
             }
 
             const paidCurrency = getCurrency(result.currency_id);
-            const paidFormatted = paidCurrency ? formatCurrencyAmount(result.amount_paid, paidCurrency) : String(result.amount_paid);
+            const paidFormatted = paidCurrency ? formatAmountAfterSymbol(result.amount_paid, paidCurrency) : String(result.amount_paid);
             const companyCurrency = getCurrency(result.company_currency_id);
-            const companyFormatted = companyCurrency ? formatCurrencyAmount(result.amount_company, companyCurrency) : String(result.amount_company);
+            const companyFormatted = companyCurrency ? formatAmountAfterSymbol(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
 
             const dummyOrder = this.pos.models["pos.order"].create({
@@ -455,9 +448,9 @@ export class CustomerAccountStatementScreen extends Component {
             }
 
             const paidCurrency = getCurrency(result.currency_id);
-            const paidFormatted = paidCurrency ? formatCurrencyAmount(result.amount_paid, paidCurrency) : String(result.amount_paid);
+            const paidFormatted = paidCurrency ? formatAmountAfterSymbol(result.amount_paid, paidCurrency) : String(result.amount_paid);
             const companyCurrency = getCurrency(result.company_currency_id);
-            const companyFormatted = companyCurrency ? formatCurrencyAmount(result.amount_company, companyCurrency) : String(result.amount_company);
+            const companyFormatted = companyCurrency ? formatAmountAfterSymbol(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
 
             const dummyOrder = this.pos.models["pos.order"].create({
@@ -559,11 +552,11 @@ export class CustomerAccountStatementScreen extends Component {
 
             const paidCurrency = getCurrency(result.currency_id);
             const paidFormatted = paidCurrency
-                ? formatCurrencyAmount(result.amount_paid, paidCurrency)
+                ? formatAmountAfterSymbol(result.amount_paid, paidCurrency)
                 : String(result.amount_paid);
             const companyCurrency = getCurrency(result.company_currency_id);
             const companyFormatted = companyCurrency
-                ? formatCurrencyAmount(result.amount_company, companyCurrency)
+                ? formatAmountAfterSymbol(result.amount_company, companyCurrency)
                 : String(result.amount_company);
 
             const dummyOrder = this.pos.models["pos.order"].create({
@@ -623,11 +616,11 @@ export class CustomerAccountStatementScreen extends Component {
     }
 
     formatBalance(amount) {
-        return formatCurrencyAmount(amount, this.pos.company.currency_id);
+        return formatAmountAfterSymbol(amount, this.pos.company.currency_id);
     }
 
     formatPosBalance(amount) {
-        return formatCurrencyAmount(amount, this.pos.currency);
+        return formatAmountAfterSymbol(amount, this.pos.currency);
     }
 
     getBalanceClass() {
