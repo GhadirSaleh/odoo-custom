@@ -52,7 +52,6 @@ import { Dialog } from "@web/core/dialog/dialog";
 import { NumberPopup } from "@point_of_sale/app/components/popups/number_popup/number_popup";
 import { SelectionPopup } from "@point_of_sale/app/components/popups/selection_popup/selection_popup";
 import { makeAwaitable } from "@point_of_sale/app/utils/make_awaitable_dialog";
-import { PaymentReceiptPopup } from "./payment_receipt_popup";
 import { formatAmountAfterSymbol } from "./currency_utils";
 import * as accountUtils from "./account_utils";
 
@@ -357,32 +356,18 @@ export class CustomerAccountStatementScreen extends Component {
             const companyFormatted = companyCurrency ? formatAmountAfterSymbol(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
 
-            const dummyOrder = this.pos.models["pos.order"].create({
-                session_id: this.pos.session,
-                company_id: this.pos.company,
-                config_id: this.pos.config,
-                user_id: this.pos.user,
-                ticket_code: "",
-                tracking_number: "",
-                sequence_number: 0,
-                pos_reference: result.move_name || "",
+            await accountUtils.showPaymentReceipt(this.dialog, this.pos, {
+                reference: result.move_name || "",
+                date: new Date().toLocaleString(),
+                customerName: customerName,
+                customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
+                transactionType: _t("Payment"),
+                amount: paidFormatted,
+                amountCompany: this.isMultiCurrency() ? companyFormatted : "",
+                notes: notes || "",
+                previousBalance: this.formatBalance(previousBalance),
+                newBalance: this.formatBalance(result.new_balance),
             });
-            await makeAwaitable(this.dialog, PaymentReceiptPopup, {
-                receipt: {
-                    order: dummyOrder,
-                    reference: result.move_name || "",
-                    date: new Date().toLocaleString(),
-                    customerName: customerName,
-                    customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
-                    transactionType: _t("Payment"),
-                    amount: paidFormatted,
-                    amountCompany: this.isMultiCurrency() ? companyFormatted : "",
-                    notes: notes || "",
-                    previousBalance: this.formatBalance(previousBalance),
-                    newBalance: this.formatBalance(result.new_balance),
-                },
-            });
-            this.pos.models["pos.order"].delete(dummyOrder);
 
             this.notification.add(
                 _t("Payment of %s recorded for %s\nEquivalent: %s", [paidFormatted, customerName, companyFormatted]),
@@ -452,32 +437,18 @@ export class CustomerAccountStatementScreen extends Component {
             const companyFormatted = companyCurrency ? formatAmountAfterSymbol(result.amount_company, companyCurrency) : String(result.amount_company);
             const customerName = this.state.customer.name;
 
-            const dummyOrder = this.pos.models["pos.order"].create({
-                session_id: this.pos.session,
-                company_id: this.pos.company,
-                config_id: this.pos.config,
-                user_id: this.pos.user,
-                ticket_code: "",
-                tracking_number: "",
-                sequence_number: 0,
-                pos_reference: result.move_name || "",
+            await accountUtils.showPaymentReceipt(this.dialog, this.pos, {
+                reference: result.move_name || "",
+                date: new Date().toLocaleString(),
+                customerName: customerName,
+                customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
+                transactionType: _t("Withdrawal"),
+                amount: paidFormatted,
+                amountCompany: this.isMultiCurrency() ? companyFormatted : "",
+                notes: notes || "",
+                previousBalance: this.formatBalance(previousBalance),
+                newBalance: this.formatBalance(result.new_balance),
             });
-            await makeAwaitable(this.dialog, PaymentReceiptPopup, {
-                receipt: {
-                    order: dummyOrder,
-                    reference: result.move_name || "",
-                    date: new Date().toLocaleString(),
-                    customerName: customerName,
-                    customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
-                    transactionType: _t("Withdrawal"),
-                    amount: paidFormatted,
-                    amountCompany: this.isMultiCurrency() ? companyFormatted : "",
-                    notes: notes || "",
-                    previousBalance: this.formatBalance(previousBalance),
-                    newBalance: this.formatBalance(result.new_balance),
-                },
-            });
-            this.pos.models["pos.order"].delete(dummyOrder);
 
             this.notification.add(
                 _t("Withdrawal of %s recorded for %s\nEquivalent: %s", [paidFormatted, customerName, companyFormatted]),
@@ -558,32 +529,18 @@ export class CustomerAccountStatementScreen extends Component {
                 ? formatAmountAfterSymbol(result.amount_company, companyCurrency)
                 : String(result.amount_company);
 
-            const dummyOrder = this.pos.models["pos.order"].create({
-                session_id: this.pos.session,
-                company_id: this.pos.company,
-                config_id: this.pos.config,
-                user_id: this.pos.user,
-                ticket_code: "",
-                tracking_number: "",
-                sequence_number: 0,
-                pos_reference: result.move_name || "",
+            await accountUtils.showPaymentReceipt(this.dialog, this.pos, {
+                reference: result.move_name || "",
+                date: new Date().toLocaleString(),
+                customerName: customerName,
+                customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
+                transactionType: _t("Balance Settlement"),
+                amount: paidFormatted,
+                amountCompany: this.isMultiCurrency() ? companyFormatted : "",
+                notes: _t("Balance settlement"),
+                previousBalance: this.formatBalance(previousBalance),
+                newBalance: this.formatBalance(result.new_balance),
             });
-            await makeAwaitable(this.dialog, PaymentReceiptPopup, {
-                receipt: {
-                    order: dummyOrder,
-                    reference: result.move_name || "",
-                    date: new Date().toLocaleString(),
-                    customerName: customerName,
-                    customerPhone: this.state.customer.phone || this.state.customer.mobile || "",
-                    transactionType: _t("Balance Settlement"),
-                    amount: paidFormatted,
-                    amountCompany: this.isMultiCurrency() ? companyFormatted : "",
-                    notes: _t("Balance settlement"),
-                    previousBalance: this.formatBalance(previousBalance),
-                    newBalance: this.formatBalance(result.new_balance),
-                },
-            });
-            this.pos.models["pos.order"].delete(dummyOrder);
 
             this.notification.add(
                 _t("Account settled for %s", [customerName]),
