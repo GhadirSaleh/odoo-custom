@@ -398,3 +398,159 @@ msgstr "تسوية الرصيد"
 #: code:addons/pos_ghadir/static/src/js/customer_account_screens.js:0
 msgid "Account settled for %s"
 msgstr "تمت تسوية رصيد %s"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/js/topbar_buttons.js:0
+msgid "Import Products CSV"
+msgstr "استيراد منتجات من CSV"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Map each CSV column to an Odoo field."
+msgstr "ربط كل عمود CSV بحقل أودو"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Required:"
+msgstr "مطلوب:"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "CSV Column"
+msgstr "عمود CSV"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Odoo Field"
+msgstr "حقل أودو"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "— Skip —"
+msgstr "— تخطي —"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "rows parsed."
+msgstr "صف تم تحليله"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "rows with errors."
+msgstr "صف بها أخطاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "SKU"
+msgstr "رمز"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Action"
+msgstr "الإجراء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Status"
+msgstr "الحالة"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Create"
+msgstr "إنشاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Update"
+msgstr "تحديث"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "OK"
+msgstr "موافق"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "error(s)"
+msgstr "خطأ"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Import Complete"
+msgstr "اكتمل الاستيراد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Created"
+msgstr "تم الإنشاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Updated"
+msgstr "تم التحديث"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Orderpoints set"
+msgstr "تم تعيين نقاط إعادة الطلب"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Errors"
+msgstr "الأخطاء"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Error details:"
+msgstr "تفاصيل الأخطاء:"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Processing..."
+msgstr "جارٍ المعالجة..."
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Preview"
+msgstr "معاينة"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Back"
+msgstr "رجوع"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Import"
+msgstr "استيراد"
+
+#. module: pos_ghadir
+#. odoo-javascript
+#: code:addons/pos_ghadir/static/src/xml/csv_import_popup.xml:0
+msgid "Reload Data"
+msgstr "إعادة تحميل البيانات"

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CSV Import Popup — 3-Step Wizard
+
+  Step 1 (mapping): For each CSV header, a dropdown lets the user pick
+    an Odoo field to map to. Auto-detection pre-selects best matches.
+    All user-facing strings are wrapped in _t() for Arabic support.
+
+  Step 2 (preview): Dry-run validation results showing each row's action
+    (Create/Update) and per-row error count. Error tooltips show details.
+
+  Step 3 (done): Summary of created/updated/orderpoints. Close triggers
+    full POS reload (reloadData(true)).
+
+  Footer buttons: Preview → (Back | Import) → Reload Data
+-->
+<templates id="template" xml:space="preserve">
+
+    <t t-name="pos_ghadir.CsvImportPopup">
+        <Dialog title="_t('Import Products CSV')" size="'lg'">
+            <!-- Step 1: Column Mapping -->
+            <div t-if="state.step === 'mapping'">
+                <p class="text-muted mb-2">
+                    <t t-esc="_t('Map each CSV column to an Odoo field.')"/>
+                    <t t-esc="_t('Required:')"/> <strong><t t-esc="_t('Name')"/></strong>.
+                </p>
+                <div style="max-height: 50vh; overflow-y: auto;">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;"><t t-esc="_t('CSV Column')"/></th>
+                                <th style="width: 10%; text-align: center;">→</th>
+                                <th style="width: 50%;"><t t-esc="_t('Odoo Field')"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.headers" t-as="header" t-key="header + '_' + header_index">
+                                <td><strong t-esc="header"/></td>
+                                <td style="text-align: center;">→</td>
+                                <td>
+                                    <select class="form-select form-select-sm"
+                                            t-on-change="(ev) => this.setMapping(header, ev.target.value)">
+                                        <option value="__skip__"><t t-esc="_t('— Skip —')"/></option>
+                                        <t t-foreach="Object.entries(state.fieldOptions)" t-as="opt" t-key="opt[0]">
+                                            <option t-att-value="opt[0]"
+                                                    t-att-selected="state.mapping[header] === opt[0] ? 'selected' : undefined"
+                                                    t-esc="opt[1]"/>
+                                        </t>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Step 2: Preview — dry-run validation results -->
+            <div t-if="state.step === 'preview'">
+                <p class="text-muted mb-2">
+                    <t t-esc="_t('Preview:')"/> <t t-esc="state.previewRows.length"/> <t t-esc="_t('rows parsed.')"/>
+                    <t t-if="state.previewErrors.length">
+                        <span class="text-danger">
+                            <t t-esc="state.previewErrors.length"/> <t t-esc="_t('rows with errors.')"/>
+                        </span>
+                    </t>
+                </p>
+                <div style="max-height: 50vh; overflow-y: auto;">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><t t-esc="_t('Name')"/></th>
+                                <th><t t-esc="_t('SKU')"/></th>
+                                <th><t t-esc="_t('Action')"/></th>
+                                <th><t t-esc="_t('Status')"/></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.previewRows" t-as="pr" t-key="pr.row">
+                                <td t-esc="pr.row"/>
+                                <td t-esc="pr.name"/>
+                                <td t-esc="pr.sku"/>
+                                <td>
+                                    <span t-if="pr.action === 'Create'" class="text-primary fw-bold"><t t-esc="_t('Create')"/></span>
+                                    <span t-if="pr.action === 'Update'" class="text-success fw-bold"><t t-esc="_t('Update')"/></span>
+                                </td>
+                                <td>
+                                    <span t-if="!pr.has_errors" class="text-success">✓ <t t-esc="_t('OK')"/></span>
+                                    <span t-if="pr.has_errors" class="text-danger" t-att-title="pr.errors.join('\n')">
+                                        ✗ <t t-esc="pr.errors.length"/> <t t-esc="_t('error(s)')"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Step 3: Done — import summary -->
+            <div t-if="state.step === 'done'">
+                <div class="text-center py-3">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
+                    <h5><t t-esc="_t('Import Complete')"/></h5>
+                    <table class="table table-sm table-borderless" style="max-width: 300px; margin: 0 auto;">
+                        <tr><td><t t-esc="_t('Created')"/></td><td class="text-end fw-bold" t-esc="state.result.created"/></tr>
+                        <tr><td><t t-esc="_t('Updated')"/></td><td class="text-end fw-bold" t-esc="state.result.updated"/></tr>
+                        <tr><td><t t-esc="_t('Orderpoints set')"/></td><td class="text-end fw-bold" t-esc="state.result.orderpoints"/></tr>
+                        <tr t-if="state.result.errors.length">
+                            <td class="text-danger"><t t-esc="_t('Errors')"/></td>
+                            <td class="text-end text-danger fw-bold" t-esc="state.result.errors.length"/>
+                        </tr>
+                    </table>
+                    <div t-if="state.result.errors.length" class="text-start mt-2" style="max-height: 150px; overflow-y: auto;">
+                        <p class="text-danger small mb-1"><t t-esc="_t('Error details:')"/></p>
+                        <ul class="small">
+                            <li t-foreach="state.result.errors" t-as="err" t-key="err" t-esc="err"/>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading overlay (spinner) -->
+            <div t-if="state.step === 'loading'"
+                 class="text-center py-5">
+                <div class="spinner-border" role="status"/>
+                <p class="mt-2"><t t-esc="_t('Processing...')"/></p>
+            </div>
+
+            <t t-set-slot="footer">
+                <button t-if="state.step === 'mapping'"
+                        class="btn btn-primary"
+                        t-on-click="preview">
+                    <t t-esc="_t('Preview')"/>
+                </button>
+                <button t-if="state.step === 'preview'"
+                        class="btn btn-outline-secondary"
+                        t-on-click="back">
+                    <t t-esc="_t('Back')"/>
+                </button>
+                <button t-if="state.step === 'preview'"
+                        class="btn btn-primary"
+                        t-on-click="doImport">
+                    <t t-esc="_t('Import')"/>
+                </button>
+                <button t-if="state.step === 'done'"
+                        class="btn btn-primary"
+                        t-on-click="close">
+                    <t t-esc="_t('Reload Data')"/>
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

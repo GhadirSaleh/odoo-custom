@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pricelist Form Extension — Rounding Threshold
+
+  Adds the rounding_threshold field (percent_pie widget) to the pricelist
+  form, placed right after the company_id field in the form layout.
+-->
 <odoo>
     <record id="product_pricelist_view_inherit_pos_ghadir" model="ir.ui.view">
         <field name="name">product.pricelist.form.inherit.pos.ghadir</field>

@@ -78,6 +78,28 @@ real-time customer account management and multi-currency support.
 - **Toggle on/off** — enable/disable via POS settings → Show Stock Alerts.
 - **Storable only** — badges only appear for products with `is_storable` enabled (not consumables/services).
 
+### CSV Product Import
+
+- **Hamburger menu entry** — ☰ → **Import Products CSV** opens a file picker.
+- **Column mapping wizard** — Each CSV header listed with a dropdown to pick
+  the target Odoo field. Auto-detection (longest-pattern algorithm) pre-selects
+  most columns based on common names and Arabic equivalents.
+- **Dynamic field options** — All Odoo product fields are fetched live from the
+  model (via `fields_get()`), so custom fields appear automatically. Binary,
+  one2many, many2many, and internal fields are excluded.
+- **Virtual fields** — `reorder_min`/`reorder_max` (creates `stock.warehouse.orderpoint`),
+  `seller_id` (creates supplier info), `pos_categ_ids` (assigns POS categories by
+  comma-separated names).
+- **Preview step** — Dry-run validation per row (Create/Update action, error count).
+  Errors have tooltips with details (missing name, invalid number, unknown vendor, etc.).
+- **Blank-cell clearing** — Empty CSV cells write type-appropriate empty values
+  (0, `False`, `''`) so fields get zeroed/cleared, not left stale.
+- **Upsert by SKU then name** — If `default_code` matches an existing variant,
+  it updates; otherwise falls back to exact name match on variant then template.
+- **POS reload on Close** — After import, the Close button runs `reloadData(true)`,
+  matching the exchange rate setter pattern.
+- **Full Arabic translation** — All 30+ UI strings are translated in `i18n/ar_001.po`.
+
 ### Additional
 
 - **Price Catalog PDF** — Hamburger menu (☰) → **Print Price Catalog**.
@@ -148,6 +170,7 @@ docker compose exec odoo odoo -c /etc/odoo/odoo.conf \
 | Configure stock alerts | PoS → Settings → Show Stock Alerts + Low Stock Threshold |
 | Prerequisite: stock mode | Settings → Companies → Update Stock Quantities → In real time |
 | Check stock badge | Look at the top-left corner of each product card |
+| Import products from CSV | ☰ → **Import Products CSV** → pick `.csv` file → map columns → Preview → Import → Reload Data |
 
 ## File Map
 
@@ -156,27 +179,31 @@ pos_ghadir/
 ├── __init__.py
 ├── __manifest__.py
 ├── README.md
+├── controllers/
+│   ├── __init__.py
+│   └── product_import.py         # CSV import controller: field detection, preview, upsert, orderpoints
 ├── i18n/
-│   └── ar_001.po              # Arabic translations
+│   └── ar_001.po                 # Arabic translations (30+ for CSV import)
 ├── models/
 │   ├── __init__.py
-│   ├── pos_order.py            # Balance snapshot fields + perf logging
-│   ├── pos_config.py           # Stock alert config fields
-│   ├── product_pricelist.py    # rounding_threshold field + POS data sync
-│   ├── product_pricelist_item.py  # Custom rounding with configurable threshold
-│   ├── product_product.py      # Stock RPC method + POS field list
-│   ├── product_template.py     # qty_available in POS field list
-│   ├── res_currency.py         # RPC: set_currency_rate_from_pos (quick rate setter)
-│   └── res_partner.py          # RPC: customer accounts, payments, adjustments
+│   ├── pos_order.py              # Balance snapshot fields + perf logging
+│   ├── pos_config.py             # Stock alert config fields
+│   ├── product_pricelist.py      # rounding_threshold field + POS data sync
+│   ├── product_pricelist_item.py # Custom rounding with configurable threshold
+│   ├── product_product.py        # Stock RPC method + POS field list
+│   ├── product_template.py       # qty_available in POS field list
+│   ├── res_currency.py           # RPC: set_currency_rate_from_pos (quick rate setter)
+│   └── res_partner.py            # RPC: customer accounts, payments, adjustments
 ├── views/
-│   ├── pos_config_view.xml     # Stock alerts settings in POS config form
-│   └── product_pricelist_view.xml  # Rounding Threshold percent_pie widget on pricelist form
+│   ├── pos_config_view.xml       # Stock alerts settings in POS config form
+│   └── product_pricelist_view.xml  # Rounding Threshold percent_pie widget
 └── static/
     └── src/
         ├── js/
         │   ├── auto_enable_invoice.js
         │   ├── clean_currency_format.js
-        │   ├── customer_account_screens.js   # NotesPopup, CustomerAccountListScreen, StatementScreen
+        │   ├── csv_import_popup.js        # 3-step wizard: mapping, preview, import
+        │   ├── customer_account_screens.js  # NotesPopup, CustomerAccountListScreen, StatementScreen
         │   ├── default_qty_two.js
         │   ├── deselect_on_background_click.js
         │   ├── disable_auto_invoice_download.js
@@ -184,23 +211,24 @@ pos_ghadir/
         │   ├── dual_currency_display.js
         │   ├── note_button_fix.js
         │   ├── partner_balance_fetcher.js
-        │   ├── pricelist_rounding.js    # Patches getPrice with configurable rounding threshold
+        │   ├── pricelist_rounding.js       # Patches getPrice with rounding threshold
         │   ├── partner_balance_snapshot.js
         │   ├── partner_due_currency_convert.js
         │   ├── payment_receipt.js
         │   ├── payment_receipt_popup.js
         │   ├── prevent_empty_payment_line.js
-        │   ├── stock_alerts.js          # ProductCard badge + batch RPC + post-order refresh
-        │   └── topbar_buttons.js        # Topbar: pricelist cycler, quick cancel, accounts, rate setter
+        │   ├── stock_alerts.js            # ProductCard badge + batch RPC + post-order refresh
+        │   └── topbar_buttons.js          # Topbar buttons + hamburger menu items + CSV import entry
         ├── scss/
         │   ├── customer_account_screens.scss
         │   ├── hide_chatter.scss
         │   ├── pos_custom.scss
-        │   └── stock_alerts.scss        # Subtle stock badge styles
+        │   └── stock_alerts.scss          # Subtle stock badge styles
         └── xml/
+            ├── csv_import_popup.xml       # 3-step wizard template (_t-wrapped strings)
             ├── customer_account_screens.xml
             ├── dual_currency_display.xml
-            ├── payment_receipt.xml
+            ├── payment_receipt.xml        # Payment/withdrawal receipt layout
             ├── receipt_partner_balance.xml
-            └── stock_alerts.xml         # Badge injection into ProductCard template
+            └── stock_alerts.xml           # Badge injection into ProductCard template
 ```

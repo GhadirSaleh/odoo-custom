@@ -1,4 +1,30 @@
 /** @odoo-module **/
+
+/**
+ * Stock Alerts & Post-Order Refresh
+ *
+ * Three patches to deliver real-time stock visibility on product cards:
+ *
+ * 1. **ProductCard.stockLevel** — Computed getter returning 'out' (≤0),
+ *    'low' (≤ threshold), or 'ok' based on qty_available. Only for
+ *    storable products when pos_show_stock_alerts is enabled. Null otherwise
+ *    (no badge rendered).
+ *
+ * 2. **ProductCard.stockQty** — The raw qty_available value for the badge
+ *    text, or null if unavailable.
+ *
+ * 3. **OrderPaymentValidation.afterOrderValidation** — After a validated
+ *    order, calls _refreshProductStock() which fetches fresh stock via RPC
+ *    for all product IDs in the order and updates both the variant and its
+ *    template in-memory. Without this, badges would be stale until the next
+ *    POS session.
+ *
+ * 4. **PosData.intializeDataRelation** — After initial data load (not offline),
+ *    calls _fetchAllStock() to bulk-fetch stock for all storable products in
+ *    chunks of 200. Populates qty_available on variants and templates so the
+ *    badges show immediately on session start.
+ */
+
 import { patch } from "@web/core/utils/patch";
 import { usePos } from "@point_of_sale/app/hooks/pos_hook";
 import { PosData } from "@point_of_sale/app/services/data_service";
@@ -30,9 +56,9 @@ patch(ProductCard.prototype, {
 });
 
 /**
- * Post-order stock refresh
- * After each validated order, fetch current stock for all ordered products
- * and update both the variant and its template.
+ * Post-order stock refresh: after each validated order, fetch current
+ * stock for all ordered products and update both the variant and its
+ * template in-memory.
  */
 patch(OrderPaymentValidation.prototype, {
     async afterOrderValidation() {
@@ -67,9 +93,9 @@ patch(OrderPaymentValidation.prototype, {
 });
 
 /**
- * Initial bulk stock fetch
- * Runs once at POS session start (after all product data is loaded).
- * Fetches stock for all storable products in chunks of 200.
+ * Initial bulk stock fetch: runs once at POS session start (after all
+ * product data is loaded). Fetches stock for all storable products in
+ * chunks of 200 to avoid timeouts.
  */
 patch(PosData.prototype, {
     async intializeDataRelation() {

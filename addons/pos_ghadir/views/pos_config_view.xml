@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  POS Config Form Extension — Stock Alerts Settings
+
+  Adds two fields to the POS configuration form:
+    pos_show_stock_alerts — Enable/disable stock badges on product cards.
+    pos_low_stock_threshold — Quantity below which a product is "low stock".
+
+  The threshold field only appears when stock alerts are enabled
+  (invisible="not pos_show_stock_alerts").
+-->
 <odoo>
     <record id="view_pos_config_form_inherit_stock" model="ir.ui.view">
         <field name="name">pos.config.form.inherit.stock</field>

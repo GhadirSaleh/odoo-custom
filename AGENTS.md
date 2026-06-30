@@ -3,7 +3,9 @@
 ## Stack
 - **Odoo 19** (`image: odoo:19`), **PostgreSQL 15**, **Docker Compose v2**
 - All work inside Docker containers — never run Odoo or Python locally
-- **nginx runs on the host**, not in Docker — SSL termination, proxies to Odoo containers
+- **nginx runs on the host**, not in Docker — SSL termination, proxies to containers
+- **No CI / lint tooling** — Odoo tests via `--test-enable` only
+- All 18 modules in `addons/`: 2 custom (`pos_ghadir`, `product_last_purchase_cost`), 16 third-party
 
 ## Quick start
 ```bash
@@ -14,71 +16,52 @@ docker compose up      # auto-inits DB on first run
 ## Developer commands
 | Task | Command |
 |---|---|
-| Start (foreground) | `docker compose up` |
-| Start (background) | `docker compose up -d` |
 | Shell into container | `docker compose exec odoo bash` |
 | Update a module | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --stop-after-init --workers=0 --http-port=8067` |
-| Run module tests | `docker compose exec odoo odoo -c /etc/odoo/odoo.conf --db_host=db --db_user=odoo --db_password=odoo -d odoo -u <module> --test-enable --stop-after-init --workers=0 --http-port=8067` |
+| Run module tests | Same as above, add `--test-enable` |
 | Scaffold new addon | `docker compose exec odoo odoo scaffold <name> /mnt/extra-addons` |
 | Connect to database | `docker compose exec db psql -U odoo odoo` |
 | View logs | `docker compose logs -f odoo` |
 | **Wipe everything** | `docker compose down -v` |
 
-Looking up Odoo's internal APIs:
-```bash
-# Search for model method definitions (Odoo 19 style)
-docker compose exec odoo grep -rn "@api.model\|def search\|def _search\|def name_get\|def name_search" /usr/lib/python3/dist-packages/odoo/models.py --include="*.py"
-
-# Search across all Odoo source for a method name
-docker compose exec odoo grep -rn "def _compute_balance" /usr/lib/python3/dist-packages/odoo/ --include="*.py"
-```
-
 ## Architecture
-- **`docker-compose.yml`** — production baseline. Uses `image: odoo:19`, mounts config/addons read-only, passes `command: odoo --config=/etc/odoo/odoo.conf` for explicit config path.
-- **`docker-compose.override.yml`** — auto-merged in dev: config/addons writable, passes `--dev=all` for hot-reload. Absent in production.
-- **`scripts/custom-entrypoint.sh`** — waits for Postgres, auto-fixes config write permissions (`chmod o+w`), runs one-shot init (`-i base --workers=0 --stop-after-init`) on first start, then hands off to the official `/entrypoint.sh`. `--workers=0` is critical — without it init can leave the DB half-initialised.
-- **Entrypoint env vars**: reads `HOST`, `USER`, `PASSWORD`, `PORT`, `DB` (short names set by Compose `environment:` block), NOT `POSTGRES_*` variables. These are passed as `--db_*` CLI args to the init command, and also detected by the official entrypoint when `db_*` are absent from `odoo.conf`.
-- **`config/odoo.conf`**: `addons_path = /mnt/extra-addons`, `workers = 2`, `proxy_mode = True`. No `db_*` settings — they come from env vars via the official entrypoint as CLI args. Admin password hash is PBKDF2 of `"hala"` — works silently, no prompt.
-- **Init is one-shot**: skips re-init once `base` module is installed. Force re-init: `docker compose down -v`.
-- **No CI / lint tooling** — Odoo tests via `--test-enable`.
-- **Odoo source lives in the container** at `/usr/lib/python3/dist-packages/odoo/` — useful for looking up base model APIs, reading core module implementations, or finding method signatures. Access via `docker compose exec odoo bash` or one-shot `docker compose exec odoo grep ...`.
+- **`docker-compose.yml`** — production: read-only mounts, `command: odoo --config=/etc/odoo/odoo.conf`
+- **`docker-compose.override.yml`** — dev: writable mounts, `--dev=all` hot-reload (auto-merged)
+- **`scripts/custom-entrypoint.sh`** — waits for Postgres, fixes config permissions, runs one-shot init (`-i base --workers=0 --stop-after-init`) on first start, then hands off to official `/entrypoint.sh`
+- **`config/odoo.conf`**: `addons_path = /mnt/extra-addons`, `workers = 2`, `proxy_mode = True`. No `db_*` settings — from env vars (`HOST`, `USER`, `PASSWORD`, `PORT`, `DB`). Admin password is PBKDF2 of `"hala"` — no prompt.
+- **Init is one-shot**: skips re-init once `base` module installed. Force re-init: `docker compose down -v`.
+- `.env` is gitignored and **required** — stack refuses to start without `POSTGRES_PASSWORD`. Code changes reflect instantly in dev (bind-mount). Backup/restore via Odoo DB manager at `/web/database/manager`.
+- **`.odoo-src/`** — cached Odoo container source for AI tooling. Re-copy after image update: `docker compose exec odoo tar -C /usr/lib/python3/dist-packages/odoo -cf - . | tar -C .odoo-src/odoo -xf -`
 
-## Host infrastructure (nginx + certbot)
-- **nginx** runs on the host, config at `/etc/nginx/sites-available/odoo` (deployed from `config/odoo-nginx-config`). Proxies to `127.0.0.1:8069` (Odoo) and `127.0.0.1:8072` (longpolling/websocket).
-- **Let's Encrypt** cert at `/etc/letsencrypt/live/halanuts.ddns.net/`. Renewal via cron on host: `0 3 * * * /usr/bin/certbot renew --quiet --nginx && systemctl reload nginx`.
-- **Self-signed LAN cert** at `/etc/nginx/ssl/192.168.1.16.pem` (10-year expiry, not managed by certbot).
-- **No-IP DDNS** points `halanuts.ddns.net` → `82.137.203.114` (STE static IP).
-- Full host setup guide in [`SETUP.md`](SETUP.md).
+## POS JS development patterns (easy to get wrong)
 
-## Add-ons
-- **`addons/`** — 18 modules: custom + third-party (no Odoo core).
-- **Custom modules**: `pos_ghadir` ("Ghadir POS — Customer Accounts, Multi-Currency & Workflow", `auto_install: True`) — customer account management (payments, adjustments, settle balance), multi-currency conversion, stock alerts, receipt balance display, pricelist cycler, configurable rounding threshold, quick cancel, default qty 2, auto-invoice, currency formatting, price override disable, background deselect, note button fix, quick rate setter, price catalog PDF. Detailed docs in its `README.md`.
-- **Custom modules**: `product_last_purchase_cost` — adds "Auto-Update Cost from Purchase" checkbox on product categories. When enabled, the product's cost (`standard_price`) is set to the purchase line unit price upon receipt validation. Depends on `purchase_stock`, `stock_account`.
-- **Third-party suites**: `om_account_*` + `om_fiscal_year` + `om_recurring_payments` (accounting), `accounting_pdf_reports`, `muk_web_*` (UI theme), `bi_pos_default_customer`.
+- **`type='json'` controllers**: Odoo JSON-RPC routes require `{params: {...}}` wrapper in `fetch()` bodies:
+  ```js
+  fetch("/pos_ghadir/import_fields", { method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({params: {}}),
+  });
+  ```
+- **Owl templates**:
+  - `t-foreach` **requires** `t-key`; when headers may repeat, use `t-key="header + '_' + header_index"`
+  - `this.methodName()` in event handlers — bare `methodName()` loses `this`
+  - Arrow class fields (`setMapping = (x, y) => {...}`) for template-bound methods
+- **`_t` in templates**: store in `this._t` in `setup()` — the imported symbol is not available in template scope:
+  ```js
+  import { _t } from "@web/core/l10n/translation";
+  setup() { this._t = _t; }
+  ```
+- **Dialogs**: Use `window.posmodel.dialog` (not `window.posmodel.chrome.dialog`):
+  ```js
+  await new Promise(resolve => dialog.add(MyPopup, { getPayload: () => resolve() }));
+  ```
+  The `makeAwaitable` utility from `@point_of_sale/app/utils/make_awaitable_dialog` is used for numeric-input popups.
 
 ## Gotchas
-- `.env` is gitignored and **required** — stack refuses to start without `POSTGRES_PASSWORD`.
-- Code changes reflect instantly in dev (bind-mount). No rebuild needed.
-- Backup/restore via Odoo's DB manager at `/web/database/manager`, not shell scripts.
-- First-run init uses `--without-demo`. Re-init requires `docker compose down -v`.
-- DB manager admin password is `"hala"` (or whichever value you set in `admin_passwd`).
-- **Syriatel mobile (AS48065)** cannot reach `82.137.203.114` (broken peering to STE). Workaround: VPN or Cloudflare Tunnel.
-- **Module update commands need `--db_host=db --db_user=odoo --db_password=odoo`** because `odoo.conf` has no `db_*` settings (they're passed via the entrypoint, which `docker compose exec odoo odoo ...` bypasses). Also use `--workers=0 --http-port=8067` to avoid port conflicts with the running server.
-- **Custom POS pages need `static storeOnOrder = false`** to allow the Register button to navigate back to ProductScreen. Without it, the order remembers the custom page and Register tries to go back to it instead of ProductScreen.
-- **Payment receipt popup** (`payment_receipt_popup.js`) uses `makeAwaitable` to gate order refresh behind popup close. Dummy `pos.order` record is deleted after popup closes.
-- **Pricelist rounding threshold** (`product.pricelist.rounding_threshold`) is a per-pricelist Float (0.0–1.0, default 0.50) replacing the old `round_up` Boolean. The threshold controls the cutoff between rounding down and rounding up: if the fractional part exceeds the threshold, the price rounds up. Implemented via a custom `_round_with_threshold()` helper in both Python (`product_pricelist_item.py`) and JavaScript (`pricelist_rounding.js`) because the rounding step sits mid-method — calling super and re-rounding would give incorrect results. Both methods are fully duplicated from Odoo 19 core.
-- **Price Catalog PDF** (`report/price_catalog.py`, `topbar_buttons.js`):
-  - Custom QWeb report renders via `web.basic_layout` (no Odoo header/footer).
-  - Paperformat must set all margins to 0 — CSS `@page { margin: 0 }` alone won't override wkhtmltopdf's `--margin-top` CLI arg.
-  - `table-layout: fixed` is required because wkhtmltopdf ignores `max-width` on cells.
-  - Dropdown menu item is injected via MutationObserver watching `.pos-burger-menu-items`.
-  - Opens PDF with `window.open('/report/pdf/pos_ghadir.price_catalog/' + pricelist.id, '_blank')`.
-- **`.odoo-src/`** — cached copy of Odoo container source at `/usr/lib/python3/dist-packages/odoo/`, used by AI tooling for direct file access. Re-copy after updating the Odoo image: `docker compose exec odoo tar -C /usr/lib/python3/dist-packages/odoo -cf - . | tar -C .odoo-src/odoo -xf -`
-- **Quick Rate Setter** (`topbar_buttons.js`, `models/res_currency.py`):
-  - Topbar shows exchange icon (⟳), rate is in popup subtitle: "1 USD = 13,000 SYP".
-  - Tap → NumberPopup → enter new rate → `set_currency_rate_from_pos` RPC.
-  - Creates/updates today's `res.currency.rate` record for the POS currency via `sudo()`.
-  - `sudo()` required because `res.currency.rate` write needs Account Manager group.
-  - On success: `pos.reloadData(true)` — full reload with `?limited_loading=0`.
-  - Unsaved orders WILL be lost on reload (same as "Reload Data → Full" menu).
-  - Only visible on ProductScreen when POS currency ≠ company currency.
+- Module update commands need `--db_host=db --db_user=odoo --db_password=odoo` because `odoo.conf` has no `db_*` settings — they come from the entrypoint, which `docker compose exec odoo odoo ...` bypasses. Use `--workers=0 --http-port=8067` to avoid port conflict with the running server.
+- **Custom POS pages** need `static storeOnOrder = false` — without it, Register navigates back to the custom page instead of ProductScreen.
+- **Pricelist rounding threshold** (`product.pricelist.rounding_threshold`, 0.0–1.0 Float) replaces old boolean `round_up`. Implemented via duplicated `_round_with_threshold()` in both Python and JS because the rounding step sits mid-method — calling super and re-rounding gives wrong results.
+- **Price Catalog PDF**: Paperformat must set all margins to 0 — `@page { margin: 0 }` alone won't override wkhtmltopdf's `--margin-top`. Use `table-layout: fixed` (wkhtmltopdf ignores `max-width` on cells).
+- **Quick Rate Setter** uses `sudo()` because `res.currency.rate` write needs Account Manager group. Triggers `pos.reloadData(true)` — unsaved orders WILL be lost.
+- **Stock update mode** must be **"In real time"** in company settings — without it stock is not decremented on POS orders.
+- All user-facing strings must be wrapped in `_t()` for Arabic translation support. Translations live in `i18n/ar_001.po`.

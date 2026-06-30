@@ -174,6 +174,8 @@ Usage Guide
             'pos_ghadir/static/src/xml/payment_receipt.xml',
             'pos_ghadir/static/src/xml/dual_currency_display.xml',
             'pos_ghadir/static/src/xml/customer_account_screens.xml',
+            'pos_ghadir/static/src/js/csv_import_popup.js',
+            'pos_ghadir/static/src/xml/csv_import_popup.xml',
         ],
     },
     'license': 'AGPL-3',

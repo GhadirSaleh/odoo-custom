@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Payment Receipt Templates
+
+  pos_ghadir.PaymentReceipt — Printable receipt layout for payment and
+    withdrawal transactions. Shows: customer info, previous balance,
+    transaction type, amount (with optional dual-currency equivalent),
+    new balance, notes, and company details (address, VAT, contact).
+
+  pos_ghadir.PaymentReceiptPopup — Dialog wrapper around the receipt
+    with a Print button and Close button. Uses the makeAwaitable pattern
+    from payment_receipt_popup.js to gate order refresh behind popup close.
+-->
 <templates id="template" xml:space="preserve">
 
     <t t-name="pos_ghadir.PaymentReceipt">

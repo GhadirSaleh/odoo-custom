@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Stock Badge Injection
+
+  Extends the ProductCard template to add a stock badge overlay at the
+  top-left of each product card (when stock alerts are enabled in the POS
+  config). The badge shows the raw quantity and is colored by stockLevel:
+
+    stock-out (red)  — qty ≤ 0
+    stock-low (amber) — qty ≤ threshold
+    stock-ok (green)  — qty > threshold
+
+  Visibility is controlled by the ProductCard.stockLevel getter — returns
+  null (no badge) for non-storable products or when alerts are disabled.
+-->
 <templates id="template" xml:space="preserve">
     <t t-name="pos_ghadir.StockBadge" t-inherit="point_of_sale.ProductCard" t-inherit-mode="extension">
         <xpath expr="//div[hasclass('product-content')]" position="inside">

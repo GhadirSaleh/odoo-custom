@@ -1,114 +1,114 @@
-Name,SKU,Category,Price [محمصة هلا],available in pos,active,uom_id,Category
-ميال اكسترا مالح,maiab001,ميال وابيض,3.1,yes,TRUE,kg,ميال وابيض
-ميال اكسترا حلو,maiab002,ميال وابيض,3.28,yes,TRUE,kg,ميال وابيض
-بزر ابيض اكسترا,maiab003,ميال وابيض,4.63,yes,TRUE,kg,ميال وابيض
-بزرابيض A3,maiab004,ميال وابيض,3.69,yes,TRUE,kg,ميال وابيض
-بزر ابيض حلو,maiab005,ميال وابيض,5.57,yes,TRUE,kg,ميال وابيض
-بزر كوسا اكسترا,maiab006,ميال وابيض,4.42,yes,TRUE,kg,ميال وابيض
-بزر كوسا حلو,maiab007,ميال وابيض,4.99,yes,TRUE,kg,ميال وابيض
-لب ميال محمّص,maiab008,ميال وابيض,3.05,yes,TRUE,kg,ميال وابيض
-لب ابيض محمص,maiab009,ميال وابيض,5.28,yes,TRUE,kg,ميال وابيض
-فستق سوداني,fsthom001,فستق وحمص,5.01,yes,TRUE,kg,فستق وحمص
-فستق صاج,fsthom002,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص
-فستق مغبر,fsthom003,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص
-فستق مدخن,fsthom004,فستق وحمص,5.22,yes,TRUE,kg,فستق وحمص
-فستق بقشره,fsthom005,فستق وحمص,2.89,yes,TRUE,kg,فستق وحمص
-فستق سوداني اكسترا,fsthom006,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص
-صويا,fsthom007,فستق وحمص,1.28,yes,TRUE,kg,فستق وحمص
-صفرا فحلة,fsthom008,فستق وحمص,3.78,yes,TRUE,kg,فستق وحمص
-صفرا فحلة مدخنة,fsthom009,فستق وحمص,4.08,yes,TRUE,kg,فستق وحمص
-قضامة مدخنة,fsthom010,فستق وحمص,4.79,yes,TRUE,kg,فستق وحمص
-قضامة حر وليمون,fsthom011,فستق وحمص,4.79,yes,TRUE,kg,فستق وحمص
-اسطنبولية,fsthom012,فستق وحمص,2.02,yes,TRUE,kg,فستق وحمص
-حمص مالح,fsthom013,فستق وحمص,1.98,yes,TRUE,kg,فستق وحمص
-سكرية ,fsthom014,فستق وحمص,1.45,yes,TRUE,kg,فستق وحمص
-سكرية اكسترا,fsthom015,فستق وحمص,2.12,yes,TRUE,kg,فستق وحمص
-بزر مصري اصفر,masjab001,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس
-بزر مصري ابيض,masjab002,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس
-بزر مصري محمص,masjab003,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس
-بزر مصري مدخن,masjab004,مصري وجبس,2.27,yes,TRUE,kg,مصري وجبس
-جبس,masjab005,مصري وجبس,2.01,yes,TRUE,kg,مصري وجبس
-جبس مدخن,masjab006,مصري وجبس,2.31,yes,TRUE,kg,مصري وجبس
-ايراني جامبو,masjab007,مصري وجبس,4.14,yes,TRUE,kg,مصري وجبس
-ايراني جامبو رطب,masjab008,مصري وجبس,3.82,yes,TRUE,kg,مصري وجبس
-افغاني اسود جامبو,masjab009,مصري وجبس,3.82,yes,TRUE,kg,مصري وجبس
-براتيك,chin001,صينية,1.88,yes,TRUE,kg,صينية
-ديربي اكسترا,chin002,صينية,3.76,yes,TRUE,kg,صينية
-تايلاندية,chin003,صينية,3.97,yes,TRUE,kg,صينية
-ذرة عادية,chin004,صينية,1.91,yes,TRUE,kg,صينية
-ذرة جامبو,chin005,صينية,2.94,yes,TRUE,kg,صينية
-باربي,chin006,صينية,2.22,yes,TRUE,kg,صينية
-خلطة ماليزية ,chin007,صينية,3.09,yes,TRUE,kg,صينية
-ماليزية اصلية,chin008,صينية,3.66,yes,TRUE,kg,صينية
-صينية اكسترا,chin009,صينية,0.16,yes,TRUE,kg,صينية
-صينية ديلوكس,chin010,صينية,0.16,yes,TRUE,kg,صينية
-صينية جامبو,chin011,صينية,3.97,yes,TRUE,kg,صينية
-كريك دوناتس,chin012,صينية,3.25,yes,TRUE,kg,صينية
-كريك سبايسي,chin013,صينية,3.25,yes,TRUE,kg,صينية
-كناكري كعك,chin014,صينية,4.28,yes,TRUE,kg,صينية
-طابات طوكيو,chin015,صينية,3.92,yes,TRUE,kg,صينية
-كناكر سمسم,chin016,صينية,2.32,yes,TRUE,kg,صينية
-كريك سادة اكسترا,chin017,صينية,3.04,yes,TRUE,kg,صينية
-كريك لورينا,chin018,صينية,2.12,yes,TRUE,kg,صينية
-كريسبي مدخن,chin019,صينية,5.31,yes,TRUE,kg,صينية
-كريسبي حر وليمون,chin020,صينية,5.31,yes,TRUE,kg,صينية
-فول,chin021,صينية,3.66,yes,TRUE,kg,صينية
-بازيلا,chin022,صينية,3.56,yes,TRUE,kg,صينية
-يابانية ملونة,chin023,صينية,3.35,yes,TRUE,kg,صينية
-مشكل سالي,chin024,صينية,1.91,yes,TRUE,kg,صينية
-شيبس سالي,chin025,صينية,1.91,yes,TRUE,kg,صينية
-رقائق لاند,chin026,صينية,2.43,yes,TRUE,kg,صينية
-رحيق المحبة,chin027,صينية,2.47,yes,TRUE,kg,صينية
-نفش,chin028,صينية,1.4,yes,TRUE,kg,صينية
-كاجو,mokas001,مكسرات,10.49,yes,TRUE,kg,مكسرات
-كاجو جامبو,mokas002,مكسرات,12.17,yes,TRUE,kg,مكسرات
-كاجو 160,mokas003,مكسرات,13.29,yes,TRUE,kg,مكسرات
-كاجو مشوي,mokas004,مكسرات,10.2,yes,TRUE,kg,مكسرات
-كاجو مدخن,mokas005,مكسرات,10.8,yes,TRUE,kg,مكسرات
-بندق,mokas006,مكسرات,15.98,yes,TRUE,kg,مكسرات
-حلبـي فندقي,mokas007,مكسرات,12.47,yes,TRUE,kg,مكسرات
-حلبي اكسترا,mokas008,مكسرات,14.81,yes,TRUE,kg,مكسرات
-ماكادميا,mokas009,مكسرات,22.81,yes,TRUE,kg,مكسرات
-ماكاداميا بقشره,mokas010,مكسرات,6.08,yes,TRUE,kg,مكسرات
-جوز برازيلي,mokas011,مكسرات,36.24,yes,TRUE,kg,مكسرات
-لوز اميركي,mokas012,مكسرات,9.71,yes,TRUE,kg,مكسرات
-لوز اسباني ,mokas013,مكسرات,10.61,yes,TRUE,kg,مكسرات
-لوز اسباني فحل,mokas014,مكسرات,16.65,yes,TRUE,kg,مكسرات
-لوز مدخن,mokas015,مكسرات,11.14,yes,TRUE,kg,مكسرات
-لوز فريك,mokas016,مكسرات,4.77,yes,TRUE,kg,مكسرات
-جوز بيكان,mokas017,مكسرات,17.07,yes,TRUE,kg,مكسرات
-بيكان بالقشر,mokas018,مكسرات,9.27,yes,TRUE,kg,مكسرات
-جوز نيء,nai001,نيء,6.85,yes,TRUE,kg,نيء
-فستق نئ,nai002,نيء,4.38,yes,TRUE,kg,نيء
-قرع نيء,nai003,نيء,3.76,yes,TRUE,kg,نيء
-لب ميال نيء,nai004,نيء,2.53,yes,TRUE,kg,نيء
-كاجو نيء,nai005,نيء,7.63,yes,TRUE,kg,نيء
-لوز نيء,nai006,نيء,9.53,yes,TRUE,kg,نيء
-بندق نيء,nai007,نيء,14.17,yes,TRUE,kg,نيء
-جوز برازيلي نيء,nai008,نيء,33.12,yes,TRUE,kg,نيء
-ماكاداميا نيء,nai009,نيء,20.76,yes,TRUE,kg,نيء
-بيكان نيء,nai010,نيء,15.15,yes,TRUE,kg,نيء
-ميال نيء,nai011,نيء,2.73,yes,TRUE,kg,نيء
-ذرة بوشار,nai012,نيء,0.78,yes,TRUE,kg,نيء
-زبيب اشقر,nai013,نيء,6.6,yes,TRUE,kg,نيء
-زبيب اسود,nai014,نيء,5.57,yes,TRUE,kg,نيء
-مشمش نقوع,nai015,نيء,13.03,yes,TRUE,kg,نيء
-تمر مجدول,nai016,نيء,4.54,yes,TRUE,kg,نيء
-فواكه استوائية,nai017,نيء,6.85,yes,TRUE,kg,نيء
-لب ابيض نيء,nai018,نيء,4.54,yes,TRUE,kg,نيء
-فواكه مجففة بالتبريد,nai019,نيء,17.46,yes,TRUE,kg,نيء
-جيليبون,nai020,نيء,3.25,yes,TRUE,kg,نيء
-خضار مجففة بالتبريد,nai021,نيء,8.4,yes,TRUE,kg,نيء
-فندان,nai022,نيء,2.48,yes,TRUE,kg,نيء
-فريز مبرد,nai023,نيء,19.52,yes,TRUE,kg,نيء
-قلوبات هلا,mix001,مشكل,14.8,yes,TRUE,kg,مشكل
-مشكل اكسترا,mix002,مشكل,6.45,yes,TRUE,kg,مشكل
-مشكل بزورات,mix003,مشكل,2.85,yes,TRUE,kg,مشكل
-مشكل قلوبات,mix004,مشكل,11.62,yes,TRUE,kg,مشكل
-مشكل قضامة,mix005,مشكل,3.58,yes,TRUE,kg,مشكل
-مشكل قلوبات مع بزر,mix006,مشكل,10.39,yes,TRUE,kg,مشكل
-مشكل مدخن,mix007,مشكل,5.31,yes,TRUE,kg,مشكل
-مشكل ماكاداميا,mix008,مشكل,18.48,yes,TRUE,kg,مشكل
-مشكل كريك,mix009,مشكل,3.96,yes,TRUE,kg,مشكل
-مشكل الطاقة,mix010,مشكل,8.42,yes,TRUE,kg,مشكل
-ملوكية,mix011,مشكل,7.9,yes,TRUE,kg,مشكل
+Name,SKU,Category,cost,available in pos,active,uom_id,Pos Category,vendor,min,max
+ميال اكسترا مالح,maiab001,ميال وابيض,3.1,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+ميال اكسترا حلو,maiab002,ميال وابيض,3.28,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+بزر ابيض اكسترا,maiab003,ميال وابيض,4.63,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+بزرابيض A3,maiab004,ميال وابيض,3.69,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+بزر ابيض حلو,maiab005,ميال وابيض,5.57,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+بزر كوسا اكسترا,maiab006,ميال وابيض,4.42,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+بزر كوسا حلو,maiab007,ميال وابيض,4.99,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+لب ميال محمّص,maiab008,ميال وابيض,3.05,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+لب ابيض محمص,maiab009,ميال وابيض,5.28,yes,TRUE,kg,ميال وابيض,Abo Johny,5,15
+فستق سوداني,fsthom001,فستق وحمص,5.01,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+فستق صاج,fsthom002,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+فستق مغبر,fsthom003,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+فستق مدخن,fsthom004,فستق وحمص,5.22,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+فستق بقشره,fsthom005,فستق وحمص,2.89,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+فستق سوداني اكسترا,fsthom006,فستق وحمص,4.91,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+صويا,fsthom007,فستق وحمص,1.28,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+صفرا فحلة,fsthom008,فستق وحمص,3.78,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+صفرا فحلة مدخنة,fsthom009,فستق وحمص,4.08,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+قضامة مدخنة,fsthom010,فستق وحمص,4.79,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+قضامة حر وليمون,fsthom011,فستق وحمص,4.79,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+اسطنبولية,fsthom012,فستق وحمص,2.02,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+حمص مالح,fsthom013,فستق وحمص,1.98,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+سكرية ,fsthom014,فستق وحمص,1.45,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+سكرية اكسترا,fsthom015,فستق وحمص,2.12,yes,TRUE,kg,فستق وحمص,Abo Johny,5,15
+بزر مصري اصفر,masjab001,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+بزر مصري ابيض,masjab002,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+بزر مصري محمص,masjab003,مصري وجبس,1.96,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+بزر مصري مدخن,masjab004,مصري وجبس,2.27,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+جبس,masjab005,مصري وجبس,2.01,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+جبس مدخن,masjab006,مصري وجبس,2.31,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+ايراني جامبو,masjab007,مصري وجبس,4.14,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+ايراني جامبو رطب,masjab008,مصري وجبس,3.82,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+افغاني اسود جامبو,masjab009,مصري وجبس,3.82,yes,TRUE,kg,مصري وجبس,Abo Johny,5,15
+براتيك,chin001,صينية,1.88,yes,TRUE,kg,صينية,Abo Johny,5,15
+ديربي اكسترا,chin002,صينية,3.76,yes,TRUE,kg,صينية,Abo Johny,5,15
+تايلاندية,chin003,صينية,3.97,yes,TRUE,kg,صينية,Abo Johny,5,15
+ذرة عادية,chin004,صينية,1.91,yes,TRUE,kg,صينية,Abo Johny,5,15
+ذرة جامبو,chin005,صينية,2.94,yes,TRUE,kg,صينية,Abo Johny,5,15
+باربي,chin006,صينية,2.22,yes,TRUE,kg,صينية,Abo Johny,5,15
+خلطة ماليزية ,chin007,صينية,3.09,yes,TRUE,kg,صينية,Abo Johny,5,15
+ماليزية اصلية,chin008,صينية,3.66,yes,TRUE,kg,صينية,Abo Johny,5,15
+صينية اكسترا,chin009,صينية,0.16,yes,TRUE,kg,صينية,Abo Johny,5,15
+صينية ديلوكس,chin010,صينية,0.16,yes,TRUE,kg,صينية,Abo Johny,5,15
+صينية جامبو,chin011,صينية,3.97,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريك دوناتس,chin012,صينية,3.25,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريك سبايسي,chin013,صينية,3.25,yes,TRUE,kg,صينية,Abo Johny,5,15
+كناكري كعك,chin014,صينية,4.28,yes,TRUE,kg,صينية,Abo Johny,5,15
+طابات طوكيو,chin015,صينية,3.92,yes,TRUE,kg,صينية,Abo Johny,5,15
+كناكر سمسم,chin016,صينية,2.32,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريك سادة اكسترا,chin017,صينية,3.04,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريك لورينا,chin018,صينية,2.12,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريسبي مدخن,chin019,صينية,5.31,yes,TRUE,kg,صينية,Abo Johny,5,15
+كريسبي حر وليمون,chin020,صينية,5.31,yes,TRUE,kg,صينية,Abo Johny,5,15
+فول,chin021,صينية,3.66,yes,TRUE,kg,صينية,Abo Johny,5,15
+بازيلا,chin022,صينية,3.56,yes,TRUE,kg,صينية,Abo Johny,5,15
+يابانية ملونة,chin023,صينية,3.35,yes,TRUE,kg,صينية,Abo Johny,5,15
+مشكل سالي,chin024,صينية,1.91,yes,TRUE,kg,صينية,Abo Johny,5,15
+شيبس سالي,chin025,صينية,1.91,yes,TRUE,kg,صينية,Abo Johny,5,15
+رقائق لاند,chin026,صينية,2.43,yes,TRUE,kg,صينية,Abo Johny,5,15
+رحيق المحبة,chin027,صينية,2.47,yes,TRUE,kg,صينية,Abo Johny,5,15
+نفش,chin028,صينية,1.4,yes,TRUE,kg,صينية,Abo Johny,5,15
+كاجو,mokas001,مكسرات,10.49,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+كاجو جامبو,mokas002,مكسرات,12.17,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+كاجو 160,mokas003,مكسرات,13.29,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+كاجو مشوي,mokas004,مكسرات,10.2,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+كاجو مدخن,mokas005,مكسرات,10.8,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+بندق,mokas006,مكسرات,15.98,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+حلبـي فندقي,mokas007,مكسرات,12.47,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+حلبي اكسترا,mokas008,مكسرات,14.81,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+ماكادميا,mokas009,مكسرات,22.81,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+ماكاداميا بقشره,mokas010,مكسرات,6.08,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+جوز برازيلي,mokas011,مكسرات,36.24,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+لوز اميركي,mokas012,مكسرات,9.71,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+لوز اسباني ,mokas013,مكسرات,10.61,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+لوز اسباني فحل,mokas014,مكسرات,16.65,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+لوز مدخن,mokas015,مكسرات,11.14,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+لوز فريك,mokas016,مكسرات,4.77,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+جوز بيكان,mokas017,مكسرات,17.07,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+بيكان بالقشر,mokas018,مكسرات,9.27,yes,TRUE,kg,مكسرات,Abo Johny,5,15
+جوز نيء,nai001,نيء,6.85,yes,TRUE,kg,نيء,Abo Johny,5,15
+فستق نئ,nai002,نيء,4.38,yes,TRUE,kg,نيء,Abo Johny,5,15
+قرع نيء,nai003,نيء,3.76,yes,TRUE,kg,نيء,Abo Johny,5,15
+لب ميال نيء,nai004,نيء,2.53,yes,TRUE,kg,نيء,Abo Johny,5,15
+كاجو نيء,nai005,نيء,7.63,yes,TRUE,kg,نيء,Abo Johny,5,15
+لوز نيء,nai006,نيء,9.53,yes,TRUE,kg,نيء,Abo Johny,5,15
+بندق نيء,nai007,نيء,14.17,yes,TRUE,kg,نيء,Abo Johny,5,15
+جوز برازيلي نيء,nai008,نيء,33.12,yes,TRUE,kg,نيء,Abo Johny,5,15
+ماكاداميا نيء,nai009,نيء,20.76,yes,TRUE,kg,نيء,Abo Johny,5,15
+بيكان نيء,nai010,نيء,15.15,yes,TRUE,kg,نيء,Abo Johny,5,15
+ميال نيء,nai011,نيء,2.73,yes,TRUE,kg,نيء,Abo Johny,5,15
+ذرة بوشار,nai012,نيء,0.78,yes,TRUE,kg,نيء,Abo Johny,5,15
+زبيب اشقر,nai013,نيء,6.6,yes,TRUE,kg,نيء,Abo Johny,5,15
+زبيب اسود,nai014,نيء,5.57,yes,TRUE,kg,نيء,Abo Johny,5,15
+مشمش نقوع,nai015,نيء,13.03,yes,TRUE,kg,نيء,Abo Johny,5,15
+تمر مجدول,nai016,نيء,4.54,yes,TRUE,kg,نيء,Abo Johny,5,15
+فواكه استوائية,nai017,نيء,6.85,yes,TRUE,kg,نيء,Abo Johny,5,15
+لب ابيض نيء,nai018,نيء,4.54,yes,TRUE,kg,نيء,Abo Johny,5,15
+فواكه مجففة بالتبريد,nai019,نيء,17.46,yes,TRUE,kg,نيء,Abo Johny,5,15
+جيليبون,nai020,نيء,3.25,yes,TRUE,kg,نيء,Abo Johny,5,15
+خضار مجففة بالتبريد,nai021,نيء,8.4,yes,TRUE,kg,نيء,Abo Johny,5,15
+فندان,nai022,نيء,2.48,yes,TRUE,kg,نيء,Abo Johny,5,15
+فريز مبرد,nai023,نيء,19.52,yes,TRUE,kg,نيء,Abo Johny,5,15
+قلوبات هلا,mix001,مشكل,14.8,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل اكسترا,mix002,مشكل,6.45,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل بزورات,mix003,مشكل,2.85,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل قلوبات,mix004,مشكل,11.62,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل قضامة,mix005,مشكل,3.58,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل قلوبات مع بزر,mix006,مشكل,10.39,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل مدخن,mix007,مشكل,5.31,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل ماكاداميا,mix008,مشكل,18.48,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل كريك,mix009,مشكل,3.96,yes,TRUE,kg,مشكل,Abo Johny,5,15
+مشكل الطاقة,mix010,مشكل,8.42,yes,TRUE,kg,مشكل,Abo Johny,5,15
+ملوكية,mix011,مشكل,7.9,yes,TRUE,kg,مشكل,Abo Johny,5,15
